@@ -246,7 +246,7 @@ const newRefreshToken = AsyncHandler(async (req, res) => {
 const updateAccount = AsyncHandler(async (req, res) => {
   const { fullname, email } = req.body || req.json;
 
-  if (fullname || email) {
+  if (!(fullname || email)) {
     throw new ApiError(
       401,
       "At least one field Fullname OR Email required....."
@@ -275,8 +275,7 @@ const updateAccount = AsyncHandler(async (req, res) => {
 });
 
 const changeAvatar = AsyncHandler(async (req, res) => {
-  const newAvatarFile = req.files?.avatar[0]?.path || req.file.avatar;
-
+  const newAvatarFile = req.files?.avatar[0]?.path || req.file.path;
   if (!newAvatarFile) {
     throw new ApiError(401, "Avatar is not Recevied as an Input.....!");
   }
@@ -310,7 +309,7 @@ const changeAvatar = AsyncHandler(async (req, res) => {
 });
 
 const changeCoverImage = AsyncHandler(async (req, res) => {
-  const newCoverImage = req.files.coverImage[0].path || req.file.coverImage;
+  const newCoverImage = req.file.path || "";
   if (!newCoverImage) {
     throw new ApiError(401, "New CoverImage has not received from Client");
   }
@@ -346,6 +345,85 @@ const changeCoverImage = AsyncHandler(async (req, res) => {
   );
 });
 
+const getUserProfile = AsyncHandler(async (req, res) => {
+  const { username } = req.params;
+
+  if (!username?.trim()) {
+    throw new ApiError(
+      401,
+      "username not found for channel Profile Request.....!"
+    );
+  }
+
+  const channel = await User.aggregate([
+    {
+      $match: {
+        username: username.toLowerCase(),
+      },
+    },
+    {
+      $lookup: {
+        from: "User",
+        localField: "_id",
+        foreignField: "channel",
+        as: "subscribers",
+      },
+    },
+    {
+      $lookup: {
+        from: "User",
+        localField: "_id",
+        foreignField: "subscriber",
+        as: "subscribedTo",
+      },
+    },
+    {
+      $addFields: {
+        subscriberCount: {
+          $size: "$subscribers",
+        },
+        chennelSubscribed: {
+          $size: "$subscribedTo",
+        },
+        isSubscribed: {
+          $cond: {
+            $if: { $in: [req.user?._id, "$subscribers.subscriber"] },
+            then: true,
+            else: false,
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        fullname: 1,
+        username: 1,
+        avatar: 1,
+        coverImage: 1,
+        subscriberCount: 1,
+        chennelSubscribed: 1,
+        isSubscribed: 1,
+        email: 1,
+      },
+    },
+  ]);
+
+  console.log(channel);
+
+  if (!channel?.length) {
+    throw new ApiError(401, "User profile fetching process failed.....!");
+  }
+
+  return res.json(
+    new ApiResponse(
+      201,
+      channel[0],
+      `${username}'s Channel is Fetched successfully.....!`
+    )
+  );
+});
+
+
 export {
   RegisterUser,
   loginUser,
@@ -356,4 +434,5 @@ export {
   updateAccount,
   changeAvatar,
   changeCoverImage,
+  getUserProfile,
 };
