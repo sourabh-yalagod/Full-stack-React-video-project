@@ -6,6 +6,7 @@ import { uploadOnCloudinary } from "../middlewares/cloudinary.middleware.js";
 import { Options } from "../utilities/options.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 
 const getToken = async (userId) => {
   try {
@@ -423,6 +424,57 @@ const getUserProfile = AsyncHandler(async (req, res) => {
   );
 });
 
+const watchHistory = AsyncHandler(async (req, res) => {
+  const userWatchHistory = await User.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(req?.user?._id),
+      },
+    },
+    {
+      $lookup: {
+        from: "User",
+        localField: "watchHistory",
+        foreignField: "_id",
+        as: "watchHistory",
+        pipeline: [
+          {
+            $lookup: {
+              from: "videos",
+              localField: "watchHistory",
+              foreignField: "_id",
+              as: "owner",
+              pipeline: [
+                {
+                  $project: {
+                    fullname: 1,
+                    username: 1,
+                    avatar: 1,
+                    coverImage: 1,
+                  },
+                },
+              ],
+            },
+          },
+          {
+            $addFields: {
+              owner: {
+                $first: "$owner",
+              },
+            },
+          },
+        ],
+      },
+    },
+  ]);
+  return res.json(
+    new ApiResponse(
+      201,
+      user[0].userWatchHistory,
+      `${req.user.username}'s watch history is successfully fetched.....!`
+    )
+  );
+});
 
 export {
   RegisterUser,
@@ -435,4 +487,5 @@ export {
   changeAvatar,
   changeCoverImage,
   getUserProfile,
+  watchHistory,
 };

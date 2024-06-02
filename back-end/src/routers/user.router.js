@@ -1,4 +1,5 @@
 import { Router } from "express";
+const router = Router();
 import {
   RegisterUser,
   changeAvatar,
@@ -12,7 +13,6 @@ import {
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyAuth } from "../middlewares/verifyAuth.js";
-const router = Router();
 
 router.route("/register").post(
   upload.fields([

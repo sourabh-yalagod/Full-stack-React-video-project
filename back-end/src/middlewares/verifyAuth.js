@@ -3,7 +3,7 @@ import { ApiError } from "../utilities/ApiError.js";
 import jwt from "jsonwebtoken";
 
 export const verifyAuth = async (req, res, next) => {
-  // console.log(req.cookies);
+
   try {
     const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "");
 
@@ -12,8 +12,6 @@ export const verifyAuth = async (req, res, next) => {
     }
 
     const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-
-    // console.log("Decoded Token:", decodedToken); 
 
     const user = await User.findById(decodedToken?._id).select("-password -refreshToken");
 
