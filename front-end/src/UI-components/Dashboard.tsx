@@ -1,18 +1,32 @@
 import axios from "axios";
+import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import Video from "./Video";
+import { PlatForm } from "./PlatForm";
+import { Button } from "@/components/ui/button";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { clearLoggedUser } from "@/Redux/Slice/SignIn";
 
 const Dashboard = () => {
+  const signOut = () => {
+    localStorage.removeItem("accessToken");
+    dispatch(clearLoggedUser())
+    navigate("/");
+  };
+  const navigate = useNavigate();
+  const dispatch = useDispatch()
   const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState("");
   const [result, setResult] = useState([]);
+  const signUpState = useSelector((state) => state);
+  console.log("Dashboard", signUpState);
 
   useEffect(() => {
     (async () => {
       try {
         const response = await axios.get(
-          `http://localhost:8000/api/v1/dashboard${
-            searchQuery ? "/search-video?" : ""
-          }`,
+          `/api/v1/dashboard${searchQuery ? "/search-video?" : ""}`,
           {
             params: {
               search: searchQuery,
@@ -33,40 +47,57 @@ const Dashboard = () => {
         }
       }
     })();
+    console.log(error);
   }, [searchQuery]);
-
   return (
-    <div className="min-h-screen w-screen grid place-content-center">
-      <div className="min-h-screen w-full p-2 justify-center">
-        <center>
+    <div className="min-h-screen w-full grid relative place-items-center mx-auto">
+      <div className="min-h-screen w-full p-2 grid place-items-center">
+        <div className="flex w-full justify-between items-center absolute top-7">
+          <PlatForm />
           <input
             type="text"
             onChange={(e) => setSearchQuery(e.target.value)}
             value={searchQuery}
             placeholder="Search Here....."
-            className="max-w-[500px] w-full min-w-[300px] h-8 text-xl outline-none border-white border-[1px] rounded-xl pl-2 leading-8 mt-5"
+            className="max-w-[500px] mr-7 md:mx-4 relative w-full min-w-[250px] h-8 text-xl outline-none border-white bg-transparent text-white border-[1px] rounded-xl pl-2 leading-8 "
           />
-        </center>
-        <div className="">
+          <div className="hidden md:block mr-4 lg:mr-12">
+            <Button
+              onClick={() => navigate("signin")}
+              className="text-[15px] mx-1 font-semibold bg-blue-600 px-3 py-1 rounded-2xl text-white"
+            >
+              Sign-In
+            </Button>
+            <Button
+              onClick={() => signOut()}
+              className="text-[15px] mx-1 font-semibold bg-red-600 px-3 py-1 rounded-2xl text-white"
+            >
+              Sign-Up
+            </Button>
+          </div>
+        </div>
+        <div className="mt-10 w-full min-h-auto grid place-items-center md:mt-16">
           {result.length > 0 ? (
-            <ul className="mt-5 flex flex-wrap justify-center gap-5">
+            <ul
+              className="mt-8 grid place-items-start space-y-2 justify-center w-full min-h-screen 
+            sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-2 md:m-3 md:min-w-1/3"
+            >
               {result.map((video: any) => {
                 return (
-                  <div className="bg-slate-900 min-w-[300px] max-w-[350px] hover:scale-105 rounded-[20px] transition-all overflow-hidden">
-                    <video
-                      poster={video.thumbnail}
-                      key={video.videoFile}
-                      controls
-                      className=""
-                      src={video.videoFile}
-                    ></video>
-                    <p className="text-white p-2">Title : {video.title}</p>
-                  </div>
+                  <Video
+                    key={video.videoFile}
+                    title={video.title}
+                    avatar={video.avatar}
+                    thumbnail={video.thumbnail}
+                    link={video.videoFile}
+                  />
                 );
               })}
             </ul>
           ) : (
-            <p className="text-3xl text-center text-white">No videos found.</p>
+            <p className="text-3xl text-center text-white">
+              <Loader2 className="text-white text-8xl text-center animate-spin mt-10" />
+            </p>
           )}
         </div>
       </div>

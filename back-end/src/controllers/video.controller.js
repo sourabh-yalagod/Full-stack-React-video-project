@@ -5,7 +5,6 @@ import { ApiResponse } from "../utilities/ApiResponse.js";
 import { AsyncHandler } from "../utilities/AsyncHandler.js";
 import { User } from "../models/user.model.js";
 
-
 const publishVideo = AsyncHandler(async (req, res) => {
   const { title, description } = req.body;
   const videoFile = req.files.videoFile[0].path;
@@ -43,7 +42,6 @@ const publishVideo = AsyncHandler(async (req, res) => {
 });
 
 const getVideo = AsyncHandler(async (req, res) => {
-  console.log(req.params);
   const videoId = req.query.videoId;
   if (!videoId) {
     throw new ApiError(401, "Video ID is not fetched from Request......!");
@@ -58,10 +56,8 @@ const getVideo = AsyncHandler(async (req, res) => {
 });
 
 const updateVideo = AsyncHandler(async (req, res) => {
-  console.log(req);
   const { videoId } = req.query;
   const { title, description } = req.body;
-  console.log();
   const thumbnail = req.file.path;
 
   if (!videoId || !thumbnail || !title || !description) {
@@ -110,9 +106,7 @@ const updateViews = AsyncHandler(async (req, res) => {
   const userId = req?.user?._id;
 
   const user = await User.findById(userId);
-  console.log(user);
   const video = await Video.findById(videoId);
-  console.log(video);
   if (!video || !user) {
     throw new ApiError(
       404,
@@ -134,10 +128,4 @@ const updateViews = AsyncHandler(async (req, res) => {
   );
 });
 
-export {
-  publishVideo,
-  getVideo,
-  updateVideo,
-  deleteVideo,
-  updateViews,
-};
+export { publishVideo, getVideo, updateVideo, deleteVideo, updateViews };

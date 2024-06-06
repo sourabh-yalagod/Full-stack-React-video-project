@@ -3,5 +3,11 @@
 @tailwind utilities;
 
 html{
-    background-color: #121212;
+    background-color: #181818;
+}
+.uploadVideo{
+    background-image: url('./Assets/videoUpload-BG.jpg');
+    background-position: center;
+    background-size: cover;
+    filter: brightness('50px')
 }

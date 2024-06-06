@@ -30,7 +30,6 @@ const getToken = async (userId) => {
 
 const RegisterUser = AsyncHandler(async (req, res) => {
   const { fullname, username, email, password } = req.body;
-
   if (
     [fullname, username, email, password].some((field) => field.trim() == "")
   ) {
@@ -47,11 +46,11 @@ const RegisterUser = AsyncHandler(async (req, res) => {
       `${(username || email).toUpperCase()} - named User already Exist.....`
     );
   }
-
+  console.log(req.files);
   const avatarFile = req.files?.avatar[0]?.path;
   let coverImageFile = req.files?.coverImage[0]?.path;
 
-  if (!avatarFile && !(avatarFile.length > 0)) {
+  if (!avatarFile) {
     throw new ApiError(401, "avarat image is not uploaded properly....!");
   }
 
@@ -62,7 +61,8 @@ const RegisterUser = AsyncHandler(async (req, res) => {
   if (!avatar.url) {
     throw new ApiError(401, "Avatar image is not on Cloudinary.....!");
   }
-
+  console.log(avatar);
+  console.log(coverImageFile);
   const user = await User.create({
     fullname,
     username,
@@ -93,8 +93,7 @@ const RegisterUser = AsyncHandler(async (req, res) => {
 
 const loginUser = AsyncHandler(async (req, res) => {
   const { email, username, password } = req.body;
-
-  if (!username || !email) {
+  if (!(username || email)) {
     throw new ApiError(401, "Email or Username can't be empty!");
   }
 
