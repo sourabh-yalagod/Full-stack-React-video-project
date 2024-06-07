@@ -6,6 +6,8 @@ import {
   changeCoverImage,
   changePassword,
   getUser,
+  getUserProfile,
+  handleSubscribers,
   loginUser,
   logout,
   newRefreshToken,
@@ -29,5 +31,7 @@ router.route("/get-user").get(verifyAuth, getUser);
 router.route("/update-account").patch(verifyAuth, updateAccount);
 router.route("/change-avatar").patch(verifyAuth ,upload.single('avatar'), changeAvatar);
 router.route("/change-coverimage").patch(verifyAuth,upload.single('coverImage'), changeCoverImage);
+router.route("/get-user-detail/:userId").get(verifyAuth,getUserProfile);
+router.route("/handle-subscribers").post(verifyAuth,handleSubscribers);
 
 export default router;

@@ -32,16 +32,22 @@ const SignUp = () => {
     setIsUploading(true);
     try {
       const formdata = new FormData();
+    
       formdata.append("title", data.title);
       formdata.append("description", data.description);
       formdata.append("videoFile", data.videoFile[0]);
       formdata.append("thumbnail", data.thumbnail[0]);
+
       const response = await axios.post("/api/v1/videos/upload-video", formdata);
       console.log(response);
+      
       const id = response.data.data.owner
+      
       localStorage.setItem('user',(response.data.data.owner))
+      
       navigate(`/signin/user-profile/${id}`)
-    } catch (error) {
+    } 
+    catch (error) {
       const err = error as AxiosError;
       
       const errorMessage =
@@ -132,7 +138,7 @@ const SignUp = () => {
             </NavLink>
             <NavLink
               className="bg-green-500  text-center hover:bg-blue-700 outline-none border-slate-700 ml-3 font-bold py-2 px-4 rounded mt-4"
-              to={`user-profile/${localStorage.getItem('user')}`}
+              to={`/signin/user-profile/${localStorage.getItem('userId')}`}
             >
               Profile
             </NavLink>

@@ -3,7 +3,7 @@ import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import Video from "./Video";
 import { PlatForm } from "./PlatForm";
-import { Button } from "@/components/ui/button";
+
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { clearLoggedUser } from "@/Redux/Slice/SignIn";
@@ -11,11 +11,11 @@ import { clearLoggedUser } from "@/Redux/Slice/SignIn";
 const Dashboard = () => {
   const signOut = () => {
     localStorage.removeItem("accessToken");
-    dispatch(clearLoggedUser())
+    dispatch(clearLoggedUser());
     navigate("/");
   };
   const navigate = useNavigate();
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState("");
   const [result, setResult] = useState([]);
@@ -62,18 +62,21 @@ const Dashboard = () => {
             className="max-w-[500px] mr-7 md:mx-4 relative w-full min-w-[250px] h-8 text-xl outline-none border-white bg-transparent text-white border-[1px] rounded-xl pl-2 leading-8 "
           />
           <div className="hidden md:block mr-4 lg:mr-12">
-            <Button
-              onClick={() => navigate("signin")}
-              className="text-[15px] mx-1 font-semibold bg-blue-600 px-3 py-1 rounded-2xl text-white"
-            >
-              Sign-In
-            </Button>
-            <Button
-              onClick={() => signOut()}
-              className="text-[15px] mx-1 font-semibold bg-red-600 px-3 py-1 rounded-2xl text-white"
-            >
-              Sign-Up
-            </Button>
+            {!localStorage.getItem("accessToken") ? (
+              <button
+                onClick={() => navigate("signin")}
+                className="text-[15px] mx-1 font-semibold bg-blue-600 px-3 py-1 rounded-2xl text-white"
+              >
+                Sign-In
+              </button>
+            ) : (
+              <button
+                onClick={() => signOut()}
+                className="text-[15px] mx-1 font-semibold bg-red-600 px-3 py-1 rounded-2xl text-white"
+              >
+                Sign-Out
+              </button>
+            )}
           </div>
         </div>
         <div className="mt-10 w-full min-h-auto grid place-items-center md:mt-16">

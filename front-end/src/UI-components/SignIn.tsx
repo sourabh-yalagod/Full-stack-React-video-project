@@ -51,6 +51,7 @@ const SignIn = () => {
         accessToken: response.data.data.accessToken
       };
       localStorage.setItem('accessToken',response.data.data.accessToken)
+      localStorage.setItem('userId',response.data.data.loggedUser._id)
       dispatch(logedUser(loggedUser)); 
       navigator("upload-video");
     } catch (error) {

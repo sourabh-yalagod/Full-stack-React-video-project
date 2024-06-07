@@ -7,6 +7,7 @@ import { Options } from "../utilities/options.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
+import { Subscription } from "../models/subscription.model.js";
 
 const getToken = async (userId) => {
   try {
@@ -346,9 +347,9 @@ const changeCoverImage = AsyncHandler(async (req, res) => {
 });
 
 const getUserProfile = AsyncHandler(async (req, res) => {
-  const { username } = req.params;
+  const { userId } = req.params;
 
-  if (!username?.trim()) {
+  if (!userId?.trim()) {
     throw new ApiError(
       401,
       "username not found for channel Profile Request.....!"
@@ -358,12 +359,12 @@ const getUserProfile = AsyncHandler(async (req, res) => {
   const channel = await User.aggregate([
     {
       $match: {
-        username: username.toLowerCase(),
+        _id: new mongoose.Types.ObjectId(userId),
       },
     },
     {
       $lookup: {
-        from: "User",
+        from: "subscriptions",
         localField: "_id",
         foreignField: "channel",
         as: "subscribers",
@@ -371,12 +372,13 @@ const getUserProfile = AsyncHandler(async (req, res) => {
     },
     {
       $lookup: {
-        from: "User",
+        from: "subscriptions",
         localField: "_id",
         foreignField: "subscriber",
         as: "subscribedTo",
       },
     },
+
     {
       $addFields: {
         subscriberCount: {
@@ -387,7 +389,7 @@ const getUserProfile = AsyncHandler(async (req, res) => {
         },
         isSubscribed: {
           $cond: {
-            $if: { $in: [req.user?._id, "$subscribers.subscriber"] },
+            if: { $in: [req?.user?._id, "$subscribers.subscriber"] },
             then: true,
             else: false,
           },
@@ -408,17 +410,15 @@ const getUserProfile = AsyncHandler(async (req, res) => {
     },
   ]);
 
-  console.log(channel);
-
   if (!channel?.length) {
     throw new ApiError(401, "User profile fetching process failed.....!");
   }
-
+  console.log(channel);
   return res.json(
     new ApiResponse(
       201,
       channel[0],
-      `${username}'s Channel is Fetched successfully.....!`
+      `${userId}'s Channel is Fetched successfully.....!`
     )
   );
 });
@@ -475,6 +475,49 @@ const watchHistory = AsyncHandler(async (req, res) => {
   );
 });
 
+const handleSubscribers = AsyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  const { subscriptionStatus, ChannelId } = req.body;
+  if (!userId || !ChannelId) {
+    throw new ApiError(401, "UserId OR ChannelId not found.....!");
+  }
+  const subStatus = await Subscription.findOne({ channel: userId });
+
+  console.log(subStatus);
+
+  const subsModelId = new mongoose.Types.ObjectId(subStatus?._id);
+
+  if (subStatus) {
+    const resp = await Subscription.findByIdAndDelete(subsModelId);
+    console.log("Subscriber Deleted");
+    return res.json(new ApiResponse(201, resp, "Subscriber Deleted"));
+  }
+
+  const newSubscriber = await Subscription.create({
+    channel: userId,
+    subscriber: ChannelId,
+  });
+  console.log(newSubscriber);
+  const user = await User.findByIdAndUpdate(
+    userId,
+    {
+      $set: {
+        isSubscribed: true,
+      },
+    },
+    { new: true }
+  );
+  console.log("Subscriber Created");
+  await Subscription.findByIdAndDelete(subsModelId);
+  return res.json(
+    new ApiResponse(
+      201,
+      {newSubscriber,user} || {},
+      "Subscription Toggled Successfully....!"
+    )
+  );
+});
+
 export {
   RegisterUser,
   loginUser,
@@ -487,4 +530,5 @@ export {
   changeCoverImage,
   getUserProfile,
   watchHistory,
+  handleSubscribers,
 };

@@ -53,11 +53,11 @@ const SignUp = () => {
       formData.append("email", data.email);
 
       const response = await axios.post("/api/v1/users/register",formData);
-      console.log(response.data);
+      console.log(response.data.data);
       const user:User = {
-        id:response?.data.id,
-        username:response?.data.username,
-        refreshToken:response.data.refreshToken
+        id:response?.data.data._id,
+        username:response?.data.data.username,
+        refreshToken:response.data.data.refreshToken
       }
       dispatch(createNewAccount(user))
       localStorage.setItem("user",JSON.stringify(user))

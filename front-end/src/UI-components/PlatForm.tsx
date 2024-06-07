@@ -2,7 +2,6 @@ import {
   DoorClosedIcon,
   Menu,
   Upload,
-  User,
   UserCheck2,
   UserCircle,
   UserCogIcon,
@@ -23,6 +22,7 @@ import { clearLoggedUser } from "@/Redux/Slice/SignIn";
 export function PlatForm() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const userId = localStorage.getItem('userId')
   return (
     <Drawer>
       <DrawerTrigger asChild>
@@ -34,7 +34,7 @@ export function PlatForm() {
         <div className="w-full flex justify-around p-5 flex-wrap gap-9 m-3 mx-auto">
           <div
             className="grid place-items-center cursor-pointer"
-            onClick={() => navigate("signin")}
+            onClick={() => navigate("signup")}
           >
             <UserCheck2 className="" />
             <label>Creat Account</label>
@@ -48,7 +48,7 @@ export function PlatForm() {
           </div>
           <div
             className="grid place-items-center cursor-pointer"
-            onClick={() => navigate(`signin/user-profile:id`)}
+            onClick={() => navigate(`signin/user-profile/${userId}`)}
           >
             <UserCogIcon className="" />
             <label>My Profile</label>
@@ -57,6 +57,7 @@ export function PlatForm() {
             className="grid place-items-center cursor-pointer"
             onClick={() => {
               localStorage.removeItem("accessToken");
+              localStorage.removeItem("userId");
               dispatch(clearLoggedUser());
               navigate("/");
             }}
