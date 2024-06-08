@@ -16,11 +16,13 @@ import SignIn from "./UI-components/SignIn.tsx";
 import SafeRouters from "./UI-components/SafeRouters.tsx";
 import { Provider } from "react-redux";
 import { store } from "./Redux/store.ts";
+import PlayVideo from "./UI-components/PlayVideo.tsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
       <Route path="" element={<Dashboard />} />
+      <Route path="/:videoId" element={<PlayVideo/>} />
       <Route path="signup" element={<SignUp />} />
       <Route path="signin" element={<SignIn />} />
       <Route path="/signin" element={<SafeRouters />}>

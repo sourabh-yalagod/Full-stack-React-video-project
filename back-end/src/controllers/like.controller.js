@@ -3,7 +3,7 @@ import { AsyncHandler } from "../utilities/AsyncHandler.js";
 import { Like } from "../models/like.model.js";
 
 const toggleLikeStatus = AsyncHandler(async (req, res) => {
-  const videoId = req.params.videoId;
+  const {videoId} = req.params;
   const { likeStatus } = req.body;
   const userId = req.user._id;
   let like;
@@ -18,11 +18,6 @@ const toggleLikeStatus = AsyncHandler(async (req, res) => {
   }
 
   const countLikes = await Like.aggregate([
-    // {
-    //   $match: {
-    //     video: new mongoose.Types.ObjectId(videoId),
-    //   },
-    // },
     {
       $group: {
         _id: "$video",

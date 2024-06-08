@@ -4,6 +4,10 @@ import { ApiError } from "../utilities/ApiError.js";
 import { ApiResponse } from "../utilities/ApiResponse.js";
 import { AsyncHandler } from "../utilities/AsyncHandler.js";
 import { User } from "../models/user.model.js";
+import { Comment } from "../models/comment.model.js";
+import { Like } from "../models/like.model.js";
+import mongoose from "mongoose";
+import { Subscription } from "../models/subscription.model.js";
 
 const publishVideo = AsyncHandler(async (req, res) => {
   const { title, description } = req.body;
@@ -42,7 +46,8 @@ const publishVideo = AsyncHandler(async (req, res) => {
 });
 
 const getVideo = AsyncHandler(async (req, res) => {
-  const videoId = req.query.videoId;
+  const userId = req.user._id;
+  const { videoId } = req.params;
   if (!videoId) {
     throw new ApiError(401, "Video ID is not fetched from Request......!");
   }
@@ -50,8 +55,149 @@ const getVideo = AsyncHandler(async (req, res) => {
   if (!video) {
     throw new ApiError(401, "Video not Found......!");
   }
+  const videoComments = await Comment.aggregate([
+    {
+      $match: {
+        video: new mongoose.Types.ObjectId(videoId),
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        pipeline: [
+          {
+            $project: {
+              username: 1,
+              createdAt: 1,
+              avatar:1
+            },
+          },
+        ],
+        as: "commentOwner",
+      },
+    },
+    {
+      $addFields: {
+        commentOwner: {
+          $first: "$commentOwner",
+        },
+      },
+    },
+    {
+      $project: {
+        content: 1,
+        createdAt: 1,
+        commentOwner: 1,
+      },
+    },
+  ]);
+
+  const videoLikes = await Like.aggregate([
+    {
+      $match: {
+        video: new mongoose.Types.ObjectId(videoId),
+        likeStatus: true,
+      },
+    },
+    {
+      $group: {
+        _id: null,
+        Likes: {
+          $sum: 1,
+        },
+      },
+    },
+  ]);
+
+  const Owner = await Video.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(videoId),
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "Uploader",
+      },
+    },
+    {
+      $unwind: "$Uploader",
+    },
+  ]);
+  const subscription = await User.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(userId),
+      },
+    },
+    {
+      $lookup: {
+        from: "subscriptions",
+        localField: "_id",
+        foreignField: "channel",
+        as: "subscribers",
+      },
+    },
+    {
+      $lookup: {
+        from: "subscriptions",
+        localField: "_id",
+        foreignField: "subscriber",
+        as: "subscribedTo",
+      },
+    },
+
+    {
+      $addFields: {
+        subscriberCount: {
+          $size: "$subscribers",
+        },
+        chennelSubscribed: {
+          $size: "$subscribedTo",
+        },
+        isSubscribed: {
+          $cond: {
+            if: { $in: [req?.user?._id, "$subscribers.subscriber"] },
+            then: true,
+            else: false,
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        fullname: 1,
+        username: 1,
+        avatar: 1,
+        coverImage: 1,
+        subscriberCount: 1,
+        chennelSubscribed: 1,
+        isSubscribed: 1,
+        email: 1,
+      },
+    },
+  ]);
+  // console.log("subscription", subscription);
+  // console.log("Uploader", Owner);
+  // console.log("videoLikes", videoLikes);
+  // console.log("video", video);
+  // console.log("subscription", subscription);
   return res.json(
-    new ApiResponse(204, video, `Video Found Owned by ${video.owner}`)
+    new ApiResponse(
+      204,
+      {
+        comments: videoComments,
+        likes: videoLikes[0],
+        video: Owner[0],
+        subscription: subscription[0],
+      },
+      `Video Found Owned by ${video.owner}`
+    )
   );
 });
 

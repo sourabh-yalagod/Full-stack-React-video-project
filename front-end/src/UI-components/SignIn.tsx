@@ -53,7 +53,7 @@ const SignIn = () => {
       localStorage.setItem('accessToken',response.data.data.accessToken)
       localStorage.setItem('userId',response.data.data.loggedUser._id)
       dispatch(logedUser(loggedUser)); 
-      navigator("upload-video");
+      navigator(`user-profile/${localStorage.getItem('userId')}`)
     } catch (error) {
       const err = error as AxiosError;
 

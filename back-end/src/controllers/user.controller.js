@@ -413,7 +413,6 @@ const getUserProfile = AsyncHandler(async (req, res) => {
   if (!channel?.length) {
     throw new ApiError(401, "User profile fetching process failed.....!");
   }
-  console.log(channel);
   return res.json(
     new ApiResponse(
       201,
@@ -512,7 +511,7 @@ const handleSubscribers = AsyncHandler(async (req, res) => {
   return res.json(
     new ApiResponse(
       201,
-      {newSubscriber,user} || {},
+      newSubscriber || {},
       "Subscription Toggled Successfully....!"
     )
   );

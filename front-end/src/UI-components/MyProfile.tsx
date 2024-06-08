@@ -1,7 +1,6 @@
 import axios, { AxiosError } from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import Video from "./Video";
+import { useNavigate, useParams } from "react-router-dom";
 import { Bell, Loader2, Verified } from "lucide-react";
 import { UserProfileData } from "./UserProfileData";
 
@@ -10,14 +9,18 @@ interface User {
   username: string;
   email: string;
   subscribers: Number;
+  likes: any;
+  comments: any;
 }
 const MyProfile = () => {
+  const navigate = useNavigate();
   const [result, setResult] = useState([]);
-  const [resource, setResourse]: any = useState("");
-  const [ProfileFigure, setProfileFigure]:any = useState({});
+  const [ProfileFigure, setProfileFigure]: any = useState({});
   const [subscribe, setSubscribe] = useState(false);
+  const [likes, setLikes]:any = useState("");
+  const [comments, setComments]:any = useState("");
   const { userId } = useParams();
-  const [profileResource, setProfileResource]:any = useState("");
+  const [profileResource, setProfileResource]: any = useState("");
 
   useEffect(() => {
     (async () => {
@@ -26,8 +29,9 @@ const MyProfile = () => {
           `/api/v1/user-profiles/user-profile/${userId}`
         );
         setResult(response.data.data.profileContent);
-
-        setResourse(response.data.data.profileContent[0].Owner);
+        setLikes(response.data.data.Likes[0].TotalLikes);
+        setComments(response.data.data.Comments[0].TotalComments);
+        
       } catch (error) {
         const err = error as AxiosError;
         console.log(err.response?.data);
@@ -44,7 +48,6 @@ const MyProfile = () => {
         setProfileFigure(response.data.data);
 
         setProfileResource(response.data.data);
-        console.log("ProfileFigure : ", profileResource);
       } catch (error) {
         const err = error as AxiosError;
         console.log(err.response?.data);
@@ -57,48 +60,52 @@ const MyProfile = () => {
     username: profileResource.username,
     email: profileResource.email,
     subscribers: profileResource.subscriberCount,
+    likes: likes? likes : "0",
+    comments: comments? comments : "0",
   };
-  
   const handleSubscription = async () => {
     setSubscribe(!subscribe);
     try {
       const response = await axios.post(`/api/v1/users/handle-subscribers`, {
         subscriptionStatus: subscribe,
-        ChannelId: userId})
-        console.log("Response After Subscribing : ",response.data.data);
-        setProfileFigure(response.data.data);
-    } catch (error:any) {
+        ChannelId: userId,
+      });
+      console.log("Handle Subscription Response :", response.data.data);
+    } catch (error: any) {
       const axiosError = error as AxiosError;
       console.log(axiosError);
-       
-    }};
-  
+    }
+  };
+
   return (
     <div className="mx-auto w-full grid items-start">
       <div
         className="w-full h-[140px] sm:h-[180px] md:h-[220px] bg-slate-400 bg-cover bg-center relative"
         style={{
-          backgroundImage: `url(${resource.coverImage})`,
+          backgroundImage: `url(${profileResource.coverImage})`,
         }}
       >
-        <UserProfileData data={userDetail} />
+        <UserProfileData
+          data={userDetail}
+          subscribeStatus={profileResource.isSubscribed}
+        />
       </div>
-      <div className="w-full flex justify-between md:justify-around items-center px-5 gap-3">
+      <div className="w-full flex justify-between md:px-20 lg:px-28 my-5 items-center px-5 gap-3">
         <div className="flex items-center mt-1 justify-around gap-3">
           <div
             className="size-[80px] space-y-2 sm:size-[90px] md:size-[95px] rounded-full border-[2px]  border-white"
-            style={{ backgroundImage: `url(${resource.avatar})` }}
+            style={{ backgroundImage: `url(${profileResource.avatar})` }}
           />
           <div className="grid">
             <p className="text-white text-[18px] sm:text-2xl">
-              {resource.username}
+              {profileResource.username}
             </p>
             <p className="text-gray-500 text-[15px] sm:text-[19px] flex gap-2 items-center">
-              @{resource.username}
+              @{profileResource.username}
               <Verified />
             </p>
             <p className="text-gray-500 text-[15px] sm:text-[19px] flex gap-2 items-center">
-              {profileResource.subscriberCount || 0} Subscribers
+              {profileResource.subscriberCount || 0} - Subscribers
             </p>
           </div>
         </div>
@@ -109,6 +116,7 @@ const MyProfile = () => {
           }
              text-white py-1 px-3 rounded-xl sm:text-xl md:text-2xl`}
         >
+         
           <p className="flex gap-2 items-center">
             Subscribe
             {ProfileFigure.isSubscribed ? (
@@ -128,13 +136,37 @@ const MyProfile = () => {
           >
             {result.map((video: any) => {
               return (
-                <Video
+                <div
                   key={video.videoFile}
-                  title={video.title}
-                  avatar={video.Owner.avatar}
-                  thumbnail={video.thumbnail}
-                  link={video.videoFile}
-                />
+                  className="relative z-20 bg-[#212121] min-w-[290px] sm:min-w-1/2 sm:min-w-1/3 p-2 gap-2 rounded-2xl md:min-w-[250px] md:w-full  overflow-hidden"
+                >
+                  <div className="relative">
+                    <video
+                      onPlay={() => navigate(`/${video._id}`)}
+                      className="w-full object-cover"
+                      poster={video.thumbnail}
+                      controls
+                      src={video.videoFile}
+                    />
+                  </div>
+                  <div className="flex items-center gap-1 w-full overflow-scroll mt-2">
+                    <img
+                      src={video.Owner.avatar}
+                      className="w-9 h-9 rounded-full border-2 border-white"
+                      alt="Avatar"
+                    />
+                    <p className="text-white text-[16px] ml-2 overflow-hidden">
+                      {video.title.slice(0, 32)}
+                    </p>
+                  </div>
+                </div>
+                // <Video
+                //   key={video.videoFile}
+                //   title={video.title}
+                //   avatar={video.Owner.avatar}
+                //   thumbnail={video.thumbnail}
+                //   link={video.videoFile}
+                // />
               );
             })}
           </ul>
