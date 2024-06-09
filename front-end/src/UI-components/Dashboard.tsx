@@ -2,7 +2,7 @@ import axios from "axios";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import { PlatForm } from "./PlatForm";
+import PlatForm  from "./PlatForm";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +11,9 @@ import { clearLoggedUser } from "@/Redux/Slice/SignIn";
 const Dashboard = () => {
   const signOut = () => {
     localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("user");
     dispatch(clearLoggedUser());
     navigate("/");
   };

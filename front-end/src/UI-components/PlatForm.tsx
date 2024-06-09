@@ -1,6 +1,7 @@
 import {
   DoorClosedIcon,
   Menu,
+  Settings,
   Upload,
   UserCheck2,
   UserCircle,
@@ -19,7 +20,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { clearLoggedUser } from "@/Redux/Slice/SignIn";
 
-export function PlatForm() {
+export default function PlatForm() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const userId = localStorage.getItem('userId')
@@ -64,6 +65,12 @@ export function PlatForm() {
           >
             <UserCircle className="" />
             <label>Sign-Out</label>
+          </div>
+          <div
+          onClick={()=>navigate(`signin/settings/customize-profile/${localStorage.getItem('userId')}`)} 
+          className="grid place-items-center cursor-pointer">
+            <Settings/>
+            Customize
           </div>
         </div>
         <DrawerFooter className="w-full flex items-center justify-around">

@@ -41,7 +41,6 @@ const SignUp = () => {
 
   const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
     setIsUploading(true);
-    console.log("Go");
     
     try {
       const formData = new FormData();
@@ -51,7 +50,8 @@ const SignUp = () => {
       formData.append("coverImage", data.coverImage[0]);
       formData.append("password", data.password);
       formData.append("email", data.email);
-
+      
+      console.log(formData);
       const response = await axios.post("/api/v1/users/register",formData);
       console.log(response.data.data);
       const user:User = {

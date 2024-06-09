@@ -170,7 +170,8 @@ const getUser = AsyncHandler(async (req, res) => {
 
 const changePassword = AsyncHandler(async (req, res) => {
   const { oldPassword, newPassword } = req.body;
-
+  console.log(req.user);
+  console.log(oldPassword, newPassword);
   try {
     const user = await User.findById(req.user._id);
 
@@ -206,13 +207,11 @@ const changePassword = AsyncHandler(async (req, res) => {
 
 const newRefreshToken = AsyncHandler(async (req, res) => {
   const newRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
-
   try {
     const decodeToken = jwt.verify(
       newRefreshToken,
       process.env.REFRESH_TOKEN_SECRET
     );
-
     const user = await User.findById(decodeToken._id);
 
     if (!user) {
@@ -221,10 +220,12 @@ const newRefreshToken = AsyncHandler(async (req, res) => {
         "User not Found during refreshToken Generation.....!"
       );
     }
+
     if (user.refreshToken !== newRefreshToken) {
       throw new ApiError(501, "Input Token and User Token not matched.....!");
-    }
-    const { accessToken, refreshToken } = await getToken(user._id);
+      }
+      const { accessToken, refreshToken } = await getToken(user._id);
+      console.log("decodeToken", { accessToken, refreshToken });
 
     res
       .cookie("accessToken", accessToken, Options)
@@ -300,6 +301,8 @@ const changeAvatar = AsyncHandler(async (req, res) => {
       "User not Found while changing the Avatar File.....!"
     );
   }
+  console.log(user);
+
   return res.json(
     new ApiResponse(
       204,
