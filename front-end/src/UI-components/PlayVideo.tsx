@@ -8,6 +8,7 @@ import {
   Pause,
   Play,
   Sliders,
+  ThumbsUp,
 } from "lucide-react";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useParams } from "react-router-dom";
@@ -28,6 +29,7 @@ const PlayVideo = () => {
   const [likeStatus, setLikeStatus] = useState(false);
   const [likeResponse, setLikeResponse] = useState<any>({});
   const [Subscribe, setSubscribe] = useState(false);
+  const [showFullDescription, setShowFullDescription] = useState(false);
 
   const [seeMoreComment, setSeeMoreComment] = useState(false);
   // Video playing functions
@@ -39,8 +41,7 @@ const PlayVideo = () => {
     }
     setPlaying(!playing);
   };
-  console.log(newComment);
-  
+
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const volume = parseFloat(e.target.value);
     if (videoRef.current) {
@@ -104,7 +105,7 @@ const PlayVideo = () => {
 
   useEffect(() => {
     fetchVideoData();
-    console.log(resources);
+    console.log("Data from Get video with details : ");
   }, [fetchVideoData]);
 
   if (loading) {
@@ -123,12 +124,14 @@ const PlayVideo = () => {
     setLikeStatus(!likeStatus);
     try {
       const response = await axios.post(
-        `/api/v1/likes/toggle-like-status/${videoId}`
+        `/api/v1/likes/toggle-like-status/${videoId}`,
+        { likeStatus: likeStatus }
       );
       setLikeResponse(response.data.data);
+      console.log(likeResponse);
     } catch (error) {
       const axiosError = error as AxiosError;
-      console.log(axiosError);
+      setError(axiosError);
     }
   };
 
@@ -145,7 +148,6 @@ const PlayVideo = () => {
       console.log(axiosError);
     }
   };
-
   return (
     <div className="w-full grid p-1">
       {/* this is the video and controllers DIv */}
@@ -193,21 +195,27 @@ const PlayVideo = () => {
       {/* this is the subscription display Div */}
       <div className="flex w-full bg-slate-800 mt-2 rounded-xl p-1 gap-3 text-white items-center justify-center">
         <div className="flex w-full items-center justify-around gap-10">
-          <div className="flex items-center gap-2 justify-between">
+          <div className="flex items-center gap-1 justify-between">
             <img
-              className="rounded-full w-12 h-12"
+              className="rounded-full w-10 h-10 sm:h-12 sm:w-12"
               src={resources.subscription.avatar}
               alt="https://cdn-icons-png.flaticon.com/512/4794/4794936.png"
             />
             <div className="grid gap-1">
               <p className="flex">{resources.video.Uploader.username}</p>
-              <p className="flex text-gray-300">
-                Subscribers :{" "}
+              <p className="flex text-[13px] text-slate-500 sm:text-[18px]">
+                Subscribers :
                 {resources?.subscription?.subscriberCount || (
                   <Loader2 className="animate-spin" />
                 )}
               </p>
             </div>
+          </div>
+          <div>
+            <p onClick={() => handleLikes()} className="flex gap-1">
+              <ThumbsUp />
+              {resources?.likes?.Likes || "0"}
+            </p>
           </div>
           <div className="flex items-center">
             <button
@@ -247,14 +255,24 @@ const PlayVideo = () => {
             <p className="absolute top-0 left-3 text-slate-600 text-[13px] pb-4">
               Description
             </p>
-            <p className="pt-5 text-slate-500">{resources.video.description}</p>
+            <button
+              className=" absolute bottom-0 right-3 text-[12px] text-slate-600"
+              onClick={() => setShowFullDescription(!showFullDescription)}
+            >
+              Show {showFullDescription ? "less......" : "more......"}
+            </button>
+            <p className="pt-5 pb-2 text-slate-500">
+              {showFullDescription
+                ? `${resources.video.description}`
+                : `${resources.video.description.substring(0, 150)}......`}
+            </p>
           </ScrollArea>
         </div>
       </div>
       {/* Comments displayed using map method */}
       <ul className="w-full text-white">
         <ScrollArea className="flex items-center py- h-full max-h-[250px] my- mt-2 border-[1px] border-slate-800 rounded-xl p-1">
-          <div className="text-white text-[20px] flex w-full justify-around items-center">
+          <div className="text-white text-[20px] py-4 flex w-full justify-around items-center">
             <h1>Comments : </h1>
             <h1
               onClick={() => setCommentInput(!commentInput)}

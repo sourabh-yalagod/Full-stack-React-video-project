@@ -5,22 +5,31 @@ import { Like } from "../models/like.model.js";
 const toggleLikeStatus = AsyncHandler(async (req, res) => {
   const {videoId} = req.params;
   const { likeStatus } = req.body;
-  const userId = req.user._id;
+  const userId = req?.user?._id;
   let like;
-  if (likeStatus) {
+  console.log("VideoID : ",videoId);
+  console.log("LikeStatus : ",likeStatus);
+  console.log("UserId : ",userId);
+
+  const isLikeExist = await Like.findOne({
+    video:videoId,
+    owner:userId,
+    likeStatus:true
+  })
+  if(!isLikeExist){
     like = await Like.create({
-      likeStatus,
+      likeStatus:true,
       owner: userId,
       video: videoId,
     });
-  }else{
-    await Like.deleteOne({owner:userId,video:videoId})
   }
-
+  if (likeStatus) {
+    like = await Like.deleteOne({owner:userId,video:videoId}) 
+  }
   const countLikes = await Like.aggregate([
     {
       $group: {
-        _id: "$video",
+        _id: "$videoId",  
         totalLikes: {
           $sum: {
             $cond: {
