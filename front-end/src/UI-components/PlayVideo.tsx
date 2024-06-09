@@ -3,6 +3,7 @@ import {
   Bell,
   Loader2,
   LoaderCircle,
+  MessageCircleHeartIcon,
   MessageCirclePlus,
   Pause,
   Play,
@@ -20,13 +21,15 @@ const PlayVideo = () => {
   const [volume, setVolume] = useState(0.8);
   const [progress, setProgress] = useState(0);
   const [commentInput, setCommentInput] = useState(false);
-  const [newComment, setNewComment]:any = useState("");
+  const [newComment, setNewComment]: any = useState("");
   const [resources, setResources] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<any>(null);
   const [likeStatus, setLikeStatus] = useState(false);
-  const [result, setResult] = useState<any>({});
+  const [likeResponse, setLikeResponse] = useState<any>({});
   const [Subscribe, setSubscribe] = useState(false);
+
+  const [seeMoreComment, setSeeMoreComment] = useState(false);
   // Video playing functions
   const togglePlayPause = () => {
     if (playing) {
@@ -36,7 +39,8 @@ const PlayVideo = () => {
     }
     setPlaying(!playing);
   };
-
+  console.log(newComment);
+  
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const volume = parseFloat(e.target.value);
     if (videoRef.current) {
@@ -63,20 +67,25 @@ const PlayVideo = () => {
   };
 
   // API handling functions
-  const handleNewComment = useCallback(async ()=>{
-    console.log("New Comment : ",newComment);
-    setError(null)
+  const handleNewComment = useCallback(async () => {
+    console.log("New Comment : ", newComment);
+    setError(null);
     try {
-      const response = await axios.post(`/api/v1/comments/add-comment/${videoId}`,{
-        content:newComment || `newComment from User :${Math.random}`
-      });
-      
-      console.log('New Comment Response : ',response.data)
+      const response = await axios.post(
+        `/api/v1/comments/add-comment/${videoId}`,
+        {
+          content: newComment || `newComment from User`,
+        }
+      );
+
+      console.log("New Comment Response : ", response.data);
+      setCommentInput(false);
+      setNewComment("");
     } catch (error) {
       const axiosError = error as AxiosError;
       setError(axiosError);
     }
-  },[])
+  }, [newComment]);
 
   const fetchVideoData = useCallback(async () => {
     setLoading(true);
@@ -116,7 +125,7 @@ const PlayVideo = () => {
       const response = await axios.post(
         `/api/v1/likes/toggle-like-status/${videoId}`
       );
-      setResult(response.data.data);
+      setLikeResponse(response.data.data);
     } catch (error) {
       const axiosError = error as AxiosError;
       console.log(axiosError);
@@ -139,6 +148,7 @@ const PlayVideo = () => {
 
   return (
     <div className="w-full grid p-1">
+      {/* this is the video and controllers DIv */}
       <div className="w-full max-w-4xl md:mt-14 mx-auto bg-black group relative">
         <video
           ref={videoRef}
@@ -180,6 +190,7 @@ const PlayVideo = () => {
           </div>
         </div>
       </div>
+      {/* this is the subscription display Div */}
       <div className="flex w-full bg-slate-800 mt-2 rounded-xl p-1 gap-3 text-white items-center justify-center">
         <div className="flex w-full items-center justify-around gap-10">
           <div className="flex items-center gap-2 justify-between">
@@ -220,9 +231,30 @@ const PlayVideo = () => {
           </div>
         </div>
       </div>
+      {/* title and description of refrerenced video */}
+      <div>
+        <div className="relative my-2 px-3 flex rounded-xl bg-#121212 border-[1px] border-slate-800 text-slate-300 text-[15px] sm:text-xl">
+          <p className="absolute top-0 left-3 text-slate-600 min-h-2 text-[13px] pb-4">
+            Title
+          </p>
+          <div className="flex pt-5 pb-2">
+            {resources.video.title.substring(0, 50)}
+            <p>{resources.video.title.length > 50 ? ". . . . . ." : "."}</p>
+          </div>
+        </div>
+        <div>
+          <ScrollArea className="relative p-4 h-full max-h-[250px] my- mt-2 border-[1px] border-slate-800 rounded-xl">
+            <p className="absolute top-0 left-3 text-slate-600 text-[13px] pb-4">
+              Description
+            </p>
+            <p className="pt-5 text-slate-500">{resources.video.description}</p>
+          </ScrollArea>
+        </div>
+      </div>
+      {/* Comments displayed using map method */}
       <ul className="w-full text-white">
-        <ScrollArea className="flex items-center py-3 h-full max-h-[250px] my-5 mt-2 border-[1px] border-slate-800 rounded-xl p-1">
-          <div className="text-white text-[20px] my-2 flex w-full justify-around items-center">
+        <ScrollArea className="flex items-center py- h-full max-h-[250px] my- mt-2 border-[1px] border-slate-800 rounded-xl p-1">
+          <div className="text-white text-[20px] flex w-full justify-around items-center">
             <h1>Comments : </h1>
             <h1
               onClick={() => setCommentInput(!commentInput)}
@@ -242,34 +274,57 @@ const PlayVideo = () => {
                   value={newComment}
                   placeholder="new Comment......."
                 />
-                <button 
-                onClick={()=>handleNewComment()} 
-                className="text-white p-2 bg-#121212">Submit</button>
+                <button
+                  onClick={() => handleNewComment()}
+                  className="text-white p-2 bg-#121212"
+                >
+                  Submit
+                </button>
               </div>
             </>
           ) : (
             ""
           )}
-          {resources.comments.map((e: any) => (
-            <div
-              key={e._id}
-              className="flex place-items-center justify-around border-[1px] rounded-xl p-1 my-1 border-slate-700 relative"
-            >
-              <div className="min-h-2 text-gray-500 underline w-full justify-between px-3 pb-2 absolute top-0 right-1 text-[12px] flex gap-2">
-                <p className="">{e.commentOwner.username}</p>
-                <p className="">{e.commentOwner.createdAt}</p>
-              </div>
-              <img
-                className="rounded-full w-10 h-10"
-                src={
-                  e.commentOwner.avatar ||
-                  "https://cdn-icons-png.flaticon.com/512/4794/4794936.png"
-                }
-                alt="https://cdn-icons-png.flaticon.com/512/4794/4794936.png"
-              />
-              <p className="overflow-scroll py-2">{e.content}</p>
+          {!(resources.comments.length > 0) ? (
+            <div className="flex w-full justify-center gap-2 text-slate-500">
+              No Comments......
+              <MessageCircleHeartIcon />
             </div>
-          ))}
+          ) : (
+            resources.comments.map((e: any) => (
+              <div
+                key={e._id}
+                className="flex border-[1px] gap-3 rounded-xl px-2 pt-6 pb-3 my-2 border-slate-700 relative"
+              >
+                <div className="min-h-2 text-gray-500 underline w-full justify-between px-3 absolute top-0 text-[12px] flex gap-3">
+                  <p className="">{e.commentOwner.username}</p>
+                  <p className="">{e.commentOwner.createdAt}</p>
+                </div>
+                <img
+                  className="rounded-full w-10 h-10"
+                  src={
+                    e.commentOwner.avatar ||
+                    "https://cdn-icons-png.flaticon.com/512/4794/4794936.png"
+                  }
+                  alt="https://cdn-icons-png.flaticon.com/512/4794/4794936.png"
+                />
+                <div className={`text-slate-50`}>
+                  <p>
+                    {seeMoreComment
+                      ? `${e.content.substring(0, 30)}`
+                      : `${e.content}`}
+                    {e.content.length > 30 ? "......." : "."}
+                  </p>
+                  <p
+                    className="text-slate-600 text-xs cursor-pointer absolute bottom-2 right-2"
+                    onClick={() => setSeeMoreComment(!seeMoreComment)}
+                  >
+                    See more.....
+                  </p>
+                </div>
+              </div>
+            ))
+          )}
         </ScrollArea>
       </ul>
     </div>
