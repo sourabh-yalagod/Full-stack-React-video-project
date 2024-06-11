@@ -152,8 +152,8 @@ const getUserInfo = AsyncHandler(async (req, res) => {
   const userID = new mongoose.Types.ObjectId(userId);
   if (!userID) {
     throw new ApiError(401, "User ID not found from Params....!");
-    }
-  console.log("User Profile UserID : ",userID);
+  }
+  console.log("User Profile UserID : ", userID);
   const userProfileDetails = await User.aggregate([
     // subscription
     {
@@ -255,11 +255,11 @@ const getUserInfo = AsyncHandler(async (req, res) => {
         coverImage: 1,
         avatar: 1,
         likes: 1,
-        comments:1
+        comments: 1,
       },
     },
   ]);
-  console.log("userProfileDetails : ",userProfileDetails);
+  console.log("userProfileDetails : ", userProfileDetails);
   return res.json(
     new ApiResponse(
       200,
