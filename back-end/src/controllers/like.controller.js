@@ -1,15 +1,13 @@
 import { ApiResponse } from "../utilities/ApiResponse.js";
 import { AsyncHandler } from "../utilities/AsyncHandler.js";
 import { Like } from "../models/like.model.js";
+import mongoose from "mongoose";
 
 const toggleLikeStatus = AsyncHandler(async (req, res) => {
   const {videoId} = req.params;
   const { likeStatus } = req.body;
   const userId = req?.user?._id;
   let like;
-  console.log("VideoID : ",videoId);
-  console.log("LikeStatus : ",likeStatus);
-  console.log("UserId : ",userId);
 
   const isLikeExist = await Like.findOne({
     video:videoId,
@@ -28,8 +26,13 @@ const toggleLikeStatus = AsyncHandler(async (req, res) => {
   }
   const countLikes = await Like.aggregate([
     {
+      $match:{
+        video:new mongoose.Types.ObjectId(videoId)
+      }
+    },
+    {
       $group: {
-        _id: "$videoId",  
+        _id: null,  
         totalLikes: {
           $sum: {
             $cond: {
@@ -42,7 +45,7 @@ const toggleLikeStatus = AsyncHandler(async (req, res) => {
       },
     },
   ]);
-
+  console.log(countLikes);
   return res.json(
     new ApiResponse(201, countLikes, "Liked the video successfully!")
   );

@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Bell, Loader2, Verified } from "lucide-react";
 import { UserProfileData } from "./UserProfileData";
@@ -14,11 +14,11 @@ interface User {
 }
 const MyProfile = () => {
   const navigate = useNavigate();
-  const [result, setResult] = useState([]);
+  const [result, setResult]: any = useState([]);
   const [ProfileFigure, setProfileFigure]: any = useState({});
   const [subscribe, setSubscribe] = useState(false);
-  const [likes, setLikes]:any = useState("");
-  const [comments, setComments]:any = useState("");
+  const [likes, setLikes]: any = useState("");
+  const [comments, setComments]: any = useState("");
   const { userId } = useParams();
   const [profileResource, setProfileResource]: any = useState("");
 
@@ -31,7 +31,7 @@ const MyProfile = () => {
         setResult(response.data.data.profileContent);
         setLikes(response.data.data.Likes[0].TotalLikes);
         setComments(response.data.data.Comments[0].TotalComments);
-        
+        console.log("Result : ", response);
       } catch (error) {
         const err = error as AxiosError;
         console.log(err.response?.data);
@@ -60,10 +60,10 @@ const MyProfile = () => {
     username: profileResource.username,
     email: profileResource.email,
     subscribers: profileResource.subscriberCount,
-    likes: likes? likes : "0",
-    comments: comments? comments : "0",
+    likes: likes ? likes : "0",
+    comments: comments ? comments : "0",
   };
-  const handleSubscription = async () => {
+  const handleSubscription = useCallback(async () => {
     setSubscribe(!subscribe);
     try {
       const response = await axios.post(`/api/v1/users/handle-subscribers`, {
@@ -75,7 +75,7 @@ const MyProfile = () => {
       const axiosError = error as AxiosError;
       console.log(axiosError);
     }
-  };
+  }, [subscribe]);
 
   return (
     <div className="mx-auto w-full grid items-start">
@@ -116,7 +116,6 @@ const MyProfile = () => {
           }
              text-white py-1 px-3 rounded-xl sm:text-xl md:text-2xl`}
         >
-         
           <p className="flex gap-2 items-center">
             Subscribe
             {ProfileFigure.isSubscribed ? (

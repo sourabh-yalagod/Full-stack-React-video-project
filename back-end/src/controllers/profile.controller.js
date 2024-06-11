@@ -6,9 +6,11 @@ import { ApiError } from "../utilities/ApiError.js";
 import { ApiResponse } from "../utilities/ApiResponse.js";
 import { AsyncHandler } from "../utilities/AsyncHandler.js";
 import { Like } from "../models/like.model.js";
+import { Subscription } from "../models/subscription.model.js";
 
 const getUserInfo = AsyncHandler(async (req, res) => {
   const { userId } = req.params;
+  console.log(userId);
   if (!userId) {
     throw new ApiError(401, "Params not Found...!");
   }
@@ -54,7 +56,7 @@ const getUserInfo = AsyncHandler(async (req, res) => {
   const Likes = await Like.aggregate([
     {
       $match: {
-        owner: new mongoose.Types.ObjectId(userId),
+        video: new mongoose.Types.ObjectId(userId),
       },
     },
     {
@@ -66,8 +68,8 @@ const getUserInfo = AsyncHandler(async (req, res) => {
       },
     },
     {
-      $unwind:'$TotalLikes'
-    }
+      $unwind: "$TotalLikes",
+    },
   ]);
   const Comments = await Comment.aggregate([
     {
@@ -84,12 +86,70 @@ const getUserInfo = AsyncHandler(async (req, res) => {
       },
     },
     {
-      $unwind:'$TotalComments'
-    }
+      $unwind: "$TotalComments",
+    },
   ]);
-  return res.json(new ApiResponse(
-    201,{profileContent,Likes,Comments},'Fetched successfully'
-  ));
+  const Subscriptions = await User.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(userId),
+      },
+    },
+    {
+      $lookup: {
+        from: "subscriptions",
+        localField: "_id",
+        foreignField: "channel",
+        as: "subscribers",
+      },
+    },
+    {
+      $lookup: {
+        from: "subscriptions",
+        localField: "_id",
+        foreignField: "subscriber",
+        as: "subscribedTo",
+      },
+    },
+
+    {
+      $addFields: {
+        subscriberCount: {
+          $size: "$subscribers",
+        },
+        chennelSubscribed: {
+          $size: "$subscribedTo",
+        },
+        isSubscribed: {
+          $cond: {
+            if: { $in: [req?.user?._id, "$subscribers.subscriber"] },
+            then: true,
+            else: false,
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        fullname: 1,
+        username: 1,
+        avatar: 1,
+        coverImage: 1,
+        subscriberCount: 1,
+        chennelSubscribed: 1,
+        isSubscribed: 1,
+        email: 1,
+      },
+    },
+  ]);
+
+  return res.json(
+    new ApiResponse(
+      201,
+      { profileContent, Likes, Comments ,Subscriptions},
+      "Fetched successfully"
+    )
+  );
 });
 
 export { getUserInfo };

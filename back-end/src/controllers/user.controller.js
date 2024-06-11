@@ -223,9 +223,9 @@ const newRefreshToken = AsyncHandler(async (req, res) => {
 
     if (user.refreshToken !== newRefreshToken) {
       throw new ApiError(501, "Input Token and User Token not matched.....!");
-      }
-      const { accessToken, refreshToken } = await getToken(user._id);
-      console.log("decodeToken", { accessToken, refreshToken });
+    }
+    const { accessToken, refreshToken } = await getToken(user._id);
+    console.log("decodeToken", { accessToken, refreshToken });
 
     res
       .cookie("accessToken", accessToken, Options)
@@ -479,16 +479,16 @@ const watchHistory = AsyncHandler(async (req, res) => {
 
 const handleSubscribers = AsyncHandler(async (req, res) => {
   const userId = req.user._id;
-  const { subscriptionStatus, ChannelId } = req.body;
+  const { ChannelId } = req.body;
   if (!userId || !ChannelId) {
     throw new ApiError(401, "UserId OR ChannelId not found.....!");
   }
-  const subStatus = await Subscription.findOne({ channel: userId });
+  const subStatus = await Subscription.findOne({ subscriber: userId , channel:ChannelId });
 
-  console.log(subStatus);
+  console.log("Already Subscribers : ",subStatus);
 
+  
   const subsModelId = new mongoose.Types.ObjectId(subStatus?._id);
-
   if (subStatus) {
     const resp = await Subscription.findByIdAndDelete(subsModelId);
     console.log("Subscriber Deleted");
@@ -496,21 +496,11 @@ const handleSubscribers = AsyncHandler(async (req, res) => {
   }
 
   const newSubscriber = await Subscription.create({
-    channel: userId,
-    subscriber: ChannelId,
+    channel: ChannelId,
+    subscriber: userId,
   });
-  console.log(newSubscriber);
-  const user = await User.findByIdAndUpdate(
-    userId,
-    {
-      $set: {
-        isSubscribed: true,
-      },
-    },
-    { new: true }
-  );
-  console.log("Subscriber Created");
-  await Subscription.findByIdAndDelete(subsModelId);
+  console.log("newSubscriber created : ",newSubscriber);
+
   return res.json(
     new ApiResponse(
       201,

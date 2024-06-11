@@ -7,7 +7,6 @@ import { User } from "../models/user.model.js";
 import { Comment } from "../models/comment.model.js";
 import { Like } from "../models/like.model.js";
 import mongoose from "mongoose";
-import { Subscription } from "../models/subscription.model.js";
 
 const publishVideo = AsyncHandler(async (req, res) => {
   const { title, description } = req.body;
@@ -55,6 +54,7 @@ const getVideo = AsyncHandler(async (req, res) => {
   if (!video) {
     throw new ApiError(401, "Video not Found......!");
   }
+  video.views += 1;
   const videoComments = await Comment.aggregate([
     {
       $match: {
@@ -71,7 +71,7 @@ const getVideo = AsyncHandler(async (req, res) => {
             $project: {
               username: 1,
               createdAt: 1,
-              avatar:1
+              avatar: 1,
             },
           },
         ],
@@ -129,10 +129,12 @@ const getVideo = AsyncHandler(async (req, res) => {
       $unwind: "$Uploader",
     },
   ]);
+  await video.save();
+
   const subscription = await User.aggregate([
     {
       $match: {
-        _id: new mongoose.Types.ObjectId(userId),
+        _id: new mongoose.Types.ObjectId("66533e85150cfad4fea6e215"),
       },
     },
     {
@@ -182,11 +184,7 @@ const getVideo = AsyncHandler(async (req, res) => {
       },
     },
   ]);
-  // console.log("subscription", subscription);
-  // console.log("Uploader", Owner);
-  // console.log("videoLikes", videoLikes);
-  // console.log("video", video);
-  // console.log("subscription", subscription);
+
   return res.json(
     new ApiResponse(
       204,
@@ -202,15 +200,14 @@ const getVideo = AsyncHandler(async (req, res) => {
 });
 
 const updateVideo = AsyncHandler(async (req, res) => {
-  const { videoId } = req.query;
+  const { videoId } = req.params;
   const { title, description } = req.body;
   const thumbnail = req.file.path;
-
   if (!videoId || !thumbnail || !title || !description) {
-    throw new ApiError(404, "All the Field are Required.....!");
+    throw new ApiError(404, "all field should be present.....!");
   }
   const uploadThumbnail = await uploadOnCloudinary(thumbnail);
-
+  console.log(uploadThumbnail.url);
   if (!uploadThumbnail.url) {
     throw new ApiError(404, "Thumbnail is not uploaded on Cloudinary.....!");
   }
@@ -218,8 +215,8 @@ const updateVideo = AsyncHandler(async (req, res) => {
     videoId,
     {
       $set: {
-        title,
-        description,
+        title: title,
+        description: description,
         thumbnail: uploadThumbnail.url,
       },
     },

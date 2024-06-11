@@ -88,10 +88,10 @@ const Dashboard = () => {
               className="mt-8 grid place-items-start space-y-2 justify-center w-full min-h-screen 
             sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-2 md:m-3 md:min-w-1/3"
             >
-              {result.map((video: any) => {                
-                return (
+              {result.map((video: any) => {        
+                return (                  
                   <div
-                  key={video.videoFile}
+                  key={video._id}
                   className="relative z-20 bg-[#212121] min-w-[290px] sm:min-w-1/2 sm:min-w-1/3 p-2 gap-2 rounded-2xl md:min-w-[250px] md:w-full  overflow-hidden"
                 >
                   <div className="relative">
@@ -105,6 +105,7 @@ const Dashboard = () => {
                   </div>
                   <div className="flex items-center gap-1 w-full overflow-scroll mt-2">
                     <img
+                      onClick={()=>navigate(`/signin/user-profile/${video.owner._id}`)}
                       src={video.avatar}
                       className="w-9 h-9 rounded-full border-2 border-white"
                       alt="Avatar"
