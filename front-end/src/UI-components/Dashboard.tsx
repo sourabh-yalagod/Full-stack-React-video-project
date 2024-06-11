@@ -26,7 +26,9 @@ const Dashboard = () => {
   console.log("Dashboard", signUpState);
 
   useEffect(() => {
-    (async () => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    ;(async () => {
       try {
         const response = await axios.get(
           `/api/v1/dashboard${searchQuery ? "/search-video?" : ""}`,
@@ -34,15 +36,17 @@ const Dashboard = () => {
             params: {
               search: searchQuery,
             },
+            signal:signal
           }
         );
         console.log(response);
-
+        const cleanedData = response.data;
         setResult(response.data);
         setError("");
       } catch (error: any) {
         if (error.response) {
           setError(error.response.data);
+          alert(error)
         } else if (error.request) {
           setError("No response received from server.");
         } else {
@@ -50,7 +54,10 @@ const Dashboard = () => {
         }
       }
     })();
-    console.log(error);
+
+    return () =>{
+      controller.abort();
+    }
   }, [searchQuery]);
   return (
     <div className="min-h-screen w-full grid relative place-items-center mx-auto">

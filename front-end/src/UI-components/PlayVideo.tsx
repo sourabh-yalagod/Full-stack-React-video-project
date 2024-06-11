@@ -34,25 +34,18 @@ const PlayVideo = () => {
   const [progress, setProgress] = useState(0);
   const [commentInput, setCommentInput] = useState(false);
   const [newComment, setNewComment]: any = useState("");
-  const [resources, setResources] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<any>(null);
   const [likeStatus, setLikeStatus] = useState(false);
   const [likeResponse, setLikeResponse] = useState<any>({});
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [showFullDescription, setShowFullDescription] = useState(false);
-  const [commentsCount, setCommentsCount] = useState(0);
-  const [likesCount, setLieksCount] = useState(0);
   const [seeMoreComment, setSeeMoreComment] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newDescription, setNewDescription] = useState("");
   const [newThumbnail, setNewThumbnail]: any = useState("");
 
-  const setFigures = async () => {
-    setIsSubscribed(resources?.subscription?.isSubscribed);
-    setCommentsCount(resources?.comments?.length);
-    setLieksCount(resources?.likes?.Likes);
-  };
+  const [apiResponse, setApiResponse] = useState<any>(null);
 
   // Video playing functions
   const togglePlayPause = () => {
@@ -88,7 +81,6 @@ const PlayVideo = () => {
       setProgress(progress);
     }
   };
-
   // API handling functions
   const handleNewComment = useCallback(async () => {
     console.log("New Comment : ", newComment);
@@ -110,42 +102,31 @@ const PlayVideo = () => {
     }
   }, [newComment]);
 
-  // const fetchVideoData = useCallback(async () => {
-  //   setLoading(true);
-  //   setError(null);
-  //   try {
-  //     const response = await axios.get(`/api/v1/videos/get-video/${videoId}`);
-  //     setResources(response.data.data);
-  //     await setFigures();
-  //     setLoading(false);
-  //     console.log(resources.video.views);
-  //   } catch (error) {
-  //     const axiosError = error as AxiosError;
-  //     setError(axiosError);
-  //     setLoading(false);
-  //   }
-  // }, [videoId]);
+  const fetchVideoData = useCallback(async () => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get(`/api/v1/videos/get-video/${videoId}`, {
+        signal,
+      });
+      setApiResponse(response.data.data);
 
-  // useEffect(() => {
-  //   fetchVideoData();
-  // }, [videoId, fetchVideoData]);
+      setApiResponse(response.data.data);
+
+      setLoading(false);
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      setError(axiosError);
+      setLoading(false);
+    }
+  }, [videoId]);
 
   useEffect(() => {
-    (async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await axios.get(`/api/v1/videos/get-video/${videoId}`);
-        setResources(response.data.data);
-        await setFigures();
-        setLoading(false);
-      } catch (error) {
-        const axiosError = error as AxiosError;
-        setError(axiosError);
-        setLoading(false);
-      }
-    })();
-  }, [videoId]);
+    console.log("ApiResponse : ", apiResponse);
+    fetchVideoData();
+  }, [videoId, fetchVideoData]);
 
   if (loading) {
     return (
@@ -156,6 +137,8 @@ const PlayVideo = () => {
   }
 
   if (error) {
+    console.log(error);
+
     return (
       <div className="min-h-sreen grid place-items-center">
         <div className="text-white text-xl text-center flex gap-3">
@@ -186,7 +169,7 @@ const PlayVideo = () => {
     try {
       const response = await axios.post(`/api/v1/users/handle-subscribers`, {
         subscriptionStatus: isSubscribed,
-        ChannelId: resources?.video?.Uploader?._id,
+        ChannelId: apiResponse?.video?.Uploader?._id,
       });
       console.log("Handle Subscription Response :", response.data);
     } catch (error: any) {
@@ -278,7 +261,7 @@ const PlayVideo = () => {
         </Dialog>
         <video
           ref={videoRef}
-          src={resources?.video?.videoFile}
+          src={apiResponse.videoFile}
           onTimeUpdate={handleTimeUpdate}
           className="w-full"
           onClick={togglePlayPause}
@@ -316,43 +299,48 @@ const PlayVideo = () => {
           </div>
         </div>
       </div>
+      <div className="relative my-2 px-3 w-full rounded-xl bg-#121212 border-[1px] border-slate-800 text-slate-300 text-[15px] sm:text-xl">
+        <p className="absolute top-0 left-3 text-slate-600 min-h-2 text-[13px] pb-4">
+          Title
+        </p>
+        <div className="flex pt-5 pb-2">
+          {apiResponse.title.substring(0, 50)}
+          <p>{apiResponse.title.length > 50 ? ". . . . . ." : "."}</p>
+        </div>
+      </div>
       {/* this is the subscription display Div */}
-      <div className="flex w-full bg-slate-800 mt-2 rounded-xl p-1 gap-3 text-white items-center justify-center">
+      <div className="flex w-full bg-slate-800 my-1 rounded-xl p-1 gap-3 text-white items-center justify-center">
         <div className="flex w-full items-center justify-around gap-10">
           <div className="flex items-center gap-2 justify-between relative">
-            <p className="text-[13px] text-slate-400 absolute top-[10%] -right-[30%]">
-              Views - {resources.video.views}
-            </p>
             <img
               onClick={() =>
-                navigate(`/signin/user-profile/${resources.subscription._id}`)
+                navigate(`/signin/user-profile/${apiResponse.subscription._id}`)
               }
               className="rounded-full w-10 h-10 sm:h-12 sm:w-12"
-              src={resources.subscription.avatar}
+              src={apiResponse.Uploader.avatar}
               alt="https://cdn-icons-png.flaticon.com/512/4794/4794936.png"
             />
-            <div className="grid gap-1">
-              <p className="flex">{resources.video.Uploader.username}</p>
+            <div className="flex items-center gap-4 justify-center">
+              <p className="flex">{apiResponse.Uploader.username}</p>
               <p className="flex text-[13px] text-slate-500 sm:text-[18px]">
-                Subscribers : {resources?.subscription?.subscriberCount || " 0"}
+                Subscribers : {apiResponse?.Uploader?.subscriberCount ?? " 0"}
               </p>
             </div>
           </div>
-          <div className="flex gap-4">
-            <p onClick={() => handleLikes()} className="flex gap-1">
-              <ThumbsUp className={`${likeStatus ? "color-blue" : ""}`} />
-              {likesCount || "0"}
-            </p>
-          </div>
+
           <div className="flex items-center">
             <button
               onClick={() => handleSubscription()}
-              className={`${isSubscribed ? "bg-gray-700" : "bg-red-600 "}
+              className={`${
+                apiResponse?.Uploader?.isSubscribed
+                  ? "bg-gray-700"
+                  : "bg-red-600 "
+              }
              text-white py-1 px-3 rounded-xl sm:text-xl md:text-2xl`}
             >
               <p className="flex gap-2 items-center">
                 Subscribe
-                {isSubscribed ? (
+                {apiResponse?.Uploader?.isSubscribed ? (
                   <Bell className="size-4 sm:size-6 md:size-8" />
                 ) : (
                   ""
@@ -362,112 +350,109 @@ const PlayVideo = () => {
           </div>
         </div>
       </div>
-      {/* title and description of refrerenced video */}
-      <div>
-        <div className="relative my-2 px-3 w-full pb-2 rounded-xl bg-#121212 border-[1px] border-slate-800 text-slate-300 text-[15px] sm:text-xl">
-          <p className="absolute top-0 left-3 text-slate-600 min-h-2 text-[13px] pb-4">
-            Title
+      {/* video figures */}
+      <div className="w-full px-3 py-1 my-1 flex items-center justify-around border-[1px] border-slate-700 rounded-xl">
+        <div className="flex gap-4 text-white ">
+          <p onClick={() => handleLikes()} className="flex gap-1">
+            <ThumbsUp className="" />
+            {apiResponse?.totalLikes?.likes || "0"}
           </p>
-          <div className="flex pt-5 pb-2">
-            {resources.video.title.substring(0, 50)}
-            <p>{resources.video.title.length > 50 ? ". . . . . ." : "."}</p>
-          </div>
         </div>
-        <div>
-          <ScrollArea className="relative p-4 h-full max-h-[300px] my- mt-2  w-full border-[1px] border-slate-800 rounded-xl">
-            <p className="absolute top-0 left-3 text-slate-600 text-[13px] pb-4">
-              Description
-            </p>
-            <button
-              className=" absolute bottom-0 right-3 text-[12px] text-slate-600"
-              onClick={() => setShowFullDescription(!showFullDescription)}
-            >
-              Show {showFullDescription ? "less......" : "more......"}
-            </button>
-            <p className="pt-5 pb-2 text-slate-500">
-              {showFullDescription
-                ? `${resources.video.description}`
-                : `${resources.video.description.substring(0, 150)}......`}
-            </p>
-          </ScrollArea>
-        </div>
+        <p className="text-[13px] text-slate-400">
+          Views - {apiResponse.views}
+        </p>
       </div>
+      {/* title and description of refrerenced video */}
+      <ScrollArea className="relative p-4 h-full my-1 max-h-[300px] w-full border-[1px] border-slate-800 rounded-xl">
+        <p className="absolute top-0 left-3 text-slate-600 text-[13px] pb-4">
+          Description
+        </p>
+        <button
+          className=" absolute bottom-0 right-3 text-[12px] text-slate-600"
+          onClick={() => setShowFullDescription(!showFullDescription)}
+        >
+          Show {showFullDescription ? "less......" : "more......"}
+        </button>
+        <p className="pt-5 pb-2 text-slate-500">
+          {showFullDescription
+            ? `${apiResponse.description}`
+            : `${apiResponse.description.substring(0, 150)}......`}
+        </p>
+      </ScrollArea>
       {/* Comments displayed using map method */}
-      <ul className="w-full text-white">
-        <ScrollArea className="flex items-center py- h-full max-h-[250px] my- mt-2 border-[1px] border-slate-800 rounded-xl p-1">
-          <div className="text-white text-[20px] py-4 flex w-full justify-around items-center">
-            <h1>Comments : {commentsCount}</h1>
-            <h1
-              onClick={() => setCommentInput(!commentInput)}
-              className="text-gray-400 text-sm bg-gray-800 p-1 rounded-xl flex gap-1 cursor-default"
-            >
-              <MessageCirclePlus />
-              Add Comment....
-            </h1>
-          </div>
-          {commentInput ? (
-            <>
-              <div className="flex gap-1">
-                <input
-                  className="w-full pl-3 max-md bg-transparent border-[1px] rounded-xl px-1 outline-none text-white text-sm"
-                  type="text"
-                  onChange={(e) => setNewComment(e.target.value)}
-                  value={newComment}
-                  placeholder="new Comment......."
-                />
-                <button
-                  onClick={() => handleNewComment()}
-                  className="text-white p-2 bg-#121212"
-                >
-                  Submit
-                </button>
-              </div>
-            </>
-          ) : (
-            ""
-          )}
-          {!(resources.comments.length > 0) ? (
-            <div className="flex w-full justify-center gap-2 text-slate-500">
-              No Comments......
-              <MessageCircleHeartIcon />
-            </div>
-          ) : (
-            resources.comments.map((e: any) => (
-              <div
-                key={e._id}
-                className="flex border-[1px] gap-3 rounded-xl px-2 pt-6 pb-3 my-2 border-slate-700 relative"
+      <ScrollArea className="w-full text-white flex items-center py- h-full max-h-[250px] border-[1px] border-slate-800 rounded-xl p-1">
+        <div className="text-white text-[20px] py-4 flex w-full justify-around items-center">
+          <h1>Comments : {apiResponse.allComments.length || "0"}</h1>
+          <h1
+            onClick={() => setCommentInput(!commentInput)}
+            className="text-gray-400 text-sm bg-gray-800 p-1 rounded-xl flex gap-1 cursor-default"
+          >
+            <MessageCirclePlus />
+            Add Comment....
+          </h1>
+        </div>
+        {commentInput ? (
+          <>
+            <div className="flex gap-1">
+              <input
+                className="w-full pl-3 max-md bg-transparent border-[1px] rounded-xl px-1 outline-none text-white text-sm"
+                type="text"
+                onChange={(e) => setNewComment(e.target.value)}
+                value={newComment}
+                placeholder="new Comment......."
+              />
+              <button
+                onClick={() => handleNewComment()}
+                className="text-white p-2 bg-#121212"
               >
-                <div className="min-h-2 text-gray-500 underline w-full justify-between px-3 absolute top-0 text-[12px] flex gap-3">
-                  <p className="">{e.commentOwner.username}</p>
-                  <p className="">{e.commentOwner.createdAt}</p>
-                </div>
-                <img
-                  className="rounded-full w-10 h-10"
-                  src={
-                    e.commentOwner.avatar ||
-                    "https://cdn-icons-png.flaticon.com/512/4794/4794936.png"
-                  }
-                  alt="https://cdn-icons-png.flaticon.com/512/4794/4794936.png"
-                />
-                <div className={`text-slate-50`}>
-                  <p>
-                    {seeMoreComment
-                      ? `${e.content.substring(0, 30)}`
-                      : `${e.content}`}
-                    {e.content.length > 30 ? "......." : "."}
-                  </p>
-                  <p
-                    className="text-slate-600 text-xs cursor-pointer absolute bottom-2 right-2"
-                    onClick={() => setSeeMoreComment(!seeMoreComment)}
-                  >
-                    See more.....
-                  </p>
-                </div>
+                Submit
+              </button>
+            </div>
+          </>
+        ) : (
+          ""
+        )}
+        {!(apiResponse.allComments.length > 0) ? (
+          <div className="flex w-full justify-center gap-2 text-slate-500">
+            No Comments......
+            <MessageCircleHeartIcon />
+          </div>
+        ) : (
+          apiResponse.allComments.map((e: any) => (
+            <div
+              key={e._id}
+              className="flex border-[1px] gap-3 rounded-xl px-2 pt-6 pb-3 my-2 border-slate-700 relative"
+            >
+              <div className="min-h-2 text-gray-500 underline w-full justify-between px-3 absolute top-0 text-[12px] flex gap-3">
+                <p className="">{e.username}</p>
+                <p className="">{e.createdAt}</p>
               </div>
-            ))
-          )}
-        </ScrollArea>
-      </ul>
+              <img
+                className="rounded-full w-10 h-10"
+                src={
+                  e.avatar ||
+                  "https://cdn-icons-png.flaticon.com/512/4794/4794936.png"
+                }
+                alt="https://cdn-icons-png.flaticon.com/512/4794/4794936.png"
+              />
+              <div className={`text-slate-50`}>
+                <p>
+                  {seeMoreComment
+                    ? `${e.content.substring(0, 30)}`
+                    : `${e.content}`}
+                  {e.content.length > 30 ? "......." : "."}
+                </p>
+                <p
+                  className="text-slate-600 text-xs cursor-pointer absolute bottom-2 right-2"
+                  onClick={() => setSeeMoreComment(!seeMoreComment)}
+                >
+                  See more.....
+                </p>
+              </div>
+            </div>
+          ))
+        )}
+      </ScrollArea>
     </div>
   );
 };
