@@ -337,10 +337,8 @@ const getVideo = AsyncHandler(async (req, res) => {
         as: "totalLikes",
       },
     },
-    {
-      $unwind: "$totalLikes",
-    },
   ]);
+  console.log(videoDetail);
   return res.json(
     new ApiResponse(
       203,

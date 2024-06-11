@@ -2,53 +2,45 @@ import { ApiResponse } from "../utilities/ApiResponse.js";
 import { AsyncHandler } from "../utilities/AsyncHandler.js";
 import { Like } from "../models/like.model.js";
 import mongoose from "mongoose";
+import { ApiError } from "../utilities/ApiError.js";
 
 const toggleLikeStatus = AsyncHandler(async (req, res) => {
+  const { userId } = req.body;
   const {videoId} = req.params;
-  const { likeStatus } = req.body;
-  const userId = req?.user?._id;
-  let like;
-
-  const isLikeExist = await Like.findOne({
-    video:videoId,
-    owner:userId,
-    likeStatus:true
+  const owner = req.user._id;
+  if(!userId || !videoId || !owner){
+    throw new ApiError(401,'All the Ids are required.....!');
+  }
+  const checkLike = await Like.findOne({
+    owner:owner,
+    video:videoId
   })
-  if(!isLikeExist){
-    like = await Like.create({
-      likeStatus:true,
-      owner: userId,
-      video: videoId,
+  console.log("checkLike : ",checkLike);
+  if(checkLike){
+    const disLike = await Like.deleteOne({
+      owner:owner,
+      video:videoId
     });
+    console.log("Like Removed : ",disLike);
+    return res.json(
+      new ApiResponse(
+        201,disLike,'Like removed....!'
+      )
+    )
   }
-  if (likeStatus) {
-    like = await Like.deleteOne({owner:userId,video:videoId}) 
-  }
-  const countLikes = await Like.aggregate([
-    {
-      $match:{
-        video:new mongoose.Types.ObjectId(videoId)
-      }
-    },
-    {
-      $group: {
-        _id: null,  
-        totalLikes: {
-          $sum: {
-            $cond: {
-              if: { $eq: ["$likeStatus", true] },
-              then: 1, 
-              else: -1, 
-            },
-          },
-        },
-      },
-    },
-  ]);
-  console.log(countLikes);
+  const like = await Like.create({
+    likeStatus:true,
+    userId:userId,
+    video:videoId,
+    owner:owner
+  })
+  console.log("Like Created : ",like);
+
   return res.json(
-    new ApiResponse(201, countLikes, "Liked the video successfully!")
-  );
+    new ApiResponse(
+      201,like,'new Like created....!'
+    )
+  )
 });
 
 export { toggleLikeStatus };

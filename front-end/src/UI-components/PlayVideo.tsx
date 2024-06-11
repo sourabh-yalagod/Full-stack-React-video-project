@@ -2,6 +2,7 @@ import axios, { AxiosError } from "axios";
 import {
   Bell,
   Edit2,
+  Loader2Icon,
   LoaderCircle,
   LucideGhost,
   MessageCircleHeartIcon,
@@ -45,7 +46,7 @@ const PlayVideo = () => {
   const [newDescription, setNewDescription] = useState("");
   const [newThumbnail, setNewThumbnail]: any = useState("");
 
-  const [apiResponse, setApiResponse] = useState<any>(null);
+  const [apiResponse, setApiResponse]: any = useState({});
 
   // Video playing functions
   const togglePlayPause = () => {
@@ -90,6 +91,7 @@ const PlayVideo = () => {
         `/api/v1/comments/add-comment/${videoId}`,
         {
           content: newComment || `newComment from User`,
+          userId: apiResponse.Uploader._id,
         }
       );
 
@@ -102,31 +104,27 @@ const PlayVideo = () => {
     }
   }, [newComment]);
 
-  const fetchVideoData = useCallback(async () => {
-    const controller = new AbortController();
-    const signal = controller.signal;
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await axios.get(`/api/v1/videos/get-video/${videoId}`, {
-        signal,
-      });
-      setApiResponse(response.data.data);
-
-      setApiResponse(response.data.data);
-
-      setLoading(false);
-    } catch (error) {
-      const axiosError = error as AxiosError;
-      setError(axiosError);
-      setLoading(false);
-    }
-  }, [videoId]);
-
   useEffect(() => {
-    console.log("ApiResponse : ", apiResponse);
-    fetchVideoData();
-  }, [videoId, fetchVideoData]);
+    (async () => {
+      const controller = new AbortController();
+      const signal = controller.signal;
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await axios.get(
+          `/api/v1/videos/get-video/${videoId}`,
+          { signal }
+        );
+        setApiResponse(response.data.data);
+        console.log("ApiResponse : ", apiResponse);
+        setLoading(false);
+      } catch (error) {
+        const axiosError = error as AxiosError;
+        setError(axiosError);
+        setLoading(false);
+      }
+    })();
+  }, [videoId]);
 
   if (loading) {
     return (
@@ -154,7 +152,9 @@ const PlayVideo = () => {
     try {
       const response = await axios.post(
         `/api/v1/likes/toggle-like-status/${videoId}`,
-        { likeStatus: likeStatus }
+        {
+          userId: apiResponse.Uploader._id,
+        }
       );
       setLikeResponse(response.data.data);
       console.log("likeResponse : ", likeResponse);
@@ -168,8 +168,7 @@ const PlayVideo = () => {
     setIsSubscribed(!isSubscribed);
     try {
       const response = await axios.post(`/api/v1/users/handle-subscribers`, {
-        subscriptionStatus: isSubscribed,
-        ChannelId: apiResponse?.video?.Uploader?._id,
+        ChannelId: apiResponse?.owner,
       });
       console.log("Handle Subscription Response :", response.data);
     } catch (error: any) {
@@ -197,6 +196,15 @@ const PlayVideo = () => {
       setLoading(false);
     }
   };
+  if (apiResponse == null || undefined) {
+    return (
+      <div className="min-h-scree w-full grid place-items-center">
+        <h1 className="flex gap-2">
+          Not Found <Loader2Icon className="text-2xl text-white animate-spin" />
+        </h1>
+      </div>
+    );
+  }
   return (
     <div className="w-full grid p-1">
       {/* this is the video and controllers Div */}
@@ -207,7 +215,7 @@ const PlayVideo = () => {
               <Edit2 />
             </button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] text-white rounded-xl">
+          <DialogContent className="sm:max-w-[425px] text-white rounded-xl bg-opacity-50 bg-slate-900">
             <DialogHeader>
               <DialogTitle>Edit video</DialogTitle>
               <DialogDescription>
@@ -261,7 +269,7 @@ const PlayVideo = () => {
         </Dialog>
         <video
           ref={videoRef}
-          src={apiResponse.videoFile}
+          src={apiResponse?.videoFile}
           onTimeUpdate={handleTimeUpdate}
           className="w-full"
           onClick={togglePlayPause}
@@ -304,8 +312,8 @@ const PlayVideo = () => {
           Title
         </p>
         <div className="flex pt-5 pb-2">
-          {apiResponse.title.substring(0, 50)}
-          <p>{apiResponse.title.length > 50 ? ". . . . . ." : "."}</p>
+          {apiResponse?.title.substring(0, 50)}
+          <p>{apiResponse?.title.length > 50 ? ". . . . . ." : "."}</p>
         </div>
       </div>
       {/* this is the subscription display Div */}
@@ -314,14 +322,14 @@ const PlayVideo = () => {
           <div className="flex items-center gap-2 justify-between relative">
             <img
               onClick={() =>
-                navigate(`/signin/user-profile/${apiResponse.subscription._id}`)
+                navigate(`/signin/user-profile/${apiResponse?.Uploader._id}`)
               }
               className="rounded-full w-10 h-10 sm:h-12 sm:w-12"
-              src={apiResponse.Uploader.avatar}
+              src={apiResponse?.Uploader.avatar}
               alt="https://cdn-icons-png.flaticon.com/512/4794/4794936.png"
             />
             <div className="flex items-center gap-4 justify-center">
-              <p className="flex">{apiResponse.Uploader.username}</p>
+              <p className="flex">{apiResponse?.Uploader.username}</p>
               <p className="flex text-[13px] text-slate-500 sm:text-[18px]">
                 Subscribers : {apiResponse?.Uploader?.subscriberCount ?? " 0"}
               </p>
@@ -355,11 +363,11 @@ const PlayVideo = () => {
         <div className="flex gap-4 text-white ">
           <p onClick={() => handleLikes()} className="flex gap-1">
             <ThumbsUp className="" />
-            {apiResponse?.totalLikes?.likes || "0"}
+            {apiResponse?.totalLikes[0]?.likes || "0"}
           </p>
         </div>
         <p className="text-[13px] text-slate-400">
-          Views - {apiResponse.views}
+          Views - {apiResponse?.views}
         </p>
       </div>
       {/* title and description of refrerenced video */}
@@ -375,14 +383,14 @@ const PlayVideo = () => {
         </button>
         <p className="pt-5 pb-2 text-slate-500">
           {showFullDescription
-            ? `${apiResponse.description}`
-            : `${apiResponse.description.substring(0, 150)}......`}
+            ? `${apiResponse?.description}`
+            : `${apiResponse?.description.substring(0, 150)}......`}
         </p>
       </ScrollArea>
       {/* Comments displayed using map method */}
       <ScrollArea className="w-full text-white flex items-center py- h-full max-h-[250px] border-[1px] border-slate-800 rounded-xl p-1">
         <div className="text-white text-[20px] py-4 flex w-full justify-around items-center">
-          <h1>Comments : {apiResponse.allComments.length || "0"}</h1>
+          <h1>Comments : {apiResponse?.allComments.length || "0"}</h1>
           <h1
             onClick={() => setCommentInput(!commentInput)}
             className="text-gray-400 text-sm bg-gray-800 p-1 rounded-xl flex gap-1 cursor-default"
@@ -412,13 +420,13 @@ const PlayVideo = () => {
         ) : (
           ""
         )}
-        {!(apiResponse.allComments.length > 0) ? (
+        {!(apiResponse?.allComments.length > 0) ? (
           <div className="flex w-full justify-center gap-2 text-slate-500">
             No Comments......
             <MessageCircleHeartIcon />
           </div>
         ) : (
-          apiResponse.allComments.map((e: any) => (
+          apiResponse?.allComments.map((e: any) => (
             <div
               key={e._id}
               className="flex border-[1px] gap-3 rounded-xl px-2 pt-6 pb-3 my-2 border-slate-700 relative"

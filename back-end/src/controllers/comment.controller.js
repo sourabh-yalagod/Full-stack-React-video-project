@@ -21,20 +21,20 @@ const getAllComments = AsyncHandler(async (req, res) => {
 });
 
 const addCommnet = AsyncHandler(async (req, res) => {
-  const { content } = req.body;
-  const userId = req.user._id;
-  const videoId =  req.params.videoId;
-  console.log(req.params);
+  const { content , userId } = req.body;
+  const owner = req.user._id;
+  const {videoId} =  req.params;
+
   if (!content?.length) {
     throw new ApiError(404, "comment content is not fetched.....!");
   }
-  if (!videoId || !userId) {
+  if (!videoId || !userId || !owner) {
     throw new ApiError(
       404,
       "Both video and User is required for comment creation.....!"
     );
   }
-  const user = await User.findOne(userId);
+  const user = await User.findOne(owner);
 
   if (!user) {
     throw new ApiError(404, "User not found for comment creation.....!");
@@ -46,13 +46,15 @@ const addCommnet = AsyncHandler(async (req, res) => {
   }
   const comment = await Comment.create({
     content,
-    owner: userId,
+    userId:userId,
+    owner: owner,
     username: user.username,
     video,
   });
   if (!comment) {
     throw new ApiError(404, "Comment is not created.....!");
   }
+  console.log(comment);
   const countComment = await Comment.aggregate([
     {
       $match: {
@@ -69,7 +71,7 @@ const addCommnet = AsyncHandler(async (req, res) => {
     },
     {
       $sort: {
-        createdAt: -1,
+        createdAt: 1,
       },
     },
   ]);

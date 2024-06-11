@@ -419,7 +419,7 @@ const getUserProfile = AsyncHandler(async (req, res) => {
   return res.json(
     new ApiResponse(
       201,
-      channel[0],
+      channel,
       `${userId}'s Channel is Fetched successfully.....!`
     )
   );

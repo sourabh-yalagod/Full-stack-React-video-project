@@ -2,7 +2,7 @@ import axios from "axios";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import PlatForm  from "./PlatForm";
+import PlatForm from "./PlatForm";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -28,7 +28,7 @@ const Dashboard = () => {
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
-    ;(async () => {
+    (async () => {
       try {
         const response = await axios.get(
           `/api/v1/dashboard${searchQuery ? "/search-video?" : ""}`,
@@ -36,7 +36,7 @@ const Dashboard = () => {
             params: {
               search: searchQuery,
             },
-            signal:signal
+            signal: signal,
           }
         );
         console.log(response);
@@ -46,7 +46,7 @@ const Dashboard = () => {
       } catch (error: any) {
         if (error.response) {
           setError(error.response.data);
-          alert(error)
+          alert(error);
         } else if (error.request) {
           setError("No response received from server.");
         } else {
@@ -55,9 +55,9 @@ const Dashboard = () => {
       }
     })();
 
-    return () =>{
+    return () => {
       controller.abort();
-    }
+    };
   }, [searchQuery]);
   return (
     <div className="min-h-screen w-full grid relative place-items-center mx-auto">
@@ -95,33 +95,35 @@ const Dashboard = () => {
               className="mt-8 grid place-items-start space-y-2 justify-center w-full min-h-screen 
             sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-2 md:m-3 md:min-w-1/3"
             >
-              {result.map((video: any) => {        
-                return (                  
+              {result.map((video: any) => {
+                return (
                   <div
-                  key={video._id}
-                  className="relative z-20 bg-[#212121] min-w-[290px] sm:min-w-1/2 sm:min-w-1/3 p-2 gap-2 rounded-2xl md:min-w-[250px] md:w-full  overflow-hidden"
-                >
-                  <div className="relative">
-                    <video
-                      onPlay={() => navigate(`/${video._id}`)}
-                      className="w-full object-cover"
-                      poster={video.thumbnail}
-                      controls
-                      src={video.videoFile}
-                    />
+                    key={video._id}
+                    className="relative z-20 bg-[#212121] min-w-[290px] sm:min-w-1/2 sm:min-w-1/3 p-2 gap-2 rounded-2xl md:min-w-[250px] md:w-full  overflow-hidden"
+                  >
+                    <div className="relative">
+                      <video
+                        onPlay={() => navigate(`/${video._id}`)}
+                        className="w-full object-cover"
+                        poster={video.thumbnail}
+                        controls
+                        src={video.videoFile}
+                      />
+                    </div>
+                    <div className="flex items-center gap-1 w-full overflow-scroll mt-2">
+                      <img
+                        onClick={() =>
+                          navigate(`/signin/user-profile/${video.owner._id}`)
+                        }
+                        src={video.avatar}
+                        className="w-9 h-9 rounded-full border-2 border-white"
+                        alt="Avatar"
+                      />
+                      <p className="text-white text-[16px] ml-2 overflow-hidden">
+                        {video.title.slice(0, 32)}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1 w-full overflow-scroll mt-2">
-                    <img
-                      onClick={()=>navigate(`/signin/user-profile/${video.owner._id}`)}
-                      src={video.avatar}
-                      className="w-9 h-9 rounded-full border-2 border-white"
-                      alt="Avatar"
-                    />
-                    <p className="text-white text-[16px] ml-2 overflow-hidden">
-                      {video.title.slice(0, 32)}
-                    </p>
-                  </div>
-                </div>
                 );
               })}
             </ul>
