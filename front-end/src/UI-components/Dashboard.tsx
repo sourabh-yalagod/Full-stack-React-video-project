@@ -1,14 +1,29 @@
 import axios from "axios";
-import { Loader2 } from "lucide-react";
+import { EllipsisVertical, Loader2, StopCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import PlatForm from "./PlatForm";
-
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { clearLoggedUser } from "@/Redux/Slice/SignIn";
+import { calclulateVideoTime } from "./CalculateTime.ts";
 
 const Dashboard = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [error, setError] = useState("");
+  const [result, setResult] = useState([]);
+  // const [videoDuration, setVideoDuration]:any = useState(null);
+  const signUpState = useSelector((state) => state);
+  console.log("Dashboard", signUpState);
+  // const [duration, setDuration]:any = useState({ hours: 0, minutes: 0, seconds: 0 });
+
   const signOut = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
@@ -17,14 +32,6 @@ const Dashboard = () => {
     dispatch(clearLoggedUser());
     navigate("/");
   };
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [error, setError] = useState("");
-  const [result, setResult] = useState([]);
-  const signUpState = useSelector((state) => state);
-  console.log("Dashboard", signUpState);
-
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
@@ -39,8 +46,7 @@ const Dashboard = () => {
             signal: signal,
           }
         );
-        console.log(response);
-        const cleanedData = response.data;
+        console.log("response.data.data : ", response.data[0]);
         setResult(response.data);
         setError("");
       } catch (error: any) {
@@ -59,6 +65,18 @@ const Dashboard = () => {
       controller.abort();
     };
   }, [searchQuery]);
+  if (error) {
+    return (
+      <div className="min-h-screen w-full grid place-items-center">
+        <div className="text-white flex gap-3">
+          <p>{error}</p>
+          <p>
+            <StopCircle />
+          </p>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen w-full grid relative place-items-center mx-auto">
       <div className="min-h-screen w-full p-2 grid place-items-center">
@@ -96,6 +114,11 @@ const Dashboard = () => {
             sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-2 md:m-3 md:min-w-1/3"
             >
               {result.map((video: any) => {
+                // useEffect(() => {
+                //   const duration = calclulatevideoDuration(video.duration);
+                //   setDuration(duration);
+                // }, [video.duration]);
+
                 return (
                   <div
                     key={video._id}
@@ -103,14 +126,38 @@ const Dashboard = () => {
                   >
                     <div className="relative">
                       <video
-                        onPlay={() => navigate(`/${video._id}`)}
+                        onClick={() => navigate(`/${video._id}`)}
                         className="w-full object-cover"
                         poster={video.thumbnail}
-                        controls
                         src={video.videoFile}
                       />
+
+                      <div className="absolute bg-black bottom-1 px-[3px] py-[1px] rounded-lg text-center right-1 text-white">
+                        {/* {duration.hours}h {duration.minutes}m {duration.seconds}s */}
+                        {Math.floor(video.duration)}
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1 w-full overflow-scroll mt-2">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger className="text-white absolute right-2 bottom-[5%] z-10">
+                        <EllipsisVertical className="outline-none" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="text-white text-[13px] space-y-2 grid border-white rounded-xl text-center w-fit mr-8">
+                        <div className="px-2 py-1 rounded-xl bg-slate-900 hover:bg-blue-600 hover:scale-95 transition-all pb-2 active:bg-blue-800">
+                          save to watch later
+                        </div>
+                        <div className="px-2 py-1 rounded-xl hover:bg-red-600 bg-slate-900 hover:scale-95 transition-all pb-2 active:bg-blue-800">
+                          delete video
+                        </div>
+                        <a
+                          type="download"
+                          className="px-2 py-1 rounded-xl hover:bg-blue-600 hover:scale-95 bg-slate-900 transition-all pb-2 active:bg-blue-800"
+                          href={video.videoFile}
+                        >
+                          download
+                        </a>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                    <div className="flex items-center gap-1 w-full overflow-scroll mt-2 relative">
                       <img
                         onClick={() =>
                           navigate(`/signin/user-profile/${video.owner._id}`)
@@ -119,9 +166,20 @@ const Dashboard = () => {
                         className="w-9 h-9 rounded-full border-2 border-white"
                         alt="Avatar"
                       />
-                      <p className="text-white text-[16px] ml-2 overflow-hidden">
-                        {video.title.slice(0, 32)}
-                      </p>
+                      <div className="grid gap-1 pl-1">
+                        <p className="text-white text-[16px] ml-2 overflow-hidden">
+                          {video.title.slice(0, 32)}
+                        </p>
+                        <div className="flex gap-3 text-[13px]">
+                          <p className="text-slate-600 ">
+                            {video.owner.username}
+                          </p>
+                          <p className="text-slate-600 ">views {video.views}</p>
+                          <p className="text-slate-600 ">
+                            {calclulateVideoTime(video.createdAt)}
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 );

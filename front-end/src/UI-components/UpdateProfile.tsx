@@ -18,6 +18,7 @@ import {
   PowerOffIcon,
 } from "lucide-react";
 import { useCallback, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function UpdateProfile() {
   const [oldPassword, setOldPassword] = useState("");
@@ -28,6 +29,7 @@ export default function UpdateProfile() {
   const [tokens, setTokens]: any = useState("");
   const [avatar, setAvatar]: any = useState("");
   const [coverImage, setCoverImage]: any = useState("");
+  const navigate = useNavigate()
 
   const changePassword = useCallback(async () => {
     setIsLoading(true);
@@ -41,6 +43,7 @@ export default function UpdateProfile() {
       setOldPassword("");
       setNewPassword("");
       console.log("Response:", res?.data);
+      navigate('/signin')
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setError(error.response?.data || "An error occurred");

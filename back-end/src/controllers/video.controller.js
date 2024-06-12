@@ -204,7 +204,13 @@ const getVideo = AsyncHandler(async (req, res) => {
   const userId = req.user._id;
   const videoID = new mongoose.Types.ObjectId(videoId);
   const userID = new mongoose.Types.ObjectId(userId);
-
+  await Video.findByIdAndUpdate(
+    videoID,
+    {
+      $inc: { views: 1 },
+    },
+    { new: true }
+  );
   const videoDetail = await Video.aggregate([
     // fetched the video by ID
     {
@@ -213,6 +219,7 @@ const getVideo = AsyncHandler(async (req, res) => {
         isPublished: true,
       },
     },
+
     // Uploader details using the owner field
     {
       $lookup: {
@@ -270,6 +277,7 @@ const getVideo = AsyncHandler(async (req, res) => {
         as: "Uploader",
       },
     },
+    // unwind the Uploader
     {
       $unwind: "$Uploader",
     },
@@ -338,6 +346,12 @@ const getVideo = AsyncHandler(async (req, res) => {
       },
     },
   ]);
+  await User.updateOne(
+    { _id: req.user._id },
+    {
+      $addToSet: { watchHistory: videoID }, 
+    }
+  );
   console.log(videoDetail);
   return res.json(
     new ApiResponse(

@@ -2,6 +2,7 @@ import axios, { AxiosError } from "axios";
 import {
   Bell,
   Edit2,
+  EditIcon,
   Loader2Icon,
   LoaderCircle,
   LucideGhost,
@@ -25,6 +26,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { calclulateVideoTime } from "./CalculateTime";
 
 const PlayVideo = () => {
   const navigate = useNavigate();
@@ -45,7 +47,6 @@ const PlayVideo = () => {
   const [newTitle, setNewTitle] = useState("");
   const [newDescription, setNewDescription] = useState("");
   const [newThumbnail, setNewThumbnail]: any = useState("");
-
   const [apiResponse, setApiResponse]: any = useState({});
 
   // Video playing functions
@@ -176,6 +177,7 @@ const PlayVideo = () => {
       console.log(axiosError);
     }
   };
+
   const handleVideoUpdate = async () => {
     setLoading(true);
     try {
@@ -196,7 +198,23 @@ const PlayVideo = () => {
       setLoading(false);
     }
   };
-  if (apiResponse == null || undefined) {
+
+  const changeComment = async (commentId: any) => {
+    // setLoading(true);
+    setError("");
+    try {
+      const response = await axios.patch(`/api/v1/comments/c/${commentId}`);
+      console.log("Resposen for Editing the comment : ", response.data);
+    } catch (error: any) {
+      const axiosError = error as AxiosError;
+      setError(axiosError);
+      alert(error.message);
+    }finally{
+      // setLoading(false)
+    }
+  };
+
+  if (!apiResponse) {
     return (
       <div className="min-h-scree w-full grid place-items-center">
         <h1 className="flex gap-2">
@@ -205,6 +223,7 @@ const PlayVideo = () => {
       </div>
     );
   }
+  
   return (
     <div className="w-full grid p-1">
       {/* this is the video and controllers Div */}
@@ -388,8 +407,8 @@ const PlayVideo = () => {
         </p>
       </ScrollArea>
       {/* Comments displayed using map method */}
-      <ScrollArea className="w-full text-white flex items-center py- h-full max-h-[250px] border-[1px] border-slate-800 rounded-xl p-1">
-        <div className="text-white text-[20px] py-4 flex w-full justify-around items-center">
+      <ScrollArea className="w-full text-white mt-4 flex items-center py- h-full max-h-[250px] border-[1px] border-slate-800 rounded-xl p-1">
+        <div className="text-white text-[20px] py-4 flex w-full justify-around items-center max-w-md md:justify-start gap-5 md:ml-5">
           <h1>Comments : {apiResponse?.allComments.length || "0"}</h1>
           <h1
             onClick={() => setCommentInput(!commentInput)}
@@ -403,7 +422,7 @@ const PlayVideo = () => {
           <>
             <div className="flex gap-1">
               <input
-                className="w-full pl-3 max-md bg-transparent border-[1px] rounded-xl px-1 outline-none text-white text-sm"
+                className="w-full pl-3 max-w-md bg-transparent border-[1px] rounded-xl px-1 outline-none text-white text-sm"
                 type="text"
                 onChange={(e) => setNewComment(e.target.value)}
                 value={newComment}
@@ -411,7 +430,7 @@ const PlayVideo = () => {
               />
               <button
                 onClick={() => handleNewComment()}
-                className="text-white p-2 bg-#121212"
+                className="text-white p-2 bg-#121212 bg-blue-600 rounded-xl active:bg-blue-800"
               >
                 Submit
               </button>
@@ -429,20 +448,24 @@ const PlayVideo = () => {
           apiResponse?.allComments.map((e: any) => (
             <div
               key={e._id}
-              className="flex border-[1px] gap-3 rounded-xl px-2 pt-6 pb-3 my-2 border-slate-700 relative"
+              className="flex border-[1px] space-y-2 md:justify-around gap-3 rounded-xl px-2 pt-6 pb-3 my-2 border-slate-700 relative"
             >
               <div className="min-h-2 text-gray-500 underline w-full justify-between px-3 absolute top-0 text-[12px] flex gap-3">
-                <p className="">{e.username}</p>
-                <p className="">{e.createdAt}</p>
+                <p className="absolute right-[3%]">
+                  {calclulateVideoTime(e.createdAt)}
+                </p>
               </div>
-              <img
-                className="rounded-full w-10 h-10"
-                src={
-                  e.avatar ||
-                  "https://cdn-icons-png.flaticon.com/512/4794/4794936.png"
-                }
-                alt="https://cdn-icons-png.flaticon.com/512/4794/4794936.png"
-              />
+              <div className="flex items-end gap-2 sm:items-center">
+                <img
+                  className="rounded-full w-10 h-10"
+                  src={
+                    e.avatar ||
+                    "https://cdn-icons-png.flaticon.com/512/4794/4794936.png"
+                  }
+                  alt="https://cdn-icons-png.flaticon.com/512/4794/4794936.png"
+                />
+                <p className="text-[11px]">{e.username}</p>
+              </div>
               <div className={`text-slate-50`}>
                 <p>
                   {seeMoreComment
@@ -455,6 +478,12 @@ const PlayVideo = () => {
                   onClick={() => setSeeMoreComment(!seeMoreComment)}
                 >
                   See more.....
+                </p>
+                <p
+                  onClick={() => changeComment(e._id)}
+                  className="absolute right-[5%] p-1 rounded-full bg-slate-600 hover:scale-110 top-[25%]"
+                >
+                  <EditIcon className="size-4" />
                 </p>
               </div>
             </div>

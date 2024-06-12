@@ -12,6 +12,7 @@ import {
   logout,
   newRefreshToken,
   updateAccount,
+  watchHistory,
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyAuth } from "../middlewares/verifyAuth.js";
@@ -33,5 +34,6 @@ router.route("/change-avatar").patch(verifyAuth ,upload.single('avatar'), change
 router.route("/change-coverimage").patch(verifyAuth,upload.single('coverImage'), changeCoverImage);
 router.route("/get-user-detail/:userId").get(verifyAuth,getUserProfile);
 router.route("/handle-subscribers").post(verifyAuth,handleSubscribers);
+router.route("/watch-history/:userId").get(verifyAuth,watchHistory);
 
 export default router;

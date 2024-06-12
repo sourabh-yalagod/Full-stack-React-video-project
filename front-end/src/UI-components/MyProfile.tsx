@@ -1,8 +1,21 @@
 import axios, { AxiosError } from "axios";
-import { useCallback, useEffect, useId, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Bell, Loader2, NutOffIcon, Verified } from "lucide-react";
+import {
+  Bell,
+  EllipsisVertical,
+  Loader2,
+  NutOffIcon,
+  Verified,
+} from "lucide-react";
 import { UserProfileData } from "./UserProfileData";
+import { calclulateVideoTime } from "./CalculateTime";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface User {
   fullname: string;
@@ -31,7 +44,7 @@ const MyProfile = () => {
           `/api/v1/user-profiles/user-profile/${userId}`
         );
         setApiResponse(response?.data?.data);
-        console.log("API Response:",apiResponse);
+        console.log("API Response:", apiResponse);
       } catch (error) {
         const err = error as AxiosError;
         setError(err.message ?? "Error while API call");
@@ -42,11 +55,11 @@ const MyProfile = () => {
   }, []);
 
   const userDetail: User = {
-    fullname: apiResponse? apiResponse?.fullname : "-",
-    username: apiResponse? apiResponse?.username : "-",
-    email: apiResponse? apiResponse?.email : "-",
-    subscribers: apiResponse? apiResponse?.subscribers : "-",
-    likes: apiResponse? apiResponse?.likes[0]?.totallikes : "-",
+    fullname: apiResponse ? apiResponse?.fullname : "-",
+    username: apiResponse ? apiResponse?.username : "-",
+    email: apiResponse ? apiResponse?.email : "-",
+    subscribers: apiResponse ? apiResponse?.subscribers : "-",
+    likes: apiResponse ? apiResponse?.likes[0]?.totallikes : "-",
     comments: apiResponse ? apiResponse?.comments[0]?.totalComments : "-",
   };
   const handleSubscription = useCallback(async () => {
@@ -92,9 +105,7 @@ const MyProfile = () => {
           backgroundImage: `url(${apiResponse?.coverImage})`,
         }}
       >
-        <UserProfileData
-          data={userDetail}
-        />
+        <UserProfileData data={userDetail} />
       </div>
       <div className="w-full flex justify-between md:px-20 lg:px-28 my-5 items-center px-5 gap-3">
         <div className="flex items-center mt-1 justify-around gap-3">
@@ -147,23 +158,55 @@ const MyProfile = () => {
                 >
                   <div className="relative">
                     <video
-                      onPlay={() => navigate(`/${video._id}`)}
+                      onClick={() => navigate(`/${video._id}`)}
                       className="w-full object-cover"
                       poster={video.thumbnail}
-                      controls
+                      controls={false}
                       src={video.videoFile}
                     />
                   </div>
-                  <div className="flex items-center gap-1 w-full overflow-scroll mt-2">
+                  <div className="flex py-2 items-center gap- w-full relative">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger className="text-white absolute right-2 bottom-2">
+                        <EllipsisVertical className="outline-none" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent className="text-white p-3 space-y-2 grid border-white rounded-xl text-center w-fit mr-8">
+                        <div className="px-2 py-1 rounded-xl bg-slate-900 hover:bg-blue-600 hover:scale-95 transition-all pb-2 active:bg-blue-800">
+                          save to watch later
+                        </div>
+                        <div className="px-2 py-1 rounded-xl hover:bg-red-600 bg-slate-900 hover:scale-95 transition-all pb-2 active:bg-blue-800">
+                          delete video
+                        </div>
+                        <a
+                          type="download"
+                          className="px-2 py-1 rounded-xl hover:bg-blue-600 hover:scale-95 bg-slate-900 transition-all pb-2 active:bg-blue-800"
+                          href={video.videoFile}
+                        >
+                          download
+                        </a>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+
                     <img
-                    onClick={()=>navigate(`/signin/user-profile/${apiResponse.owner}`)}
+                      onClick={() =>
+                        navigate(`/signin/user-profile/${apiResponse.owner}`)
+                      }
                       src={apiResponse?.avatar}
                       className="w-9 h-9 rounded-full border-2 border-white"
                       alt="Avatar"
                     />
-                    <p className="text-white text-[16px] ml-2 overflow-hidden">
+                    <div className="text-white grid place-items-start text-[17px] ml-2 overflow-hidden">
                       {video.title.slice(0, 32)}
-                    </p>
+                      <div className="flex gap-3 text-[12px]">
+                        <p className="text-slate-600 ">
+                          {apiResponse.username}
+                        </p>
+                        <p className="text-slate-600 ">views {video.views}</p>
+                        <p className="text-slate-600 ">
+                          {calclulateVideoTime(video.createdAt)}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 // <Video

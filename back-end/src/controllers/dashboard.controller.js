@@ -33,6 +33,7 @@ const getAllvideos = AsyncHandler(async (req, res) => {
         duration: 1,
         views: 1,
         owner:1,
+        createdAt:1,
         isPublished: 1,
         username: "$owner.username",
         fullname: "$owner.fullname",

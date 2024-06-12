@@ -1,11 +1,13 @@
 import {
   DoorClosedIcon,
+  Heart,
   Menu,
   Settings,
   Upload,
   UserCheck2,
   UserCircle,
   UserCogIcon,
+  ViewIcon,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -23,7 +25,7 @@ import { clearLoggedUser } from "@/Redux/Slice/SignIn";
 export default function PlatForm() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const userId = localStorage.getItem('userId')
+  const userId = localStorage.getItem("userId");
   return (
     <Drawer>
       <DrawerTrigger asChild>
@@ -67,16 +69,46 @@ export default function PlatForm() {
             <label>Sign-Out</label>
           </div>
           <div
-          onClick={()=>navigate(`signin/settings/customize-profile/${localStorage.getItem('userId')}`)} 
-          className="grid place-items-center cursor-pointer">
-            <Settings/>
+            onClick={() =>
+              navigate(
+                `signin/settings/customize-profile/${localStorage.getItem(
+                  "userId"
+                )}`
+              )
+            }
+            className="grid place-items-center cursor-pointer"
+          >
+            <Settings />
             Customize
+          </div>
+          <div
+            onClick={() =>
+              navigate(
+                `signin/all-favourate-videos/${localStorage.getItem("userId")}`
+              )
+            }
+            className="grid place-items-center cursor-pointer"
+          >
+            <Heart className="size-7" />
+            Liked Videos
+          </div>
+          <div
+            onClick={() =>
+              navigate(
+                `signin/watch-history/${localStorage.getItem("userId")}`
+              )
+            }
+            className="grid place-items-center cursor-pointer"
+          >
+            <ViewIcon className="size-4" />
+            Watch history
           </div>
         </div>
         <DrawerFooter className="w-full flex items-center justify-around">
           <DrawerClose asChild>
             <Button className="text-md border-[2px] border-white w-fit bg-red-700 rounded-2xl">
-              <DoorClosedIcon className="mr-5" />Close
+              <DoorClosedIcon className="mr-5" />
+              Close
             </Button>
           </DrawerClose>
         </DrawerFooter>

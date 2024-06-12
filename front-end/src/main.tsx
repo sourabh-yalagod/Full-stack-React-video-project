@@ -18,6 +18,8 @@ import { Provider } from "react-redux";
 import { store } from "./Redux/store.ts";
 import PlayVideo from "./UI-components/PlayVideo.tsx";
 import UpdateProfile from "./UI-components/UpdateProfile.tsx";
+import AllFavourateVideos from "./UI-components/AllFavourateVideos.tsx";
+import WatchHistory from "./UI-components/WatchHistory.tsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -30,6 +32,8 @@ const router = createBrowserRouter(
         <Route path="upload-video" element={<UploadVideo />} />
         <Route path="user-profile/:userId" element={<MyProfile />} />
         <Route path="settings/customize-profile/:userId" element={<UpdateProfile />} />
+        <Route path="all-favourate-videos/:userId" element={<AllFavourateVideos />} />
+        <Route path="watch-history/:userId" element={<WatchHistory />} />
       </Route>
     </Route>
   )
