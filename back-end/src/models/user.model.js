@@ -38,6 +38,12 @@ const userSchema = new mongoose.Schema(
         ref: "Video",
       },
     ],
+    watchLater: [
+      {
+        type: mongoose.Types.ObjectId,
+        ref: "Video",
+      },
+    ],
   },
   { timestamps: true }
 );

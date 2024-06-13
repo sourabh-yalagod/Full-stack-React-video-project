@@ -16,6 +16,7 @@ import {
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyAuth } from "../middlewares/verifyAuth.js";
+import { allWatchLaterVideos, removeWatchLaterVideos, watchLatervideos } from "../controllers/video.controller.js";
 
 router.route("/register").post(
   upload.fields([
@@ -35,5 +36,8 @@ router.route("/change-coverimage").patch(verifyAuth,upload.single('coverImage'),
 router.route("/get-user-detail/:userId").get(verifyAuth,getUserProfile);
 router.route("/handle-subscribers").post(verifyAuth,handleSubscribers);
 router.route("/watch-history/:userId").get(verifyAuth,watchHistory);
+router.route("/watch-later").post(verifyAuth,watchLatervideos);
+router.route("/remove-watch-later-video").patch(verifyAuth,removeWatchLaterVideos);
+router.route("/all-watch-later-videos/:userId").get(verifyAuth,allWatchLaterVideos);
 
 export default router;

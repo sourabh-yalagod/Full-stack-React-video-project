@@ -37,10 +37,15 @@ export default function PlatForm() {
         <div className="w-full flex justify-around p-5 flex-wrap gap-9 m-3 mx-auto">
           <div
             className="grid place-items-center cursor-pointer"
-            onClick={() => navigate("signup")}
-          >
+            onClick={() => navigate("signup")}>
             <UserCheck2 className="" />
             <label>Creat Account</label>
+          </div>
+          <div
+            className="grid place-items-center cursor-pointer"
+            onClick={() => navigate("signin")}>
+            <UserCheck2 className="" />
+            <label>Sign In</label>
           </div>
           <div
             className="grid place-items-center cursor-pointer"
@@ -94,9 +99,7 @@ export default function PlatForm() {
           </div>
           <div
             onClick={() =>
-              navigate(
-                `signin/watch-history/${localStorage.getItem("userId")}`
-              )
+              navigate(`signin/watch-history/${localStorage.getItem("userId")}`)
             }
             className="grid place-items-center cursor-pointer"
           >

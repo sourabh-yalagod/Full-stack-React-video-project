@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { EllipsisVertical, Loader2, StopCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -7,6 +7,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { calclulateVideoTime } from "./CalculateTime.ts";
@@ -17,13 +18,15 @@ import { clearLoggedUser } from "@/Redux/Slice/SignIn.ts";
 const Dashboard = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
-  const [error, setError] = useState("");
+  const [error, setError]:any = useState("");
   const [result, setResult] = useState([]);
   // const [videoDuration, setVideoDuration]:any = useState(null);
   const signUpState = useSelector((state) => state);
   console.log("Dashboard", signUpState);
   // const [duration, setDuration]:any = useState({ hours: 0, minutes: 0, seconds: 0 });
   const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
+  // signout function
   const signOut = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
@@ -31,6 +34,23 @@ const Dashboard = () => {
     localStorage.removeItem("user");
     dispatch(clearLoggedUser());
     navigate("/");
+  };
+
+  // add to watchlater videos
+  const addToWatchLater = async (videoId: any) => {
+    setIsLoading(true);
+    setError("");
+    try {
+      const response = await axios.post(`/api/v1/users/watch-later`, {
+        videoId,
+      });
+      console.log("Response from add to watch later : ", response.data);
+    } catch (error: any) {
+      const axiosError = error as AxiosError;
+      setError(axiosError);
+    } finally {
+      setIsLoading(false);
+    }
   };
   useEffect(() => {
     const controller = new AbortController();
@@ -83,10 +103,7 @@ const Dashboard = () => {
     <div className="min-h-screen w-full grid relative place-items-center mx-auto">
       <div className="min-h-screen w-full p-2 grid place-items-center">
         <div className="flex w-full justify-between items-center mt-10">
-          <div className="absolute left-1 top-2 animate-ping">
-            <SideMenuBar />
-          </div>
-          <div className="absolute left-1 top-2 ">
+          <div className="absolute left-1 top-2 animate-pulse">
             <SideMenuBar />
           </div>
           <div className="relative overflow-hidden">
@@ -97,7 +114,12 @@ const Dashboard = () => {
               placeholder="Search Here....."
               className="max-w-[500px] mr-7 mt-3 md:mx-4 relative w-full min-w-[250px] h-8 text-xl outline-none border-white bg-transparent text-white border-[1px] rounded-xl pl-2 leading-8 "
             />
-            <button type="submit" className="absolute right-0 inset-y-0 bg-blue-600 text-white object-cover p-0">Search</button>
+            <button
+              type="submit"
+              className="absolute right-0 inset-y-0 bg-blue-600 text-white object-cover p-0"
+            >
+              Search
+            </button>
           </div>
           <div className="hidden sm:block mr-4 lg:mr-12">
             {!localStorage.getItem("accessToken") ? (
@@ -124,11 +146,6 @@ const Dashboard = () => {
             sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-2 md:m-3 md:min-w-1/3"
             >
               {result.map((video: any) => {
-                // useEffect(() => {
-                //   const duration = calclulatevideoDuration(video.duration);
-                //   setDuration(duration);
-                // }, [video.duration]);
-
                 return (
                   <div
                     key={video._id}
@@ -151,16 +168,23 @@ const Dashboard = () => {
                       <DropdownMenuTrigger className="text-white absolute right-2 bottom-[5%] z-10">
                         <EllipsisVertical className="outline-none" />
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent className="text-white text-[13px] space-y-2 grid border-white rounded-xl text-center w-fit mr-8">
-                        <div className="px-2 py-1 rounded-xl bg-slate-900 hover:bg-blue-600 hover:scale-95 transition-all pb-2 active:bg-blue-800">
-                          save to watch later
+                      <DropdownMenuContent className="text-white text-[13px] grid space-y-1 border-slate-600 bg-opacity-50 cursor-pointer rounded-[7px] bg-slate-900 text-center w-fit mr-8 p-0">
+                        <div
+                          onClick={() => addToWatchLater(video._id)}
+                          className="px-2 py-1 m-1 rounded-[9px] grid place-items-center transition-all pb-2 hover:bg-slate-800"
+                        >
+                          {isLoading ? (
+                            <Loader2 className="animate-spin" />
+                          ) : (
+                            "save to watch later"
+                          )}
                         </div>
-                        <div className="px-2 py-1 rounded-xl hover:bg-red-600 bg-slate-900 hover:scale-95 transition-all pb-2 active:bg-blue-800">
+                        <div className="px-2 py-1 m-1 rounded-[9px] transition-all pb-2 hover:bg-slate-800">
                           delete video
                         </div>
                         <a
                           type="download"
-                          className="px-2 py-1 rounded-xl hover:bg-blue-600 hover:scale-95 bg-slate-900 transition-all pb-2 active:bg-blue-800"
+                          className="px-2 py-1 m-1 rounded-[9px] transition-all pb-2 hover:bg-slate-800"
                           href={video.videoFile}
                         >
                           download

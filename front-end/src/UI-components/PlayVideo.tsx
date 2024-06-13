@@ -3,6 +3,7 @@ import {
   Bell,
   Edit2,
   EditIcon,
+  Eye,
   Loader2Icon,
   LoaderCircle,
   LucideGhost,
@@ -27,7 +28,6 @@ import {
 } from "@/components/ui/dialog";
 import { calclulateVideoTime } from "./CalculateTime";
 
-
 const PlayVideo = () => {
   const navigate = useNavigate();
   const { videoId } = useParams();
@@ -48,6 +48,7 @@ const PlayVideo = () => {
   const [newDescription, setNewDescription] = useState("");
   const [newThumbnail, setNewThumbnail]: any = useState("");
   const [apiResponse, setApiResponse]: any = useState({});
+  const [isloading, setIsLoading] = useState(false);
 
   // Video playing functions
   const togglePlayPause = () => {
@@ -224,6 +225,22 @@ const PlayVideo = () => {
     );
   }
 
+  const addToWatchLater = async (videoId: any) => {
+    setIsLoading(true);
+    setError("");
+    try {
+      const response = await axios.post(`/api/v1/users/watch-later`, {
+        videoId,
+      });
+      console.log("Response from add to watch later : ", response.data);
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      setError(axiosError);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="w-full grid p-1">
       {/* this is the video and controllers Div */}
@@ -378,10 +395,23 @@ const PlayVideo = () => {
       </div>
       {/* video figures */}
       <div className="w-full px-3 py-1 my-1 flex items-center justify-around border-[1px] border-slate-700 rounded-xl">
-        <div className="flex gap-4 text-white ">
+        <div className="flex gap-4 text-white">
           <p onClick={() => handleLikes()} className="flex gap-1">
             <ThumbsUp className="" />
             {apiResponse?.totalLikes[0]?.likes || "0"}
+          </p>
+        </div>
+        <div
+          onClick={() => addToWatchLater(videoId)}
+          className="flex gap-1 border-[1px] p-1 sm:text-[15px] sm:py-3 sm:px-1 text-[11px] border-slate-700 rounded-xl items-center text-white hover:scale-95 transition-all cursor-pointer"
+        >
+          <Eye />
+          <p>
+            {isloading ? (
+              <Loader2Icon className="animate-spin" />
+            ) : (
+              "add to watch later"
+            )}
           </p>
         </div>
         <p className="text-[13px] text-slate-400">

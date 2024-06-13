@@ -349,7 +349,7 @@ const getVideo = AsyncHandler(async (req, res) => {
   await User.updateOne(
     { _id: req.user._id },
     {
-      $addToSet: { watchHistory: videoID }, 
+      $addToSet: { watchHistory: videoID },
     }
   );
   console.log(videoDetail);
@@ -433,4 +433,99 @@ const updateViews = AsyncHandler(async (req, res) => {
   );
 });
 
-export { publishVideo, getVideo, updateVideo, deleteVideo, updateViews };
+const watchLatervideos = AsyncHandler(async (req, res) => {
+  const { videoId } = req.body;
+  const watchLaterVideos = await User.updateOne(
+    { _id: req.user._id },
+    {
+      $addToSet: { watchLater: videoId },
+    }
+  );
+  return res.json(
+    new ApiResponse(
+      201,
+      watchLaterVideos,
+      `video is added to watch-later list by User : ${req.user.username}`
+    )
+  );
+});
+
+const removeWatchLaterVideos = AsyncHandler(async (req, res) => {
+  const { videoId } = req.body;
+  console.log("videoId : ", videoId);
+  const removedVideos = await User.updateMany(
+    { _id: new mongoose.Types.ObjectId(req.user._id) },
+    [
+      {
+        $set: {
+          watchLater: {
+            $filter: {
+              input: "$watchLater",
+              as: "video",
+              cond: { $ne: ["$$video", new mongoose.Types.ObjectId(videoId)] },
+            },
+          },
+        },
+      },
+    ]
+  );
+
+  console.log("removedVideos : ", removedVideos);
+  return res.json(
+    new ApiResponse(
+      201,
+      removedVideos,
+      `${req.user.username} has removed the ${videoId} ID video from watch Later list.....!`
+    )
+  );
+});
+
+const allWatchLaterVideos = AsyncHandler(async (req, res) => {
+  const { userId } = req.params;
+  const userID = new mongoose.Types.ObjectId(userId);
+  if(!userID){
+    throw new ApiError(401,'User ID not Found.....!');
+  }
+  const watchLaterVideos = await User.aggregate([
+    {
+      $match:{
+        _id:userID
+      }
+    },
+    {
+      $lookup:{
+        from:"videos",
+        localField:"watchLater",
+        foreignField:"_id",
+        as:"watchLaterVideos"
+      }
+    },
+    {
+      $addFields:{
+        watchLaterVideos:"$watchLaterVideos"
+      }
+    },
+    {
+      $project:{
+        fullname:1,
+        username:1,
+        avatar:1,
+        coverImage:1,
+        watchLaterVideos:1,
+      }
+    }
+  ])
+  return res.json(
+    new ApiResponse(203,watchLaterVideos[0],`All the Watch later videos are fetched by ${req.user.username || "User."}`)
+  )
+});
+export {
+  publishVideo,
+  getVideo,
+  updateVideo,
+  deleteVideo,
+  updateViews,
+  watchLatervideos,
+  removeWatchLaterVideos,
+  allWatchLaterVideos
+};

@@ -1,10 +1,5 @@
 import axios, { AxiosError } from "axios";
-import {
-  EllipsisVertical,
-  Loader2,
-  LucideTrash2,
-  NutOffIcon,
-} from "lucide-react";
+import { EllipsisVertical, Loader2, LucideTrash2, NutOffIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { calclulateVideoTime } from "./CalculateTime";
@@ -15,16 +10,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const AllFavourateVideos = () => {
+const WatchLaterVideos = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
   const [apiResponse, setApiResponse]: any = useState("");
   const [loading, setLoading]: any = useState(false);
+  const [isloading, setIsLoading]: any = useState(false);
   const [error, setError]: any = useState("");
+  const [done,setDone] = useState(false)
   console.log(userId);
-  const [likeResponse, setLikeResponse]: any = useState("");
 
-  // call the API on userId change
+  // Api request for watch-later videos
   useEffect(() => {
     (async () => {
       setLoading(true);
@@ -32,55 +28,62 @@ const AllFavourateVideos = () => {
       try {
         setError("");
         const response = await axios.get(
-          `/api/v1/likes/all-favourate-videos/${userId}`
+          `/api/v1/users/all-watch-later-videos/${userId}`
         );
+        setDone(false)
         setApiResponse(response?.data?.data);
         console.log("API Response:", apiResponse);
       } catch (error) {
         const err = error as AxiosError;
         setError(err.message ?? "Error while API call");
+        setDone(false)
       } finally {
         setLoading(false);
       }
     })();
-  }, [userId]);
+  }, [userId,done]);
 
-  // loading state while API response return
+  // loading state till the response from the backend comes
   if (loading) {
     return (
       <div className="min-h-screen w-full px-3 bg-#121212 grid place-items-center">
-        <div className="text-3xl flex gap-4 text-center text-white">
-          <p>Loading......</p>
-          <Loader2 className="text-white size-12 text-center animate-bounce mt-10" />
-        </div>
+        <p className="text-3xl text-center text-white">
+          <Loader2 className="text-white size-5 text-center animate-spin mt-10" />
+        </p>
       </div>
     );
   }
-
-  // remove video from the favourate video list
-  const removeVideo = async (videoId: any) => {
+  // function to remove a video from watch later List
+  const removeFromWatchLaterList = async (videoId: any) => {
     try {
-      const response = await axios.post(
-        `/api/v1/likes/toggle-like-status/${videoId}`,
+      setIsLoading(true);
+      setError("");
+      const response = await axios.patch(
+        `/api/v1/users/remove-watch-later-video`,
         {
-          userId,
+          videoId,
         }
       );
-      setLikeResponse(response.data.data);
-      console.log("likeResponse : ", likeResponse);
+      setApiResponse(response?.data?.data);
+      console.log(
+        "Response from remove a video from watch later list :",
+        apiResponse
+      );
+      setDone(true)
     } catch (error) {
-      const axiosError = error as AxiosError;
-      setError(axiosError);
+      const err = error as AxiosError;
+      setError(err.message ?? "Error while API call");
+    } finally {
+      setIsLoading(false);
     }
   };
-
-  // error display if the API call gone wrong
+  // error is the API request is resulted error
   if (error) {
     return (
       <div className="min-h-screen w-full px-3 bg-#121212 grid place-items-center">
         <div className="text-white text-3xl flex gap-4">
           <NutOffIcon />
-          APi Error Try again . . . .
+          Error (API)
         </div>
       </div>
     );
@@ -88,16 +91,13 @@ const AllFavourateVideos = () => {
 
   return (
     <div className="min-h-screen w-full px-3 bg-#121212">
-      <h1 className="text-center mt-10 text-2xl sm:text-3xl md:text-4xl text-white font-semibold">
-        Favourate Videos
-      </h1>
-      <div className="mt-5 w-full min-h-auto grid place-items-center md:mt-16">
-        {apiResponse.length > 0 ? (
+      <div className="mt-10 w-full min-h-auto grid place-items-center md:mt-16">
+        {apiResponse?.watchLaterVideos?.length > 0 ? (
           <ul
             className="mt-8 grid place-items-start space-y-2 justify-center w-full min-h-screen 
             sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-2 md:m-3 md:min-w-1/3"
           >
-            {apiResponse.map((video: any) => {
+            {apiResponse?.watchLaterVideos?.map((video: any) => {
               return (
                 <div
                   key={video._id}
@@ -105,55 +105,59 @@ const AllFavourateVideos = () => {
                 >
                   <div className="relative">
                     <video
-                      onClick={() => navigate(`/${video._id}`)}
+                      onClick={() => navigate(`/${video?._id}`)}
                       className="w-full object-cover"
-                      poster={video.thumbnail}
-                      src={video.videoFile}
+                      poster={video?.thumbnail}
+                      src={video?.videoFile}
                     />
                     <div className="absolute bg-black bottom-1 px-1 py-[1px] rounded-lg text-center right-1 text-white">
-                      {Math.floor(video.duration)}
+                      {Math.floor(video?.duration)}
                     </div>
                   </div>
                   <DropdownMenu>
-                    <DropdownMenuTrigger className="text-white absolute right-2 bottom-[5%] z-10 cursor-pointer">
+                    <DropdownMenuTrigger className="text-white absolute right-2 bottom-[5%] z-10">
                       <EllipsisVertical className="outline-none" />
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="text-white text-[13px] grid space-y-1 border-slate-600 bg-opacity-50 cursor-pointer rounded-[7px] bg-slate-900 text-center w-fit mr-8 p-0">
+                    <DropdownMenuContent className="text-white text-[13px] bg-gray-900 bg-opacity-60 p-0 space-y-2 grid border-white rounded-xl text-center w-fit mr-8">
                       <div
-                        onClick={() => removeVideo(video._id)}
+                        onClick={() => removeFromWatchLaterList(video._id)}
                         className="px-2 py-1 m-1 rounded-[9px] transition-all pb-2 hover:bg-slate-800"
                       >
-                        Remove video
+                        {isloading ? (
+                          <Loader2 className="animate-apin" />
+                        ) : (
+                          "Remove from Watch-Later"
+                        )}
                       </div>
                       <a
                         type="download"
                         className="px-2 py-1 m-1 rounded-[9px] transition-all pb-2 hover:bg-slate-800"
                         href={video.videoFile}
                       >
-                        Download
+                        download
                       </a>
                     </DropdownMenuContent>
                   </DropdownMenu>
                   <div className="flex items-center gap-1 w-full overflow-scroll mt-2 relative">
                     <img
                       onClick={() =>
-                        navigate(`/signin/user-profile/${video.Uploader._id}`)
+                        navigate(`/signin/user-profile/${apiResponse._id}`)
                       }
-                      src={video?.Uploader?.avatar}
+                      src={apiResponse.avatar}
                       className="w-9 h-9 rounded-full border-2 border-white"
                       alt="https://img.freepik.com/premium-photo/graphic-designer-digital-avatar-generative-ai_934475-9292.jpg"
                     />
                     <div className="grid gap-1 pl-1">
                       <p className="text-white text-[16px] ml-2 overflow-hidden">
-                        {video.title.length > 28 ? (
-                          <>{video.title.slice(0, 25)}. . . . .</>
+                        {video?.title?.length > 28 ? (
+                          <>{video?.title?.slice(0, 25)}. . . . .</>
                         ) : (
-                          video.title
+                          video?.title
                         )}
                       </p>
                       <div className="flex gap-3 text-[13px]">
                         <p className="text-slate-600 ">
-                          {video.Uploader.username}
+                          {apiResponse.username}
                         </p>
                         <p className="text-slate-600 ">views {video.views}</p>
                         <p className="text-slate-600 ">
@@ -168,8 +172,7 @@ const AllFavourateVideos = () => {
           </ul>
         ) : (
           <div className="text-3xl flex gap-5 min-h-screen w-full justify-center items-center mb-11 text-center text-white my-auto">
-            <LucideTrash2 className="text-white size-12 text-center" />
-            <p>No videos . . . . .</p>
+            <LucideTrash2 className="text-white size-12 text-center" /><p>No videos . . . . .</p>
           </div>
         )}
       </div>
@@ -177,4 +180,4 @@ const AllFavourateVideos = () => {
   );
 };
 
-export default AllFavourateVideos;
+export default WatchLaterVideos;
