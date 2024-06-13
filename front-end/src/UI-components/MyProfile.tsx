@@ -195,8 +195,8 @@ const MyProfile = () => {
                       className="w-9 h-9 rounded-full border-2 border-white"
                       alt="Avatar"
                     />
-                    <div className="text-white grid place-items-start text-[17px] ml-2 overflow-hidden">
-                      {video.title.slice(0, 32)}
+                    <div className="text-white grid place-items-start text-[15px] ml-2 overflow-hidden">
+                      <p>{video.title.length > 25 ? `${video.title.slice(0, 25)}. . . .` : `${video.title}`}</p>
                       <div className="flex gap-3 text-[12px]">
                         <p className="text-slate-600 ">
                           {apiResponse.username}

@@ -32,8 +32,8 @@ const getAllvideos = AsyncHandler(async (req, res) => {
         description: 1,
         duration: 1,
         views: 1,
-        owner:1,
-        createdAt:1,
+        owner: 1,
+        createdAt: 1,
         isPublished: 1,
         username: "$owner.username",
         fullname: "$owner.fullname",
@@ -50,16 +50,56 @@ const getVideoBySearch = AsyncHandler(async (req, res) => {
   if (!search) {
     throw new ApiError(400, "Search query parameter (search) is required");
   }
-
-  const searchRgx = new RegExp(search, "i");
-
-  const filteredVideos = await Video.find({
-    $or: [
-      { title: { $regex: searchRgx } },
-      { description: { $regex: searchRgx } },
-    ],
-  });
-
-  return res.json(filteredVideos);
+  console.log("search : ", search);
+  const searchRex = new RegExp(search, "i");
+  const searchResult = await Video.aggregate([
+    {
+      $match: {
+        $or: [
+          { title: { $regex: searchRex } },
+          { description: { $regex: searchRex } },
+        ],
+      },
+    },
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        pipeline: [
+          {
+            $project: {
+              fullname: 1,
+              username: 1,
+              avatar: 1,
+              coverImage: 1,
+            },
+          },
+        ],
+        as: "owner",
+      },
+    },
+    {
+      $unwind: "$owner",
+    },
+    {
+      $project: {
+        _id: 1,
+        videoFile: 1,
+        thumbnail: 1,
+        title: 1,
+        description: 1,
+        duration: 1,
+        views: 1,
+        owner: 1,
+        createdAt: 1,
+        isPublished: 1,
+      },
+    },
+  ]);
+  console.log(getVideoBySearch);
+  return res.json(
+    new ApiResponse(201, searchResult, "search result are fetched....!")
+  );
 });
 export { getAllvideos, getVideoBySearch };

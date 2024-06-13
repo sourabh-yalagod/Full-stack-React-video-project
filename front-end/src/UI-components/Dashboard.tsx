@@ -2,7 +2,6 @@ import axios from "axios";
 import { EllipsisVertical, Loader2, StopCircle } from "lucide-react";
 import { useEffect, useState } from "react";
 
-import PlatForm from "./PlatForm";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,12 +9,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { clearLoggedUser } from "@/Redux/Slice/SignIn";
 import { calclulateVideoTime } from "./CalculateTime.ts";
+import { SideMenuBar } from "./SideBarMenu.tsx";
+// import { signOut } from "./services/SignOut.ts";
+import { clearLoggedUser } from "@/Redux/Slice/SignIn.ts";
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState("");
   const [error, setError] = useState("");
   const [result, setResult] = useState([]);
@@ -23,7 +23,7 @@ const Dashboard = () => {
   const signUpState = useSelector((state) => state);
   console.log("Dashboard", signUpState);
   // const [duration, setDuration]:any = useState({ hours: 0, minutes: 0, seconds: 0 });
-
+  const dispatch = useDispatch();
   const signOut = () => {
     localStorage.removeItem("accessToken");
     localStorage.removeItem("refreshToken");
@@ -43,7 +43,6 @@ const Dashboard = () => {
             params: {
               search: searchQuery,
             },
-            signal: signal,
           }
         );
         console.log("response.data.data : ", response.data[0]);
@@ -65,6 +64,8 @@ const Dashboard = () => {
       controller.abort();
     };
   }, [searchQuery]);
+
+  // return if the API returns some errors
   if (error) {
     return (
       <div className="min-h-screen w-full grid place-items-center">
@@ -77,19 +78,28 @@ const Dashboard = () => {
       </div>
     );
   }
+
   return (
     <div className="min-h-screen w-full grid relative place-items-center mx-auto">
       <div className="min-h-screen w-full p-2 grid place-items-center">
-        <div className="flex w-full justify-between items-center absolute top-7">
-          <PlatForm />
-          <input
-            type="text"
-            onChange={(e) => setSearchQuery(e.target.value)}
-            value={searchQuery}
-            placeholder="Search Here....."
-            className="max-w-[500px] mr-7 md:mx-4 relative w-full min-w-[250px] h-8 text-xl outline-none border-white bg-transparent text-white border-[1px] rounded-xl pl-2 leading-8 "
-          />
-          <div className="hidden md:block mr-4 lg:mr-12">
+        <div className="flex w-full justify-between items-center mt-10">
+          <div className="absolute left-1 top-2 animate-ping">
+            <SideMenuBar />
+          </div>
+          <div className="absolute left-1 top-2 ">
+            <SideMenuBar />
+          </div>
+          <div className="relative overflow-hidden">
+            <input
+              type="text"
+              onChange={(e) => setSearchQuery(e.target.value)}
+              value={searchQuery}
+              placeholder="Search Here....."
+              className="max-w-[500px] mr-7 mt-3 md:mx-4 relative w-full min-w-[250px] h-8 text-xl outline-none border-white bg-transparent text-white border-[1px] rounded-xl pl-2 leading-8 "
+            />
+            <button type="submit" className="absolute right-0 inset-y-0 bg-blue-600 text-white object-cover p-0">Search</button>
+          </div>
+          <div className="hidden sm:block mr-4 lg:mr-12">
             {!localStorage.getItem("accessToken") ? (
               <button
                 onClick={() => navigate("signin")}
@@ -100,17 +110,17 @@ const Dashboard = () => {
             ) : (
               <button
                 onClick={() => signOut()}
-                className="text-[15px] mx-1 font-semibold bg-red-600 px-3 py-1 rounded-2xl text-white"
+                className="text-[15px] font-semibold bg-red-600 px-3 py-1 rounded-xl text-white"
               >
                 Sign-Out
               </button>
             )}
           </div>
         </div>
-        <div className="mt-10 w-full min-h-auto grid place-items-center md:mt-16">
+        <div className="mt-8 w-full min-h-screen grid place-items-center">
           {result.length > 0 ? (
             <ul
-              className="mt-8 grid place-items-start space-y-2 justify-center w-full min-h-screen 
+              className="grid place-items-start space-y-2 justify-center w-full min-h-screen 
             sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-2 md:m-3 md:min-w-1/3"
             >
               {result.map((video: any) => {
@@ -168,7 +178,9 @@ const Dashboard = () => {
                       />
                       <div className="grid gap-1 pl-1">
                         <p className="text-white text-[16px] ml-2 overflow-hidden">
-                          {video.title.slice(0, 32)}
+                          {video.title.length > 20
+                            ? `${video.title.slice(0, 20)}....`
+                            : video.title}
                         </p>
                         <div className="flex gap-3 text-[13px]">
                           <p className="text-slate-600 ">
@@ -186,9 +198,10 @@ const Dashboard = () => {
               })}
             </ul>
           ) : (
-            <p className="text-3xl text-center text-white">
-              <Loader2 className="text-white text-8xl text-center animate-spin mt-10" />
-            </p>
+            <div className="text-3xl items-center  flex gap-4 text-center text-white">
+              <p>Loading.....</p>
+              <Loader2 className="text-white size-14 text-8xl text-center animate-spin" />
+            </div>
           )}
         </div>
       </div>

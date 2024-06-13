@@ -10,7 +10,6 @@ import {
   MessageCirclePlus,
   Pause,
   Play,
-  Sliders,
   ThumbsUp,
 } from "lucide-react";
 import { useEffect, useRef, useState, useCallback } from "react";
@@ -27,6 +26,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { calclulateVideoTime } from "./CalculateTime";
+
 
 const PlayVideo = () => {
   const navigate = useNavigate();
@@ -209,7 +209,7 @@ const PlayVideo = () => {
       const axiosError = error as AxiosError;
       setError(axiosError);
       alert(error.message);
-    }finally{
+    } finally {
       // setLoading(false)
     }
   };
@@ -223,7 +223,7 @@ const PlayVideo = () => {
       </div>
     );
   }
-  
+
   return (
     <div className="w-full grid p-1">
       {/* this is the video and controllers Div */}
@@ -303,7 +303,6 @@ const PlayVideo = () => {
           >
             {playing ? <Pause /> : <Play />}
           </button>
-          <Sliders className="mx-2 text-white size-9" />
           <input
             type="range"
             min="0"
