@@ -46,66 +46,69 @@ export function SideMenuBar() {
       </SheetTrigger>
       <SheetContent className="bg-slate-900 bg-opacity-40 max-w-[250px] w-full text-white sm:max-w-[290px] md:max-w-[320px] lg:max-w-[350px]">
         <SheetHeader>
-          <SheetTitle className="flex items-center gap-4 text-xl cursor-pointer hover:scale-105 transition-all">
-            <Home className="" />
-            Home
+          <SheetTitle className="flex items-center w-full justify-around text-[15px] sm:text-xl">
+            <div className="flex gap-5 cursor-pointer hover:scale-105 transition-all">
+            <Home />
+            <p>Home</p>
+            </div>
+            <div className="mr-4 lg:mr-12 text-[12px] sm:text-[15px] mx-1 font-semibold cursor-pointer hover:scale-105 transition-all">
+              {!localStorage.getItem("accessToken") ? (
+                <button
+                  onClick={() => navigate("signin")}
+                  className="bg-blue-600 px-3 py-1 rounded-2xl text-white "
+                >
+                  Sign-In
+                </button>
+              ) : (
+                <button
+                  onClick={() => signOut()}
+                  className="bg-red-600 px-3 py-1 rounded-2xl text-white"
+                >
+                  Sign-Out
+                </button>
+              )}
+            </div>
           </SheetTitle>
-          <div className="hidden md:block mr-4 lg:mr-12">
-            {!localStorage.getItem("accessToken") ? (
-              <button
-                onClick={() => navigate("signin")}
-                className="text-[15px] mx-1 font-semibold bg-blue-600 px-3 py-1 rounded-2xl text-white"
-              >
-                Sign-In
-              </button>
-            ) : (
-              <button
-                onClick={() => signOut()}
-                className="text-[15px] mx-1 font-semibold bg-red-600 px-3 py-1 rounded-2xl text-white"
-              >
-                Sign-Out
-              </button>
-            )}
-          </div>
         </SheetHeader>
-        <div className="grid gap-3 p-4 overflow-auto text-white">
+
+        <div className="grid min-h-auto justify-around py-4 gap-4 overflow-clip text-white">
           <div
-            className="flex items-center gap-4 p-2 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
+            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
             onClick={() => navigate("signup")}
           >
             <UserCheck2 className="w-6 h-6" />
             <span>Create Account</span>
           </div>
           <div
-            className="flex items-center gap-4 p-2 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
+            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
             onClick={() => navigate("signin")}
           >
             <User className="" />
             <label>Sign In</label>
           </div>
           <div
-            className="flex items-center gap-4 p-2 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
+            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
             onClick={() => navigate("signin/upload-video")}
           >
             <Upload className="w-6 h-6" />
             <span>Upload Video</span>
           </div>
           <div
-            className="flex items-center gap-4 p-2 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
+            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
             onClick={() => navigate(`signin/user-profile/${userId}`)}
           >
             <Images className="w-6 h-6" />
             <span>My Profile</span>
           </div>
           <div
-            className="flex items-center gap-4 p-2 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
+            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
             onClick={() => navigate(`signin/watch-later-videos/${userId}`)}
           >
             <View className="w-6 h-6" />
             Watch-Later
           </div>
           <div
-            className="flex items-center gap-4 p-2 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
+            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
             onClick={() =>
               navigate(
                 `signin/settings/customize-profile/${localStorage.getItem(
@@ -118,7 +121,7 @@ export function SideMenuBar() {
             <span>Customize</span>
           </div>
           <div
-            className="flex items-center gap-4 p-2 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
+            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
             onClick={() =>
               navigate(
                 `signin/all-favourate-videos/${localStorage.getItem("userId")}`
@@ -129,7 +132,7 @@ export function SideMenuBar() {
             <span>Liked Videos</span>
           </div>
           <div
-            className="flex items-center gap-4 p-2 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
+            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
             onClick={() =>
               navigate(`signin/watch-history/${localStorage.getItem("userId")}`)
             }
@@ -138,7 +141,7 @@ export function SideMenuBar() {
             <span>Watch History</span>
           </div>
           <div
-            className="flex items-center gap-4 p-2 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
+            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
             onClick={() => {
               localStorage.removeItem("accessToken");
               localStorage.removeItem("userId");

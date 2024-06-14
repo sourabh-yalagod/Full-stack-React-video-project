@@ -32,6 +32,12 @@ const userSchema = new mongoose.Schema(
     coverImage: {
       type: String,
     },
+    avatar_cloudinary_public_id: {
+      type: String,
+    },
+    coverImage_cloudinary_public_id: {
+      type: String,
+    },
     watchHistory: [
       {
         type: mongoose.Types.ObjectId,

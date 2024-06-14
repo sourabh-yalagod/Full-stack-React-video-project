@@ -1,4 +1,3 @@
-
 import ReactDOM from "react-dom/client";
 import {
   createBrowserRouter,
@@ -26,23 +25,32 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
       <Route path="" element={<Dashboard />} />
-      <Route path="/:videoId" element={<PlayVideo/>} />
+      <Route path="/:videoId" element={<PlayVideo />} />
       <Route path="signup" element={<SignUp />} />
       <Route path="signin" element={<SignIn />} />
       <Route path="/signin" element={<SafeRouters />}>
         <Route path="upload-video" element={<UploadVideo />} />
         <Route path="user-profile/:userId" element={<MyProfile />} />
-        <Route path="settings/customize-profile/:userId" element={<UpdateProfile />} />
-        <Route path="all-favourate-videos/:userId" element={<AllFavourateVideos />} />
+        <Route
+          path="settings/customize-profile/:userId"
+          element={<UpdateProfile />}
+        />
+        <Route
+          path="all-favourate-videos/:userId"
+          element={<AllFavourateVideos />}
+        />
         <Route path="watch-history/:userId" element={<WatchHistory />} />
-        <Route path="watch-later-videos/:userId" element={<WatchLaterVideos />} />
+        <Route
+          path="watch-later-videos/:userId"
+          element={<WatchLaterVideos />}
+        />
       </Route>
     </Route>
   )
 );
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-    <Provider store={store}>
-      <RouterProvider router={router} />
-    </Provider>
+  <Provider store={store}>
+    <RouterProvider router={router} />
+  </Provider>
 );

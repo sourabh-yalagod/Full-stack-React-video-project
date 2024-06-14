@@ -1,6 +1,7 @@
 import axios, { AxiosError } from "axios";
 import {
   Bell,
+  Clipboard,
   Edit2,
   EditIcon,
   Eye,
@@ -16,7 +17,6 @@ import {
 import { useEffect, useRef, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
-
 import {
   Dialog,
   DialogContent,
@@ -109,18 +109,20 @@ const PlayVideo = () => {
   useEffect(() => {
     (async () => {
       const controller = new AbortController();
-      const signal = controller.signal;
       setLoading(true);
       setError(null);
       try {
         const response = await axios.get(
           `/api/v1/videos/get-video/${videoId}`,
-          { signal }
+          { signal: controller.signal }
         );
         setApiResponse(response.data.data);
         console.log("ApiResponse : ", apiResponse);
         setLoading(false);
       } catch (error) {
+        if (axios.isCancel(error)) {
+          return;
+        }
         const axiosError = error as AxiosError;
         setError(axiosError);
         setLoading(false);
@@ -400,6 +402,17 @@ const PlayVideo = () => {
             <ThumbsUp className="" />
             {apiResponse?.totalLikes[0]?.likes || "0"}
           </p>
+        </div>
+        <div
+          onClick={() =>
+            navigator.clipboard
+              .writeText(apiResponse.videoFile)
+              .then(() => console.log("Copied"))
+          }
+          className="flex items-center gap-2 text-white hover:scale-105 transition-all cursor-pointer"
+        >
+          <Clipboard />
+          <p>( Video URL )</p>
         </div>
         <div
           onClick={() => addToWatchLater(videoId)}

@@ -13,7 +13,7 @@ router.route("/upload-video").post(verifyAuth,
 );
 router.route('/get-video/:videoId').get(verifyAuth,getVideo);
 router.route('/update-video/:videoId').patch(verifyAuth,upload.single('thumbnail'),updateVideo)
-router.route('/delete-video').delete(verifyAuth,deleteVideo);
+router.route('/delete-video/:videoId').delete(verifyAuth,deleteVideo);
 router.route('/update-views').patch(verifyAuth,updateViews);
 
 export default router;

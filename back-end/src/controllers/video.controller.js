@@ -1,4 +1,7 @@
-import { uploadOnCloudinary } from "../middlewares/cloudinary.middleware.js";
+import {
+  deleteFromCloudinary,
+  uploadOnCloudinary,
+} from "../middlewares/cloudinary.middleware.js";
 import { Video } from "../models/video.model.js";
 import { ApiError } from "../utilities/ApiError.js";
 import { ApiResponse } from "../utilities/ApiResponse.js";
@@ -29,6 +32,8 @@ const publishVideo = AsyncHandler(async (req, res) => {
   const newVideo = await Video.create({
     title,
     description,
+    videoFile_cloudinary_public_id: uploadVideo.public_id,
+    thumbnail_cloudinary_public_id: uploadThumbnail.public_id,
     videoFile: uploadVideo.url,
     thumbnail: uploadThumbnail.url,
     duration: uploadVideo.duration,
@@ -39,6 +44,7 @@ const publishVideo = AsyncHandler(async (req, res) => {
   if (!newVideo) {
     throw new ApiError(403, "Video Upload Process failed...!");
   }
+  console.log(newVideo);
   return res.json(
     new ApiResponse(201, newVideo, `Video created SuccessFully...`)
   );
@@ -393,16 +399,47 @@ const updateVideo = AsyncHandler(async (req, res) => {
 });
 
 const deleteVideo = AsyncHandler(async (req, res) => {
-  const { videoId } = req.query;
+  const { videoId } = req.params;
+  console.log("videoId : ", videoId);
   if (!videoId) {
     throw new ApiError(404, "Video ID not fetched for Deleting Video.....");
   }
   const video = await Video.findByIdAndDelete(videoId);
+
   if (!video) {
-    throw new ApiError(404, "Video not deleted.....");
+    throw new ApiError(404, "Video deletion failed.....!");
   }
+  const deleteThumbnailFromCloudinary = await deleteFromCloudinary(
+    video.thumbnail_cloudinary_public_id
+  );
+  const deleteVideoFileFromCloudinary = await deleteFromCloudinary(
+    video.videoFile_cloudinary_public_id
+  );
+
+  if (!deleteVideoFileFromCloudinary || !deleteThumbnailFromCloudinary) {
+    console.log("Resources are not yet deleted from Cloudinary");
+    throw new ApiError(402,'Resources are not yet deleted from Cloudinary')
+  }
+  
+  const comments = await Comment.deleteMany({
+    video: videoId,
+  });
+
+  if (!comments) {
+    throw new ApiError(404, "Comments deletion failed for video.....!");
+  }
+
+  const likes = await Like.deleteMany({
+    video: videoId,
+  });
+  if (!likes) {
+    throw new ApiError(404, "Likes documents deletion failed for video.....!");
+  }
+
+  const response = { video, comments, likes };
+
   return res.json(
-    new ApiResponse(201, video, "Video deleted successfully.....!")
+    new ApiResponse(201, response, "Video deleted successfully.....!")
   );
 });
 
@@ -483,42 +520,49 @@ const removeWatchLaterVideos = AsyncHandler(async (req, res) => {
 const allWatchLaterVideos = AsyncHandler(async (req, res) => {
   const { userId } = req.params;
   const userID = new mongoose.Types.ObjectId(userId);
-  if(!userID){
-    throw new ApiError(401,'User ID not Found.....!');
+  if (!userID) {
+    throw new ApiError(401, "User ID not Found.....!");
   }
   const watchLaterVideos = await User.aggregate([
     {
-      $match:{
-        _id:userID
-      }
+      $match: {
+        _id: userID,
+      },
     },
     {
-      $lookup:{
-        from:"videos",
-        localField:"watchLater",
-        foreignField:"_id",
-        as:"watchLaterVideos"
-      }
+      $lookup: {
+        from: "videos",
+        localField: "watchLater",
+        foreignField: "_id",
+        as: "watchLaterVideos",
+      },
     },
     {
-      $addFields:{
-        watchLaterVideos:"$watchLaterVideos"
-      }
+      $addFields: {
+        watchLaterVideos: "$watchLaterVideos",
+      },
     },
     {
-      $project:{
-        fullname:1,
-        username:1,
-        avatar:1,
-        coverImage:1,
-        watchLaterVideos:1,
-      }
-    }
-  ])
+      $project: {
+        fullname: 1,
+        username: 1,
+        avatar: 1,
+        coverImage: 1,
+        watchLaterVideos: 1,
+      },
+    },
+  ]);
   return res.json(
-    new ApiResponse(203,watchLaterVideos[0],`All the Watch later videos are fetched by ${req.user.username || "User."}`)
-  )
+    new ApiResponse(
+      203,
+      watchLaterVideos[0],
+      `All the Watch later videos are fetched by ${
+        req.user.username || "User."
+      }`
+    )
+  );
 });
+
 export {
   publishVideo,
   getVideo,
@@ -527,5 +571,5 @@ export {
   updateViews,
   watchLatervideos,
   removeWatchLaterVideos,
-  allWatchLaterVideos
+  allWatchLaterVideos,
 };

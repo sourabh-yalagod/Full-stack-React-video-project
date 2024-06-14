@@ -5,6 +5,7 @@ import {
   changeAvatar,
   changeCoverImage,
   changePassword,
+  deleteUserAccount,
   getUser,
   getUserProfile,
   handleSubscribers,
@@ -39,5 +40,6 @@ router.route("/watch-history/:userId").get(verifyAuth,watchHistory);
 router.route("/watch-later").post(verifyAuth,watchLatervideos);
 router.route("/remove-watch-later-video").patch(verifyAuth,removeWatchLaterVideos);
 router.route("/all-watch-later-videos/:userId").get(verifyAuth,allWatchLaterVideos);
+router.route("/delete-user-account/:userId").delete(verifyAuth,deleteUserAccount);
 
 export default router;

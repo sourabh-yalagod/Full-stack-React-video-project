@@ -19,3 +19,12 @@ export const uploadOnCloudinary = async (fileLink) => {
     return error;
   }
 };
+export const deleteFromCloudinary = async (file_public_id) => {
+  if(!file_public_id) return null
+  try {
+    const response = await cloudinary.uploader.destroy(file_public_id)
+    return response
+  } catch (error) {
+    console.log("Error from deleting the resources from cloudinary....! : ",error);
+  }
+};

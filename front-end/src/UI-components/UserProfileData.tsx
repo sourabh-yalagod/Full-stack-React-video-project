@@ -25,9 +25,9 @@ export function UserProfileData({data}:any) {
           <li className="underline flex gap-2 items-center">Fullname : {data.fullname || <Loader2 className="animate-spin"/>}</li>
           <li className="underline flex gap-2 items-center">UserName : {data.username || <Loader2 className="animate-spin"/>}</li>
           <li className="underline flex gap-2 items-center">Email : {data.email || <Loader2 className="animate-spin"/>}</li>
-          <li className="underline flex gap-2 items-center">Total Subscribers : {data.subscribers || <Loader2 className="animate-spin"/>}</li>
-          <li className="text-xl flex gap-2 mr-7 text-white"><ThumbsUp/>Total Likes : {data.likes || <Loader2 className="animate-spin"/>}</li>
-          <li className="text-xl flex gap-2 mr-7 text-white"><MessageSquareIcon/>Total Comments : {data.comments || <Loader2 className="animate-spin"/>}</li>
+          <li className="underline flex gap-2 items-center">Total Subscribers : {data.subscribers ?? "0" ?? <Loader2 className="animate-spin"/>}</li>
+          <li className="text-xl flex gap-2 mr-7 text-white"><ThumbsUp/>Total Likes : {data.likes ?? "0" ?? <Loader2 className="animate-spin"/>}</li>
+          <li className="text-xl flex gap-2 mr-7 text-white"><MessageSquareIcon/>Total Comments : {data.comments ?? "0" ?? <Loader2 className="animate-spin"/>}</li>
         </ul>
         <DrawerFooter className="w-full flex items-center justify-around">
           <DrawerClose asChild>

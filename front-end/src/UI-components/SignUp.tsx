@@ -54,6 +54,7 @@ const SignUp = () => {
       console.log(formData);
       const response = await axios.post("/api/v1/users/register",formData);
       console.log(response.data.data);
+
       const user:User = {
         id:response?.data.data._id,
         username:response?.data.data.username,

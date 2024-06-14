@@ -2,12 +2,17 @@ import { ApiError } from "../utilities/ApiError.js";
 import { ApiResponse } from "../utilities/ApiResponse.js";
 import { AsyncHandler } from "../utilities/AsyncHandler.js";
 import { User } from "../models/user.model.js";
-import { uploadOnCloudinary } from "../middlewares/cloudinary.middleware.js";
+import {
+  deleteFromCloudinary,
+  uploadOnCloudinary,
+} from "../middlewares/cloudinary.middleware.js";
 import { Options } from "../utilities/options.js";
-import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import { Subscription } from "../models/subscription.model.js";
+import { Video } from "../models/video.model.js";
+import { Comment } from "../models/comment.model.js";
+import { Like } from "../models/like.model.js";
 
 const getToken = async (userId) => {
   try {
@@ -47,7 +52,6 @@ const RegisterUser = AsyncHandler(async (req, res) => {
       `${(username || email).toUpperCase()} - named User already Exist.....`
     );
   }
-  console.log(req.files);
   const avatarFile = req.files?.avatar[0]?.path;
   let coverImageFile = req.files?.coverImage[0]?.path;
 
@@ -62,14 +66,15 @@ const RegisterUser = AsyncHandler(async (req, res) => {
   if (!avatar.url) {
     throw new ApiError(401, "Avatar image is not on Cloudinary.....!");
   }
-  console.log(avatar);
-  console.log(coverImageFile);
+
   const user = await User.create({
     fullname,
     username,
     email,
     password,
     avatar: avatar.url,
+    avatar_cloudinary_public_id: avatar?.public_id,
+    coverImage_cloudinary_public_id: coverImageFile?.public_id,
     coverImage: coverImageFile.url,
   });
 
@@ -80,7 +85,7 @@ const RegisterUser = AsyncHandler(async (req, res) => {
   if (!newUser) {
     throw new ApiError(500, "new User not created");
   }
-
+  console.log("New User : ", newUser);
   return res
     .status(201)
     .json(
@@ -277,6 +282,11 @@ const updateAccount = AsyncHandler(async (req, res) => {
 });
 
 const changeAvatar = AsyncHandler(async (req, res) => {
+  const existinguser = req.user;
+
+  if (!existinguser) {
+    throw new ApiError(401, "user not found for avatar change.....!");
+  }
   const newAvatarFile = req.files?.avatar[0]?.path || req.file.path;
   if (!newAvatarFile) {
     throw new ApiError(401, "Avatar is not Recevied as an Input.....!");
@@ -291,6 +301,7 @@ const changeAvatar = AsyncHandler(async (req, res) => {
     {
       $set: {
         avatar: avatar.url,
+        avatar_cloudinary_public_id: avatar.public_id,
       },
     },
     { new: true }
@@ -300,6 +311,13 @@ const changeAvatar = AsyncHandler(async (req, res) => {
       401,
       "User not Found while changing the Avatar File.....!"
     );
+  }
+  const deleteOldAvatar = await deleteFromCloudinary(
+    existinguser.avatar_cloudinary_public_id
+  );
+
+  if (!deleteOldAvatar) {
+    throw new ApiError(401, "Deleting the old image process failed....!");
   }
   console.log(user);
 
@@ -313,6 +331,12 @@ const changeAvatar = AsyncHandler(async (req, res) => {
 });
 
 const changeCoverImage = AsyncHandler(async (req, res) => {
+  const existinguser = req.user;
+
+  if (!existinguser) {
+    throw new ApiError(401, "user not found for avatar change.....!");
+  }
+
   const newCoverImage = req.file.path || "";
   if (!newCoverImage) {
     throw new ApiError(401, "New CoverImage has not received from Client");
@@ -329,6 +353,7 @@ const changeCoverImage = AsyncHandler(async (req, res) => {
     {
       $set: {
         coverImage: coverImage.url,
+        coverImage_cloudinary_public_id: coverImage.public_id,
       },
     },
     { new: true }
@@ -339,7 +364,13 @@ const changeCoverImage = AsyncHandler(async (req, res) => {
       "user not Found while changing the User Cover-Image"
     );
   }
+  const deleteOldCoverImage = await deleteFromCloudinary(
+    existinguser.coverImage_cloudinary_public_id
+  );
 
+  if (!deleteOldCoverImage) {
+    throw new ApiError(401, "Deleting the old image process failed....!");
+  }
   return res.json(
     new ApiResponse(
       203,
@@ -426,45 +457,47 @@ const getUserProfile = AsyncHandler(async (req, res) => {
 });
 
 const watchHistory = AsyncHandler(async (req, res) => {
-  const {userId} = req.params;
+  const { userId } = req.params;
   const userID = new mongoose.Types.ObjectId(userId);
-  if(!userID){
-    throw new ApiError(404,'User ID not found for watchHistory fetch.....!');
+  if (!userID) {
+    throw new ApiError(404, "User ID not found for watchHistory fetch.....!");
   }
   const watchedVideos = await User.aggregate([
     {
-      $match:{
-        _id:userID
-      }
+      $match: {
+        _id: userID,
+      },
     },
     {
-      $lookup:{
-        from:"videos",
-        localField:"watchHistory",
-        foreignField:"_id",
-        as:"videos"
-      }
+      $lookup: {
+        from: "videos",
+        localField: "watchHistory",
+        foreignField: "_id",
+        as: "videos",
+      },
     },
     {
-      $addFields:{
-        videos:"$videos"
-      }
+      $addFields: {
+        videos: "$videos",
+      },
     },
     {
-      $project:{
-        fullname:1,
-        username:1,
-        avatar:1,
-        watchHistory:1,
-        videos:1
-      }
-    }
-  ])
+      $project: {
+        fullname: 1,
+        username: 1,
+        avatar: 1,
+        watchHistory: 1,
+        videos: 1,
+      },
+    },
+  ]);
   return res.json(
     new ApiResponse(
-      201,watchedVideos[0],'All the videos are fethced successfully.......!'
+      201,
+      watchedVideos[0],
+      "All the videos are fethced successfully.......!"
     )
-  )
+  );
 });
 
 const handleSubscribers = AsyncHandler(async (req, res) => {
@@ -473,11 +506,13 @@ const handleSubscribers = AsyncHandler(async (req, res) => {
   if (!userId || !ChannelId) {
     throw new ApiError(401, "UserId OR ChannelId not found.....!");
   }
-  const subStatus = await Subscription.findOne({ subscriber: userId , channel:ChannelId });
+  const subStatus = await Subscription.findOne({
+    subscriber: userId,
+    channel: ChannelId,
+  });
 
-  console.log("Already Subscribers : ",subStatus);
+  console.log("Already Subscribers : ", subStatus);
 
-  
   const subsModelId = new mongoose.Types.ObjectId(subStatus?._id);
   if (subStatus) {
     const resp = await Subscription.findByIdAndDelete(subsModelId);
@@ -489,7 +524,7 @@ const handleSubscribers = AsyncHandler(async (req, res) => {
     channel: ChannelId,
     subscriber: userId,
   });
-  console.log("newSubscriber created : ",newSubscriber);
+  console.log("newSubscriber created : ", newSubscriber);
 
   return res.json(
     new ApiResponse(
@@ -498,6 +533,53 @@ const handleSubscribers = AsyncHandler(async (req, res) => {
       "Subscription Toggled Successfully....!"
     )
   );
+});
+
+const deleteUserAccount = AsyncHandler(async (req, res) => {
+  const userId = req.user._id;
+  if (!userId) {
+    throw new ApiError(401, "UserID not Found.....!");
+  }
+  const user = await User.findByIdAndDelete(userId);
+  console.log("USER from delete user Controller : ", user);
+  if (!user) {
+    throw new ApiError(401, "User not deleted");
+  }
+  const deleteAvatarFromCloudinary = await deleteFromCloudinary(
+    user.avatar_cloudinary_public_id
+  );
+  const deleteCoverImageFromCloudinary = await deleteFromCloudinary(
+    user.coverImage_cloudinary_public_id
+  );
+  if (!deleteAvatarFromCloudinary || !deleteCoverImageFromCloudinary) {
+    throw new ApiError(
+      402,
+      "failed to delete avatar and cover images from Cloudinary"
+    );
+  }
+  const deleteVideo = await Video.deleteMany({ owner: userId });
+  const deleteComments = await Comment.deleteMany({ userId: userId });
+  const deleteLikes = await Like.deleteMany({ userId: userId });
+  const deleteSubscription = await Subscription.deleteMany({
+    $or: [{ channel: userId }, { subscriber: userId }],
+  });
+
+  if (!deleteComments || !deleteVideo || !deleteLikes || !deleteSubscription) {
+    throw new ApiError(
+      401,
+      "All the Likes , comments , videos and subscription activity are not deleted Yet......!"
+    );
+  }
+  return res
+    .clearCookie("accessToken")
+    .clearCookie("refreshToken")
+    .json(
+      new ApiResponse(
+        201,
+        user,
+        `${user.username} with ${user._id} is deleted Successfully.....!`
+      )
+    );
 });
 
 export {
@@ -513,4 +595,5 @@ export {
   getUserProfile,
   watchHistory,
   handleSubscribers,
+  deleteUserAccount,
 };

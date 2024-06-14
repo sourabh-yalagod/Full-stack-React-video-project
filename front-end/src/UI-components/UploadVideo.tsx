@@ -7,8 +7,9 @@ import axios, { AxiosError } from "axios";
 import { Loader2, Upload } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 
-const SignUp = () => {
-  const navigate = useNavigate()
+
+const UploadVideo = () => {
+  const navigate = useNavigate();
   const [isUploading, setIsUploading] = useState(false);
 
   const videoUploadSchema = z.object({
@@ -18,7 +19,11 @@ const SignUp = () => {
     videoFile: z.any(),
   });
 
-  const { register , handleSubmit , formState: { errors } } = useForm({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     resolver: zodResolver(videoUploadSchema),
     defaultValues: {
       title: "",
@@ -27,34 +32,34 @@ const SignUp = () => {
       videoFile: "",
     },
   });
+  const formdata = new FormData();
+
 
   const onSubmit = async (data: z.infer<typeof videoUploadSchema>) => {
     setIsUploading(true);
     try {
-      const formdata = new FormData();
-    
+      
       formdata.append("title", data.title);
       formdata.append("description", data.description);
       formdata.append("videoFile", data.videoFile[0]);
       formdata.append("thumbnail", data.thumbnail[0]);
 
-      const response = await axios.post("/api/v1/videos/upload-video", formdata);
+      const response = await axios.post(
+        "/api/v1/videos/upload-video",
+        formdata
+      );
       console.log(response);
+      const id = response.data.data.owner;
       
-      const id = response.data.data.owner
-      
-      localStorage.setItem('user',(response.data.data.owner))
-      
-      navigate(`/signin/user-profile/${id}`)
-    } 
-    catch (error) {
-      const err = error as AxiosError;
-      
+      localStorage.setItem("user", response.data.data.owner);
+      navigate(`/signin/user-profile/${id}`);
+      } catch (error) {
+        const err = error as AxiosError;
+
       const errorMessage =
         err.message ||
         "User account creation failed due to some reasons. Please check again.";
-      console.log("ERROR :",errorMessage);
-
+      console.log("ERROR :", errorMessage);
     } finally {
       setIsUploading(false);
     }
@@ -62,12 +67,12 @@ const SignUp = () => {
 
   return (
     <div className="min-h-screen grid place-items-center uploadVideo">
-      <div className="text-white border-2 min-w-[350px] w-full max-w-[450px] sm:min-w-sm rounded-lg p-6">
-        <h1 className="text-center text-5xl underline py-5 mb-3">
+      <div className="text-white border-2 min-w-[350px] w-full max-w-[450px] sm:min-w-sm rounded-xl py-7 grid place-items-center">
+        <h1 className="text-center text-5xl underline py-5">
           Upload Video
         </h1>
         <form
-          className="space-y-8 w-full grid place-content-between"
+          className="space-y-7 w-full grid justify-around"
           onSubmit={handleSubmit(onSubmit)}
           method="post"
         >
@@ -86,21 +91,21 @@ const SignUp = () => {
             <span className="text-red-500">{errors.title.message}</span>
           )}
 
-          <div className="grid justify-between">
+          <div className="grid justify-between w-full">
             <label htmlFor="description" className="text-[18px]">
               Description:
             </label>
             <textarea
               id="description"
               {...register("description")}
-              className="bg-transparent border-b-2 outline-none min-w-[350px] w-full text-[15px] border-slate-700 border-[1px] rounded-sm"
+              className="bg-transparent border-b-2 w-full outline-none min-w-[350px] text-[15px] border-slate-700 border-[1px] rounded-sm"
             />
           </div>
           {errors.description && (
             <span className="text-red-500">{errors.description.message}</span>
           )}
 
-          <div className="flex justify-between">
+          <div className="flex gap-4 justify-between">
             <label htmlFor="thumbnail" className="text-[18px]">
               Thumbnail :
             </label>
@@ -115,9 +120,9 @@ const SignUp = () => {
             <span className="text-red-500">{errors.thumbnail.message}</span>
           )}
 
-          <div className="flex justify-between">
+          <div className="flex gap-4 justify-between">
             <label htmlFor="videoFile" className="text-[18px]">
-              Video :
+              Video File :
             </label>
             <input
               type="file"
@@ -129,22 +134,22 @@ const SignUp = () => {
           {errors.videoFile && (
             <span className="text-red-500">{errors.videoFile.message}</span>
           )}
-          <div className="flex w-full justify-around">
+          <div className="flex w-full justify-around items-center">
             <NavLink
-              className="bg-red-500 text-center hover:bg-blue-700 outline-none border-slate-700 ml-3 font-bold py-2 px-4 mt-4"
+              className="bg-red-500 text-center hover:bg-blue-700 outline-none border-slate-700 font-bold py-2 px-4 "
               to="/"
             >
               Back
             </NavLink>
             <NavLink
-              className="bg-green-500  text-center hover:bg-blue-700 outline-none border-slate-700 ml-3 font-bold py-2 px-4 rounded mt-4"
-              to={`/signin/user-profile/${localStorage.getItem('userId')}`}
+              className="bg-green-500  text-center hover:bg-blue-700 outline-none border-slate-700 font-bold py-2 px-4 rounded "
+              to={`/signin/user-profile/${localStorage.getItem("userId")}`}
             >
               Profile
             </NavLink>
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-700 outline-none border-slate-700 ml-3 font-bold py-2 px-4 rounded mt-4"
+              className="bg-blue-500 hover:bg-blue-700 outline-none border-slate-700 font-bold py-2 px-4 rounded "
             >
               {isUploading ? (
                 <Loader2 className="animate-spin" />
@@ -160,4 +165,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default UploadVideo;

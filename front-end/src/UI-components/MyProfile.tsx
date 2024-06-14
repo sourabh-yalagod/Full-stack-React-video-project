@@ -5,8 +5,11 @@ import {
   Bell,
   EllipsisVertical,
   Loader2,
+  NotebookPen,
   NutOffIcon,
+  Upload,
   Verified,
+  Video,
 } from "lucide-react";
 import { UserProfileData } from "./UserProfileData";
 import { calclulateVideoTime } from "./CalculateTime";
@@ -30,7 +33,9 @@ const MyProfile = () => {
   const [apiResponse, setApiResponse]: any = useState("");
   const [subscribe, setSubscribe]: any = useState(false);
   const [loading, setLoading]: any = useState(false);
-  const [error, setError]: any = useState("");
+  const [error, setError]: any = useState(null);
+  const [isloading, setIsloading] = useState(false);
+
   const { userId } = useParams();
   console.log(userId);
 
@@ -76,12 +81,28 @@ const MyProfile = () => {
     }
   }, [subscribe]);
 
+  const deleteVideo = async (videoId:any) => {
+    setIsloading(true);
+    setError("");
+    try {
+      const response = await axios.delete(`/api/v1/videos/delete-video/${videoId}`)
+      console.log("Response from Delete Operation : ",response.data.data);
+      
+    } catch (error) {
+      const axiosError = error as AxiosError;
+      setError(axiosError);
+      alert(error)
+      console.log("Error : ", error ?? "Error while API request...!");
+    } finally {
+      setIsloading(false)
+    }
+  };
   if (error) {
     return (
       <div className="w-full h-screen grid place-items-center">
         <h1 className="text-white text-center flex gap-2">
           <NutOffIcon />
-          {error.message}
+          {error}
         </h1>
       </div>
     );
@@ -145,6 +166,13 @@ const MyProfile = () => {
       </div>
 
       <div className="mt-5 md:mt-4 w-full min-h-auto grid place-items-center px-5">
+        <button
+          onClick={() => navigate("/signin/upload-video")}
+          className="flex absolute top-0 right-0 gap-4 text-[15px] items-center bg-black text-white px-3 py-2 rounded-xl hover:scale-105 transition-all"
+        >
+          <Upload />
+          Video
+        </button>
         {apiResponse?.videos?.length > 0 ? (
           <ul
             className="grid space-y-1 place-items-start justify-center w-full min-h-screen 
@@ -170,19 +198,26 @@ const MyProfile = () => {
                       <DropdownMenuTrigger className="text-white absolute right-2 bottom-2">
                         <EllipsisVertical className="outline-none" />
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent className="text-white p-3 space-y-2 grid border-white rounded-xl text-center w-fit mr-8">
-                        <div className="px-2 py-1 rounded-xl bg-slate-900 hover:bg-blue-600 hover:scale-95 transition-all pb-2 active:bg-blue-800">
-                          save to watch later
+                      <DropdownMenuContent className="text-white text-[13px] grid space-y-1 border-slate-600 bg-opacity-50 cursor-pointer rounded-[7px] bg-slate-900 text-center w-fit mr-8 p-0">
+                        <div className="px-2 py-1 m-1 rounded-[9px] grid place-items-center transition-all pb-2 hover:bg-slate-800">
+                          Save to watch-later
                         </div>
-                        <div className="px-2 py-1 rounded-xl hover:bg-red-600 bg-slate-900 hover:scale-95 transition-all pb-2 active:bg-blue-800">
-                          delete video
-                        </div>
+                        {userId == localStorage.getItem("userId") ? (
+                          <div
+                            onClick={() => deleteVideo(video._id)}
+                            className="px-2 py-1 m-1 grid place-items-center rounded-[9px] transition-all pb-2 hover:bg-slate-800"
+                          >
+                            {isloading ? <Loader2 className="animate-spin"/> : "Delete video"}
+                          </div>
+                        ) : (
+                          ""
+                        )}
                         <a
                           type="download"
-                          className="px-2 py-1 rounded-xl hover:bg-blue-600 hover:scale-95 bg-slate-900 transition-all pb-2 active:bg-blue-800"
+                          className="px-2 py-1 m-1 rounded-[9px] grid place-items-center transition-all pb-2 hover:bg-slate-800"
                           href={video.videoFile}
                         >
-                          download
+                          Download
                         </a>
                       </DropdownMenuContent>
                     </DropdownMenu>
@@ -196,7 +231,11 @@ const MyProfile = () => {
                       alt="Avatar"
                     />
                     <div className="text-white grid place-items-start text-[15px] ml-2 overflow-hidden">
-                      <p>{video.title.length > 25 ? `${video.title.slice(0, 25)}. . . .` : `${video.title}`}</p>
+                      <p>
+                        {video.title.length > 25
+                          ? `${video.title.slice(0, 25)}. . . .`
+                          : `${video.title}`}
+                      </p>
                       <div className="flex gap-3 text-[12px]">
                         <p className="text-slate-600 ">
                           {apiResponse.username}
@@ -220,9 +259,20 @@ const MyProfile = () => {
             })}
           </ul>
         ) : (
-          <p className="text-3xl text-center text-white">
+          <div className="text-xl grid gap-8 justify-center place-items-center text-center text-white">
             <Loader2 className="text-white text-8xl text-center animate-spin mt-10" />
-          </p>
+            <p className="flex items-center gap-3">
+              <NotebookPen />
+              No videos Found . . . . . .!
+            </p>
+            <button
+              onClick={() => navigate("/signin/upload-video")}
+              className="flex gap-4 text-[17px] items-center bg-slate-600 px-3 py-1 rounded-xl hover:scale-105 transition-all"
+            >
+              <Video />
+              Upload Video
+            </button>
+          </div>
         )}
       </div>
     </div>
