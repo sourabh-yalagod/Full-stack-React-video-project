@@ -40,16 +40,18 @@ export function SideMenuBar() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button className="text-white focus:outline-none focus:ring-2 focus:ring-offset-2">
+        <Button className="text-white focus:outline-none focus:ring-2 focus:ring-offset-2 absolute top-2 left-2 z-10">
           <LucideMenu />
         </Button>
       </SheetTrigger>
       <SheetContent className="bg-slate-900 bg-opacity-40 max-w-[250px] w-full text-white sm:max-w-[290px] md:max-w-[320px] lg:max-w-[350px]">
         <SheetHeader>
           <SheetTitle className="flex items-center w-full justify-around text-[15px] sm:text-xl">
-            <div className="flex gap-5 cursor-pointer hover:scale-105 transition-all">
-            <Home />
-            <p>Home</p>
+            <div 
+            onClick={()=>navigate('/')}
+            className="flex gap-5 cursor-pointer hover:scale-105 transition-all">
+              <Home />
+              <p>Home</p>
             </div>
             <div className="mr-4 lg:mr-12 text-[12px] sm:text-[15px] mx-1 font-semibold cursor-pointer hover:scale-105 transition-all">
               {!localStorage.getItem("accessToken") ? (
@@ -74,7 +76,7 @@ export function SideMenuBar() {
         <div className="grid min-h-auto justify-around py-4 gap-4 overflow-clip text-white">
           <div
             className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
-            onClick={() => navigate("signup")}
+            onClick={() => navigate("/signup")}
           >
             <UserCheck2 className="w-6 h-6" />
             <span>Create Account</span>

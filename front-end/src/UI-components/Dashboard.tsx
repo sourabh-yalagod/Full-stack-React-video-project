@@ -157,6 +157,7 @@ const Dashboard = () => {
   window.addEventListener("keyup", (e) => {
     if (searchQuery) if (e.key == "Enter") handleSearch();
   });
+  
   return (
     <div className="min-h-screen w-full grid relative place-items-center mx-auto">
       <div className="min-h-screen w-full p-2 grid place-items-center">
@@ -200,14 +201,13 @@ const Dashboard = () => {
         <div className="mt-8 w-full min-h-screen flex items-center">
           {result.length > 0 ? (
             <ul
-              className="grid justify-start place-content-start min-h-screen space-y-2 w-full
-            sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-2 md:m-3 md:min-w-1/3"
+              className="flex justify-center flex-wrap gap-3 py-5"
             >
               {result.map((video: any) => {
                 return (
                   <div
-                    key={Math.random()}
-                    className="relative z-20 bg-[#212121] min-w-[290px] sm:min-w-1/2 sm:min-w-1/3 p-2 gap-2 rounded-2xl md:min-w-[250px] md:w-full  overflow-hidden"
+                    key={video._id}
+                    className="flex-1 min-w-[320px] border-slate-700 p-2 rounded-xl border-[1px] relative"
                   >
                     {/* video projection */}
                     <div className="relative">

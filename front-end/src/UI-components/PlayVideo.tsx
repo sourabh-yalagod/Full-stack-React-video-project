@@ -2,6 +2,7 @@ import axios, { AxiosError } from "axios";
 import {
   Bell,
   Clipboard,
+  Edit,
   Edit2,
   EditIcon,
   Eye,
@@ -247,64 +248,6 @@ const PlayVideo = () => {
     <div className="w-full grid p-1">
       {/* this is the video and controllers Div */}
       <div className="w-full max-w-4xl md:mt-14 mx-auto bg-black group relative">
-        <Dialog>
-          <DialogTrigger asChild>
-            <button className="text-white absolute z-0 right-1 p-2 hover:scale-95 transition-all opacity-85 hover:opacity-100 bg-slate-700 rounded-full">
-              <Edit2 />
-            </button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] text-white rounded-xl bg-opacity-50 bg-slate-900">
-            <DialogHeader>
-              <DialogTitle>Edit video</DialogTitle>
-              <DialogDescription>
-                Make changes to your profile here. Click save when you're done.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4">
-              <div className="grid gap-1 underline">
-                <label htmlFor="title" className="text-[17px]">
-                  Title
-                </label>
-                <input
-                  id="title"
-                  value={newTitle}
-                  onChange={(e) => setNewTitle(e.target.value)}
-                  className="w-full min-w-[200px] bg-transparent border-[1px] rounded-xl outline-none p-1 pl-2"
-                />
-              </div>
-              <div className="grid gap-1 underline">
-                <label htmlFor="description" className="text-[17px]">
-                  Description
-                </label>
-                <textarea
-                  id="description"
-                  value={newDescription}
-                  onChange={(e) => setNewDescription(e.target.value)}
-                  className="w-full min-w-[200px] bg-transparent border-[1px] rounded-xl outline-none p-1 pl-2"
-                />
-              </div>
-              <div className="grid gap-1 underline">
-                <label htmlFor="thumbnail" className="text-[17px]">
-                  Thumbnail
-                </label>
-                <input
-                  id="thumbnail"
-                  onChange={(e) => setNewThumbnail(e.target.files)}
-                  type="file"
-                  className="w-auto bg-transparent border-[1px] rounded-xl outline-none p-1 pl-2"
-                />
-              </div>
-            </div>
-            <DialogFooter>
-              <button
-                onClick={() => handleVideoUpdate()}
-                className="w-full p-2 rounded-xl border-[1px]"
-              >
-                Save Changs
-              </button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
         <video
           ref={videoRef}
           src={apiResponse?.videoFile}
@@ -354,7 +297,7 @@ const PlayVideo = () => {
         </div>
       </div>
       {/* this is the subscription display Div */}
-      <div className="flex w-full bg-slate-800 my-1 rounded-xl p-1 gap-3 text-white items-center justify-center">
+      <div className="flex w-full bg-slate-800 my-1 rounded-xl p-1 gap-2 text-white items-center justify-center">
         <div className="flex w-full items-center justify-around gap-10">
           <div className="flex items-center gap-2 justify-between relative">
             <img
@@ -396,10 +339,10 @@ const PlayVideo = () => {
         </div>
       </div>
       {/* video figures */}
-      <div className="w-full px-3 py-1 my-1 flex items-center justify-around border-[1px] border-slate-700 rounded-xl">
-        <div className="flex gap-4 text-white">
+      <div className="w-full flex gap-2 p-1 items-center justify-around border-[1px] text-[11px] text-slate-600 border-slate-700 rounded-xl">
+        <div className="">
           <p onClick={() => handleLikes()} className="flex gap-1">
-            <ThumbsUp className="" />
+            <ThumbsUp className="size-5" />
             {apiResponse?.totalLikes[0]?.likes || "0"}
           </p>
         </div>
@@ -409,25 +352,86 @@ const PlayVideo = () => {
               .writeText(apiResponse.videoFile)
               .then(() => console.log("Copied"))
           }
-          className="flex items-center gap-2 text-white hover:scale-105 transition-all cursor-pointer"
+          className="grid place-items-center hover:scale-105 transition-all cursor-pointer"
         >
-          <Clipboard />
+          <Clipboard className="size-5" />
           <p>( Video URL )</p>
         </div>
         <div
           onClick={() => addToWatchLater(videoId)}
-          className="flex gap-1 border-[1px] p-1 sm:text-[15px] sm:py-3 sm:px-1 text-[11px] border-slate-700 rounded-xl items-center text-white hover:scale-95 transition-all cursor-pointer"
+          className="grid place-items-center gap-1 border-[1px] p-2 sm:py-3 sm:px-1 border-slate-700 rounded-xl items-center hover:scale-95 transition-all cursor-pointer"
         >
-          <Eye />
           <p>
             {isloading ? (
               <Loader2Icon className="animate-spin" />
             ) : (
-              "add to watch later"
+              `add to watch later`
             )}
           </p>
         </div>
-        <p className="text-[13px] text-slate-400">
+        {apiResponse.owner == localStorage.getItem('userId') ? <p className="grid place-items-center ">
+          <Dialog>
+            <DialogTrigger asChild>
+              <button className="gap-1">
+                <Edit className="size-5"/>Edit
+              </button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px] text-white rounded-xl bg-opacity-50 bg-slate-900">
+              <DialogHeader>
+                <DialogTitle>Edit video</DialogTitle>
+                <DialogDescription>
+                  Make changes to your profile here. Click save when you're
+                  done.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="grid gap-4">
+                <div className="grid gap-1 underline">
+                  <label htmlFor="title" className="text-[17px]">
+                    Title
+                  </label>
+                  <input
+                    id="title"
+                    value={newTitle}
+                    onChange={(e) => setNewTitle(e.target.value)}
+                    className="w-full min-w-[200px] bg-transparent border-[1px] rounded-xl outline-none p-1 pl-2"
+                  />
+                </div>
+                <div className="grid gap-1 underline">
+                  <label htmlFor="description" className="text-[17px]">
+                    Description
+                  </label>
+                  <textarea
+                    id="description"
+                    value={newDescription}
+                    onChange={(e) => setNewDescription(e.target.value)}
+                    className="w-full min-w-[200px] bg-transparent border-[1px] rounded-xl outline-none p-1 pl-2"
+                  />
+                </div>
+                <div className="grid gap-1 underline">
+                  <label htmlFor="thumbnail" className="text-[17px]">
+                    Thumbnail
+                  </label>
+                  <input
+                    id="thumbnail"
+                    onChange={(e) => setNewThumbnail(e.target.files)}
+                    type="file"
+                    className="w-auto bg-transparent border-[1px] rounded-xl outline-none p-1 pl-2"
+                  />
+                </div>
+              </div>
+              <DialogFooter>
+                <button
+                  onClick={() => handleVideoUpdate()}
+                  className="w-full p-2 rounded-xl border-[1px]"
+                >
+                  Save Changs
+                </button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </p>:""}
+        <p className="grid place-items-center ">
+          <Eye className="size-5" />
           Views - {apiResponse?.views}
         </p>
       </div>
@@ -449,19 +453,19 @@ const PlayVideo = () => {
         </p>
       </ScrollArea>
       {/* Comments displayed using map method */}
-      <ScrollArea className="w-full text-white mt-4 flex items-center py- h-full max-h-[250px] border-[1px] border-slate-800 rounded-xl p-1">
-        <div className="text-white text-[20px] py-4 flex w-full justify-around items-center max-w-md md:justify-start gap-5 md:ml-5">
+      <ScrollArea className="w-full text-white mt-4 grid place-items-center h-72 border-[1px] border-slate-800 rounded-xl p-1">
+        <div className="text-white text-[20px] py-4 flex w-full justify-around items-center gap-5 md:ml-5 space-y-2">
           <h1>Comments : {apiResponse?.allComments.length || "0"}</h1>
           <h1
             onClick={() => setCommentInput(!commentInput)}
             className="text-gray-400 text-sm bg-gray-800 p-1 rounded-xl flex gap-1 cursor-default"
           >
             <MessageCirclePlus />
-            Add Comment....
+            Add Comment . . . .
           </h1>
         </div>
         {commentInput ? (
-          <>
+          <div>
             <div className="flex gap-1">
               <input
                 className="w-full pl-3 max-w-md bg-transparent border-[1px] rounded-xl px-1 outline-none text-white text-sm"
@@ -477,12 +481,12 @@ const PlayVideo = () => {
                 Submit
               </button>
             </div>
-          </>
+          </div>
         ) : (
           ""
         )}
         {!(apiResponse?.allComments.length > 0) ? (
-          <div className="flex w-full justify-center gap-2 text-slate-500">
+          <div className="flex w-full justify-center gap-2 text-slate-500 items-center">
             No Comments......
             <MessageCircleHeartIcon />
           </div>
@@ -490,14 +494,15 @@ const PlayVideo = () => {
           apiResponse?.allComments.map((e: any) => (
             <div
               key={e._id}
-              className="flex border-[1px] space-y-2 md:justify-around gap-3 rounded-xl px-2 pt-6 pb-3 my-2 border-slate-700 relative"
+              // className="flex border-[1px] space-y-2 md:justify-around gap-3 rounded-xl px-2 pt-6 pb-3 my-2 border-slate-700 relative"
+              className="flex relative w-full min-w-[360px] justify-between p-2 border-[1px] border-slate-700 rounded-xl space-y-4 my-1"
             >
               <div className="min-h-2 text-gray-500 underline w-full justify-between px-3 absolute top-0 text-[12px] flex gap-3">
                 <p className="absolute right-[3%]">
                   {calclulateVideoTime(e.createdAt)}
                 </p>
               </div>
-              <div className="flex items-end gap-2 sm:items-center">
+              <div className="">
                 <img
                   className="rounded-full w-10 h-10"
                   src={
@@ -508,7 +513,7 @@ const PlayVideo = () => {
                 />
                 <p className="text-[11px]">{e.username}</p>
               </div>
-              <div className={`text-slate-50`}>
+              <div className="text-slate-50 ml-4 flex-1 w-full">
                 <p>
                   {seeMoreComment
                     ? `${e.content.substring(0, 30)}`

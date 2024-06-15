@@ -366,8 +366,9 @@ const changeCoverImage = AsyncHandler(async (req, res) => {
   }
   const deleteOldCoverImage = await deleteFromCloudinary(
     existinguser.coverImage_cloudinary_public_id
-  );
-
+  );  
+  console.log(existinguser);
+  console.log(deleteOldCoverImage);
   if (!deleteOldCoverImage) {
     throw new ApiError(401, "Deleting the old image process failed....!");
   }

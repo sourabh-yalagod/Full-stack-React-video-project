@@ -9,6 +9,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { SideMenuBar } from "./SideBarMenu";
 
 const WatchLaterVideos = () => {
   const navigate = useNavigate();
@@ -53,6 +54,7 @@ const WatchLaterVideos = () => {
       </div>
     );
   }
+
   // function to remove a video from watch later List
   const removeFromWatchLaterList = async (videoId: any) => {
     try {
@@ -77,6 +79,7 @@ const WatchLaterVideos = () => {
       setIsLoading(false);
     }
   };
+  
   // error is the API request is resulted error
   if (error) {
     return (
@@ -90,18 +93,19 @@ const WatchLaterVideos = () => {
   }
 
   return (
-    <div className="min-h-screen w-full px-3 bg-#121212">
-      <div className="mt-10 w-full min-h-auto grid place-items-center md:mt-16">
+    <div className="min-h-screen w-full px-3 bg-#121212 pt-16 relative">
+      <div>
+        <h1 className="text-center text-white text-2xl font-black">Watch Later Videos</h1>
+        <SideMenuBar />
         {apiResponse?.watchLaterVideos?.length > 0 ? (
           <ul
-            className="mt-8 grid place-items-start space-y-2 justify-center w-full min-h-screen 
-            sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-2 md:m-3 md:min-w-1/3"
+          className="flex justify-center flex-wrap gap-3 py-5"
           >
             {apiResponse?.watchLaterVideos?.map((video: any) => {
               return (
                 <div
                   key={video._id}
-                  className="relative z-20 bg-[#212121] min-w-[290px] sm:min-w-1/2 sm:min-w-1/3 p-2 gap-2 rounded-2xl md:min-w-[250px] md:w-full  overflow-hidden"
+                className="flex-1 min-w-[320px] border-slate-700 p-2 rounded-xl border-[1px] relative"
                 >
                   <div className="relative">
                     <video

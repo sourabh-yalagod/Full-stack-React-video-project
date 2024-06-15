@@ -471,12 +471,12 @@ const updateViews = AsyncHandler(async (req, res) => {
 });
 
 const watchLatervideos = AsyncHandler(async (req, res) => {
-  const { videoId } = req.body;
+  const { videoId } = req.body || req.params;
   const watchLaterVideos = await User.updateOne(
     { _id: req.user._id },
     {
       $addToSet: { watchLater: videoId },
-    }
+    },{new:true}
   );
   return res.json(
     new ApiResponse(
