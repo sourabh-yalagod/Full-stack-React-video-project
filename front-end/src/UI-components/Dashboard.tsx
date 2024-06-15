@@ -18,11 +18,12 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [error, setError]: any = useState("");
-  const [result, setResult] = useState([]);
-
+  const [result, setResult]: any = useState([]);
+  const [pages, setPages] = useState(0);
+  const [limit, setLimit] = useState(4);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
-
+  const [isloadVideos, setIsLoadVideos] = useState(true);
   // signout function
   const signOut = () => {
     localStorage.removeItem("accessToken");
@@ -50,17 +51,46 @@ const Dashboard = () => {
     }
   };
 
+  // track the user scrolling behaviour
+  // console.log("scrollHeight : ", document.documentElement.scrollHeight);
+  // console.log("innerHeight  : ", window.innerHeight);
+  // console.log("scrollTop  : ", document.documentElement.scrollTop);
+
+  window.addEventListener("scroll", () => {
+    if (
+      document.documentElement.scrollTop +
+        document.documentElement.clientHeight >=
+      document.documentElement.scrollHeight
+    ) {
+      setTimeout(() => {
+        setIsLoadVideos(true);
+        console.log("Loading Videos: ", isloadVideos);
+      }, 500);
+    }
+  });
+
   // API call to display all the video on dashboard
   useEffect(() => {
     const controller = new AbortController();
     const signal = controller.signal;
     (async () => {
       try {
-        const response = await axios.get(`/api/v1/dashboard`, {
-          signal: signal,
-        });
-        setResult(response.data)
-        console.log("Response for Dashboard : ", response.data);
+        const response = await axios.get(
+          `/api/v1/dashboard?limit=${limit}&pages=${pages}`,
+          {
+            signal: signal,
+          }
+        );
+        console.log("API request : ", result);
+
+        if (isloadVideos && response.data.length) {
+          setPages((pages) => pages + 1);
+          setResult((prev: any) => [...prev, ...response.data]);
+          console.log(pages);
+          setIsLoadVideos(false);
+        }
+        // setResult((prev: any) => [...prev, ...response.data]);
+        // console.log("Response for Dashboard : ", result);
         setError("");
         setSearchQuery("");
       } catch (error: any) {
@@ -78,19 +108,21 @@ const Dashboard = () => {
     return () => {
       controller.abort();
     };
-  }, []);
+  }, [isloadVideos]);
 
   // API call when the search input is present
-  const handleSearch = useCallback(async()=>{
-    const controller = new AbortController;
-    const signal = controller.signal
+  const handleSearch = useCallback(async () => {
+    const controller = new AbortController();
+    const signal = controller.signal;
     try {
       setIsLoading(true);
       const response = await axios.get("/api/v1/dashboard/search-video?", {
         params: { search: searchQuery },
-        signal:signal
-        });
-      {signal}
+        signal: signal,
+      });
+      {
+        signal;
+      }
       setResult(response.data.data);
       console.log("Search Response:", response.data.data);
       setError("");
@@ -102,12 +134,12 @@ const Dashboard = () => {
     } finally {
       setIsLoading(false);
     }
-    return ()=>{
-      console.log('Aborting');
-      
-      controller.abort()
-    }
-  },[searchQuery])
+    return () => {
+      console.log("Aborting");
+
+      controller.abort();
+    };
+  }, [searchQuery]);
 
   // return if the API returns some errors
   if (error) {
@@ -165,30 +197,29 @@ const Dashboard = () => {
             )}
           </div>
         </div>
-        <div className="mt-8 w-full min-h-screen grid place-items-center">
+        <div className="mt-8 w-full min-h-screen flex items-center">
           {result.length > 0 ? (
             <ul
-              className="grid place-items-start space-y-2 justify-center w-full min-h-screen 
+              className="grid justify-start place-content-start min-h-screen space-y-2 w-full
             sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-2 md:m-3 md:min-w-1/3"
             >
               {result.map((video: any) => {
                 return (
                   <div
-                    key={video._id}
+                    key={Math.random()}
                     className="relative z-20 bg-[#212121] min-w-[290px] sm:min-w-1/2 sm:min-w-1/3 p-2 gap-2 rounded-2xl md:min-w-[250px] md:w-full  overflow-hidden"
                   >
                     {/* video projection */}
                     <div className="relative">
                       <video
-                        onClick={() => navigate(`/${video._id}`)}
+                        onClick={() => navigate(`/${video?._id}`)}
                         className="w-full object-cover"
-                        poster={video.thumbnail}
-                        src={video.videoFile}
+                        poster={video?.thumbnail}
+                        src={video?.videoFile}
                       />
 
                       <div className="absolute bg-black bottom-1 px-[3px] py-[1px] rounded-lg text-center right-1 text-white">
-                        {/* {duration.hours}h {duration.minutes}m {duration.seconds}s */}
-                        {Math.floor(video.duration)}
+                        {Math.floor(video?.duration)}
                       </div>
                     </div>
 
@@ -199,7 +230,7 @@ const Dashboard = () => {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent className="text-white text-[13px] grid space-y-1 border-slate-600 bg-opacity-50 cursor-pointer rounded-[7px] bg-slate-900 text-center w-fit mr-8 p-0">
                         <div
-                          onClick={() => addToWatchLater(video._id)}
+                          onClick={() => addToWatchLater(video?._id)}
                           className="px-2 py-1 m-1 rounded-[9px] grid place-items-center transition-all pb-2 hover:bg-slate-800"
                         >
                           {isLoading ? (
@@ -211,7 +242,7 @@ const Dashboard = () => {
                         <a
                           type="download"
                           className="px-2 py-1 m-1 rounded-[9px] transition-all pb-2 hover:bg-slate-800"
-                          href={video.videoFile}
+                          href={video?.videoFile}
                         >
                           download
                         </a>
@@ -222,28 +253,30 @@ const Dashboard = () => {
                     <div className="flex items-center gap-1 w-full overflow-scroll mt-2 relative">
                       <img
                         onClick={() =>
-                          navigate(`/signin/user-profile/${video.owner._id}`)
+                          navigate(`/signin/user-profile/${video?.owner?._id}`)
                         }
                         src={
-                          video.avatar ??
-                          video.owner.avatar ??
+                          video?.avatar ??
+                          video?.owner?.avatar ??
                           "https://img.freepik.com/premium-photo/graphic-designer-digital-avatar-generative-ai_934475-9292.jpg"
                         }
                         className="w-9 h-9 rounded-full border-2 border-white"
                       />
                       <div className="grid gap-1 pl-1">
                         <p className="text-white text-[16px] ml-2 overflow-hidden">
-                          {video.title.length > 20
-                            ? `${video.title.slice(0, 20)}....`
-                            : video.title}
+                          {video?.title?.length > 20
+                            ? `${video?.title?.slice(0, 20)}....`
+                            : video?.title}
                         </p>
                         <div className="flex gap-3 text-[13px]">
                           <p className="text-slate-600 ">
-                            {video.owner.username}
+                            {video?.owner?.username}
                           </p>
-                          <p className="text-slate-600 ">views {video.views}</p>
                           <p className="text-slate-600 ">
-                            {calclulateVideoTime(video.createdAt)}
+                            views {video?.views}
+                          </p>
+                          <p className="text-slate-600 ">
+                            {calclulateVideoTime(video?.createdAt)}
                           </p>
                         </div>
                       </div>
@@ -251,11 +284,23 @@ const Dashboard = () => {
                   </div>
                 );
               })}
+              {/* <div className="h-[300px] w-full flex justify-center">
+                {!isLoading ? (
+                    <img
+                      className="w-[400px] h-[250px] animate-pulse"
+                      src="https://thethemefoundry.com/wp-content/themes/ttf-site/images/single-theme/video-thumbnail.png"
+                    />
+                ) : (
+                  ""
+                )}
+              </div> */}
             </ul>
           ) : (
-            <div className="text-3xl items-center  flex gap-4 text-center text-white">
-              <p>Loading.....</p>
-              <Loader2 className="text-white size-14 text-8xl text-center animate-spin" />
+            <div className="text-3xl items-center min-h-screen grid place-items-center gap-4 text-center text-white">
+              <div className="flex gap-4 items-center">
+                <p>Loading.....</p>
+                <Loader2 className="text-white size-14 text-8xl text-center animate-spin" />
+              </div>
             </div>
           )}
         </div>

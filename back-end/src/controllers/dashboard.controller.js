@@ -6,15 +6,18 @@ import mongoose from "mongoose";
 import { ApiError } from "../utilities/ApiError.js";
 
 const getAllvideos = AsyncHandler(async (req, res) => {
+  const limit = parseInt(req.query.limit) || 10
+  const pages = parseInt(req.query.pages) || 0
+  const skip = pages*limit
   const userWithVideos = await Video.aggregate([
     {
       $match: {
-        isPublished: true, // Optionally, filter by published videos
+        isPublished: true, 
       },
     },
     {
       $lookup: {
-        from: "users", // Collection name for the User model
+        from: "users",
         localField: "owner",
         foreignField: "_id",
         as: "owner",
@@ -41,7 +44,14 @@ const getAllvideos = AsyncHandler(async (req, res) => {
         coverImage: "$owner.coverImage",
       },
     },
+    {
+      $skip:skip 
+    },
+    {
+      $limit:limit
+    }
   ]);
+  console.log(userWithVideos);
   return res.json(userWithVideos);
 });
 
