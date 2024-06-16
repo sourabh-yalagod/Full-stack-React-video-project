@@ -241,6 +241,20 @@ const getUserInfo = AsyncHandler(async (req, res) => {
         as: "comments",
       },
     },
+    // playlist statics
+    {
+      $lookup: {
+        from: "playlists",
+        localField: "_id",
+        foreignField: "userId",
+        as: "playlist",
+      },
+    },
+    {
+      $addFields: {
+        playlist: "$playlist",
+      },
+    },
     // projecting all the values
     {
       $project: {
@@ -256,6 +270,7 @@ const getUserInfo = AsyncHandler(async (req, res) => {
         avatar: 1,
         likes: 1,
         comments: 1,
+        playlist: 1,
       },
     },
   ]);
@@ -270,3 +285,125 @@ const getUserInfo = AsyncHandler(async (req, res) => {
 });
 
 export { getUserInfo };
+
+// const getUserInfo = AsyncHandler(async (req, res) => {
+//   const { userId } = req.params;
+//   const userID = new mongoose.Types.ObjectId(userId);
+//   if (!userID) {
+//     throw new ApiError(401, "User ID not found from Params....!");
+//   }
+//   console.log("User Profile UserID : ", userID);
+//   const userProfileDetails = await User.aggregate([
+//     // subscription
+//     {
+//       $match: {
+//         _id: userID,
+//       },
+//     },
+//     {
+//       $lookup: {
+//         from: "subscriptions",
+//         localField: "_id",
+//         foreignField: "channel",
+//         as: "subscribers",
+//       },
+//     },
+//     {
+//       $lookup: {
+//         from: "subscriptions",
+//         localField: "_id",
+//         foreignField: "subscriber",
+//         as: "subscribedTo",
+//       },
+//     },
+//     // fields added related to subscription
+//     {
+//       $addFields: {
+//         subscribers: {
+//           $size: "$subscribers",
+//         },
+//         subscriberedTo: {
+//           $size: "$subscribedTo",
+//         },
+//         isSubscribed: {
+//           $cond: {
+//             if: { $in: [req.user._id, "$subscribers.subscriber"] },
+//             then: true,
+//             else: false,
+//           },
+//         },
+//       },
+//     },
+//     {
+//       $lookup: {
+//         from: "videos",
+//         localField: "_id",
+//         foreignField: "owner",
+//         as: "videos",
+//       },
+//     },
+//     // likes
+//     {
+//       $lookup: {
+//         from: "likes",
+//         localField: "_id",
+//         foreignField: "userId",
+//         pipeline: [
+//           {
+//             $group: {
+//               _id: null,
+//               totallikes: {
+//                 $sum: 1,
+//               },
+//             },
+//           },
+//         ],
+//         as: "likes",
+//       },
+//     },
+//     // comments
+//     {
+//       $lookup: {
+//         from: "comments",
+//         localField: "_id",
+//         foreignField: "userId",
+//         pipeline: [
+//           {
+//             $group: {
+//               _id: null,
+//               totalComments: {
+//                 $sum: 1,
+//               },
+//             },
+//           },
+//         ],
+//         as: "comments",
+//       },
+//     },
+//     // projecting all the values
+//     {
+//       $project: {
+//         fullname: 1,
+//         username: 1,
+//         createdAt: 1,
+//         email: 1,
+//         subscribers: 1,
+//         subscriberedTo: 1,
+//         isSubscribed: 1,
+//         videos: 1,
+//         coverImage: 1,
+//         avatar: 1,
+//         likes: 1,
+//         comments: 1,
+//       },
+//     },
+//   ]);
+//   console.log("userProfileDetails : ", userProfileDetails);
+//   return res.json(
+//     new ApiResponse(
+//       200,
+//       userProfileDetails[0],
+//       "user profile detail is fetched successfully.....!"
+//     )
+//   );
+// });

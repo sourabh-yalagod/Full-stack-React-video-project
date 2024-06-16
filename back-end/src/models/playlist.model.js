@@ -10,6 +10,13 @@ const playListSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    thumbnail: {
+      type: String,
+      required: true,
+    },
+    thumbnail_cloudinary_public_id: {
+      type: String,
+    },
     userId:{
         type: mongoose.Types.ObjectId,
         ref: "User",

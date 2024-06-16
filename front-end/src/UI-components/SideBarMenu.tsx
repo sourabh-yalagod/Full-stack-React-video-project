@@ -16,9 +16,8 @@ import {
   Upload,
   User,
   UserCheck2,
-  UserCircle,
-  UserCogIcon,
   UserRoundMinusIcon,
+  VideotapeIcon,
   View,
   ViewIcon,
 } from "lucide-react";
@@ -83,28 +82,35 @@ export function SideMenuBar() {
           </div>
           <div
             className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
-            onClick={() => navigate("signin")}
+            onClick={() => navigate("/signin")}
           >
             <User className="" />
             <label>Sign In</label>
           </div>
           <div
             className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
-            onClick={() => navigate("signin/upload-video")}
+            onClick={() => navigate("/signin/upload-video")}
           >
             <Upload className="w-6 h-6" />
             <span>Upload Video</span>
           </div>
           <div
             className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
-            onClick={() => navigate(`signin/user-profile/${userId}`)}
+            onClick={() => navigate(`/signin/video-play-lists/${localStorage.getItem('userId')}`)}
+          >
+            <VideotapeIcon className="w-6 h-6" />
+            <span>My Playlist</span>
+          </div>
+          <div
+            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
+            onClick={() => navigate(`/signin/user-profile/${userId}`)}
           >
             <Images className="w-6 h-6" />
             <span>My Profile</span>
           </div>
           <div
             className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
-            onClick={() => navigate(`signin/watch-later-videos/${userId}`)}
+            onClick={() => navigate(`/signin/watch-later-videos/${userId}`)}
           >
             <View className="w-6 h-6" />
             Watch-Later
@@ -113,7 +119,7 @@ export function SideMenuBar() {
             className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
             onClick={() =>
               navigate(
-                `signin/settings/customize-profile/${localStorage.getItem(
+                `/signin/settings/customize-profile/${localStorage.getItem(
                   "userId"
                 )}`
               )
@@ -126,7 +132,7 @@ export function SideMenuBar() {
             className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
             onClick={() =>
               navigate(
-                `signin/all-favourate-videos/${localStorage.getItem("userId")}`
+                `/signin/all-favourate-videos/${localStorage.getItem("userId")}`
               )
             }
           >
@@ -136,7 +142,7 @@ export function SideMenuBar() {
           <div
             className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
             onClick={() =>
-              navigate(`signin/watch-history/${localStorage.getItem("userId")}`)
+              navigate(`/signin/watch-history/${localStorage.getItem("userId")}`)
             }
           >
             <ViewIcon className="w-6 h-6" />

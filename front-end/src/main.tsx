@@ -20,6 +20,8 @@ import UpdateProfile from "./UI-components/UpdateProfile.tsx";
 import AllFavourateVideos from "./UI-components/AllFavourateVideos.tsx";
 import WatchHistory from "./UI-components/WatchHistory.tsx";
 import WatchLaterVideos from "./UI-components/WatchLater.tsx";
+import VideoPlaylist from "./UI-components/Playlist.tsx";
+import PlaylistVideos from "./UI-components/PlaylistVideos.tsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -31,6 +33,8 @@ const router = createBrowserRouter(
       <Route path="/signin" element={<SafeRouters />}>
         <Route path="upload-video" element={<UploadVideo />} />
         <Route path="user-profile/:userId" element={<MyProfile />} />
+        <Route path="video-play-lists/:userId" element={<VideoPlaylist />} />
+        <Route path="playlist-videos/:playlistId" element={<PlaylistVideos />} />
         <Route
           path="settings/customize-profile/:userId"
           element={<UpdateProfile />}

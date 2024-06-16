@@ -20,7 +20,7 @@ const Dashboard = () => {
   const [error, setError]: any = useState("");
   const [result, setResult]: any = useState([]);
   const [pages, setPages] = useState(0);
-  const [limit, setLimit] = useState(4);
+  const [limit, setLimit] = useState(5);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [isloadVideos, setIsLoadVideos] = useState(true);
@@ -60,12 +60,9 @@ const Dashboard = () => {
     if (
       document.documentElement.scrollTop +
         document.documentElement.clientHeight >=
-      document.documentElement.scrollHeight
+      document.documentElement.scrollHeight - 50
     ) {
-      setTimeout(() => {
         setIsLoadVideos(true);
-        console.log("Loading Videos: ", isloadVideos);
-      }, 500);
     }
   });
 
@@ -81,6 +78,7 @@ const Dashboard = () => {
             signal: signal,
           }
         );
+        setLimit(5)
         console.log("API request : ", result);
 
         if (isloadVideos && response.data.length) {
@@ -198,7 +196,7 @@ const Dashboard = () => {
             )}
           </div>
         </div>
-        <div className="mt-8 w-full min-h-screen flex items-center">
+        <div className="mt-8 w-full min-h-screen flex items-start justify-center">
           {result.length > 0 ? (
             <ul
               className="flex justify-center flex-wrap gap-3 py-5"
@@ -207,7 +205,7 @@ const Dashboard = () => {
                 return (
                   <div
                     key={video._id}
-                    className="flex-1 min-w-[320px] border-slate-700 p-2 rounded-xl border-[1px] relative"
+                    className="flex-1 min-w-[320px] max-w-[500px] border-slate-700 p-2 rounded-xl border-[1px] relative"
                   >
                     {/* video projection */}
                     <div className="relative">

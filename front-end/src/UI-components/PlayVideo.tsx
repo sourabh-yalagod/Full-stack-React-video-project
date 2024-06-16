@@ -3,7 +3,6 @@ import {
   Bell,
   Clipboard,
   Edit,
-  Edit2,
   EditIcon,
   Eye,
   Loader2Icon,

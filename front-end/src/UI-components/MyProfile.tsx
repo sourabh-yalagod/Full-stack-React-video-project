@@ -67,6 +67,27 @@ const MyProfile = () => {
     likes: apiResponse ? apiResponse?.likes[0]?.totallikes : "-",
     comments: apiResponse ? apiResponse?.comments[0]?.totalComments : "-",
   };
+
+  // function handled the adding videos to playlist
+  const addToPlaylist = async (videoId: string, playlistId: string) => {
+    console.log(videoId, playlistId);
+
+    try {
+      setIsloading(true);
+      setError("");
+      const response = await axios.patch(
+        `/api/v1/video-play-list/new-video/${videoId}/${playlistId}`
+      );
+      console.log("API Response for playlist:", response.data);
+    } catch (error) {
+      const err = error as AxiosError;
+      setError(err.message ?? "Error while API call");
+    } finally {
+      setIsloading(false);
+    }
+  };
+
+  // functio handles the subscription stistics
   const handleSubscription = useCallback(async () => {
     setSubscribe(!subscribe);
     try {
@@ -81,22 +102,27 @@ const MyProfile = () => {
     }
   }, [subscribe]);
 
-  const deleteVideo = async (videoId:any) => {
+  // handles the deleting the video
+  const deleteVideo = async (videoId: any) => {
     setIsloading(true);
     setError("");
     try {
-      const response = await axios.delete(`/api/v1/videos/delete-video/${videoId}`)
-      console.log("Response from Delete Operation : ",response.data.data);
-      
+      const response = await axios.delete(
+        `/api/v1/videos/delete-video/${videoId}`
+      );
+      console.log("Response from Delete Operation : ", response.data.data);
+      navigate(0);
     } catch (error) {
       const axiosError = error as AxiosError;
       setError(axiosError);
-      alert(error)
+      alert(error);
       console.log("Error : ", error ?? "Error while API request...!");
     } finally {
-      setIsloading(false)
+      setIsloading(false);
     }
   };
+
+  // if API results error then this component runs
   if (error) {
     return (
       <div className="w-full h-screen grid place-items-center">
@@ -108,6 +134,7 @@ const MyProfile = () => {
     );
   }
 
+  // while API process/loading this component runs
   if (loading) {
     return (
       <div className="w-full h-screen grid place-items-center">
@@ -118,6 +145,8 @@ const MyProfile = () => {
       </div>
     );
   }
+  
+  // DOM
   return (
     <div className="mx-auto w-full grid items-start">
       <div
@@ -198,7 +227,7 @@ const MyProfile = () => {
                       <DropdownMenuTrigger className="text-white absolute right-2 bottom-2">
                         <EllipsisVertical className="outline-none" />
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent className="text-white text-[13px] grid space-y-1 border-slate-600 bg-opacity-50 cursor-pointer rounded-[7px] bg-slate-900 text-center w-fit mr-8 p-0">
+                      <DropdownMenuContent className="text-white relative text-[13px] grid space-y-1 border-slate-600 bg-opacity-50 cursor-pointer rounded-[7px] bg-slate-900 text-center w-fit mr-8 p-0">
                         <div className="px-2 py-1 m-1 rounded-[9px] grid place-items-center transition-all pb-2 hover:bg-slate-800">
                           Save to watch-later
                         </div>
@@ -207,7 +236,11 @@ const MyProfile = () => {
                             onClick={() => deleteVideo(video._id)}
                             className="px-2 py-1 m-1 grid place-items-center rounded-[9px] transition-all pb-2 hover:bg-slate-800"
                           >
-                            {isloading ? <Loader2 className="animate-spin"/> : "Delete video"}
+                            {isloading ? (
+                              <Loader2 className="animate-spin" />
+                            ) : (
+                              "Delete video"
+                            )}
                           </div>
                         ) : (
                           ""
@@ -219,6 +252,28 @@ const MyProfile = () => {
                         >
                           Download
                         </a>
+                        <div className="px-2 py-1 m-1 rounded-[9px] grid place-items-center transition-all pb-2 hover:bg-slate-800">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger className="text-white">
+                              Add to playlist
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="absolute right-0 bottom-0 text-white text-[13px] grid space-y-1 border-slate-600 bg-opacity-50 cursor-pointer rounded-[7px] bg-slate-900 text-center w-fit mr-8 p-0">
+                              {apiResponse.playlist.map((list: any) => (
+                                <div
+                                  onClick={() =>
+                                    addToPlaylist(video._id, list._id)
+                                  }
+                                  className="px-2 py-1 m-1 rounded-[9px] grid place-items-center transition-all pb-2 hover:bg-slate-800"
+                                  key={list._id}
+                                >
+                                  {list.title.length > 25
+                                    ? `${list.title.slice(0, 25)}. . . .`
+                                    : `${list.title}`}
+                                </div>
+                              ))}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
                       </DropdownMenuContent>
                     </DropdownMenu>
 
