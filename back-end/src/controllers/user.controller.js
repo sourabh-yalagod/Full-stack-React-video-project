@@ -366,7 +366,7 @@ const changeCoverImage = AsyncHandler(async (req, res) => {
   }
   const deleteOldCoverImage = await deleteFromCloudinary(
     existinguser.coverImage_cloudinary_public_id
-  );  
+  );
   console.log(existinguser);
   console.log(deleteOldCoverImage);
   if (!deleteOldCoverImage) {
@@ -583,6 +583,115 @@ const deleteUserAccount = AsyncHandler(async (req, res) => {
     );
 });
 
+const VideosFromSubscription = AsyncHandler(async (req, res) => {
+  const userId = req?.body?.userId ?? req?.params?.userId;
+  if (!userId) {
+    throw new ApiError(401, "User ID not found for subscription . . . . !");
+  }
+
+  const subscription = await User.aggregate([
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(userId),
+      },
+    },
+    // Channels whom I subscribed
+    {
+      $lookup:{
+        from: "subscriptions",
+        localField: "_id",
+        foreignField: "subscriber",
+        pipeline:[
+          {
+            $lookup:{
+              from:"users",
+              foreignField:"_id",
+              localField:"channel",
+              pipeline:[
+                {
+                  $project:{
+                    fullname:1,
+                    username:1,
+                    avatar:1,
+                  }
+                }
+              ],
+              as:"Channel"
+            }
+          },
+          {
+            $unwind:"$Channel"
+          }
+        ],
+        as:"Channels"
+      }
+    },
+    // videos uplaoded by channels subscribed by ME
+    {
+      $lookup: {
+        from: "subscriptions",
+        localField: "_id",
+        foreignField: "subscriber",
+        pipeline: [
+          {
+            $lookup: {
+              from: "videos",
+              localField: "channel",
+              foreignField: "owner",
+              pipeline: [
+                {
+                  $lookup: {
+                    from: "users",
+                    localField: "owner",
+                    foreignField: "_id",
+                    pipeline: [
+                      {
+                        $project: {
+                          username: 1,
+                          fullname: 1,
+                          avatar: 1,
+                        },
+                      },
+                    ],
+                    as: "Uploader",
+                  },
+                },
+                {
+                  $unwind:"$Uploader"
+                },
+              ],
+              as: "video",
+            },
+          },
+          {
+            $unwind:"$video"
+          },
+          {
+            $addFields: {
+              video: "$video",
+            },
+          },
+        ],
+        as: "videos",
+      },
+    },
+    // projecting the channel and video uploaded by them
+    {
+      $project:{
+        Channels:1,
+        videos:1,
+      }
+    }
+  ]);
+  return res.json(
+    new ApiResponse(
+      201,
+      subscription[0],
+      "Channels are fetched successfully . . . . !"
+    )
+  );
+});
+
 export {
   RegisterUser,
   loginUser,
@@ -597,4 +706,5 @@ export {
   watchHistory,
   handleSubscribers,
   deleteUserAccount,
+  VideosFromSubscription,
 };

@@ -13,6 +13,7 @@ import { calclulateVideoTime } from "./CalculateTime.ts";
 import { SideMenuBar } from "./SideBarMenu.tsx";
 // import { signOut } from "./services/SignOut.ts";
 import { clearLoggedUser } from "@/Redux/Slice/SignIn.ts";
+import BottomNavBar from "./BottomNavBar.tsx";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -158,6 +159,7 @@ const Dashboard = () => {
   
   return (
     <div className="min-h-screen w-full grid relative place-items-center mx-auto">
+      <BottomNavBar/>
       <div className="min-h-screen w-full p-2 grid place-items-center">
         <div className="flex w-full gap-3 sm:justify-between justify-center items-center mt-20">
           <div className="absolute left-1 top-2 animate-pulse">

@@ -2,6 +2,7 @@ import { Router } from "express";
 const router = Router();
 import {
   RegisterUser,
+  VideosFromSubscription,
   changeAvatar,
   changeCoverImage,
   changePassword,
@@ -41,5 +42,6 @@ router.route("/watch-later").post(verifyAuth,watchLatervideos);
 router.route("/remove-watch-later-video").patch(verifyAuth,removeWatchLaterVideos);
 router.route("/all-watch-later-videos/:userId").get(verifyAuth,allWatchLaterVideos);
 router.route("/delete-user-account/:userId").delete(verifyAuth,deleteUserAccount);
+router.route("/subscriptions-status/:userId").get(verifyAuth,VideosFromSubscription);
 
 export default router;

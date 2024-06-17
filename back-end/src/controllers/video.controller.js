@@ -10,6 +10,7 @@ import { User } from "../models/user.model.js";
 import { Comment } from "../models/comment.model.js";
 import { Like } from "../models/like.model.js";
 import mongoose from "mongoose";
+import { Subscription } from "../models/subscription.model.js";
 
 const publishVideo = AsyncHandler(async (req, res) => {
   const { title, description } = req.body;
@@ -224,7 +225,7 @@ const getVideo = AsyncHandler(async (req, res) => {
     },
     { new: true }
   );
-  console.log("history : ",history);
+  console.log("history : ", history);
   const videoDetail = await Video.aggregate([
     // fetched the video by ID
     {
@@ -570,27 +571,30 @@ const allWatchLaterVideos = AsyncHandler(async (req, res) => {
   );
 });
 
-const clearWatchHistory = AsyncHandler(async(req,res)=>{
+const clearWatchHistory = AsyncHandler(async (req, res) => {
   const userId = req.user._id;
   const userID = new mongoose.Types.ObjectId(userId);
-  if(!userID){
-    throw new ApiError(401,"UserID not found . . . . .!");
+  if (!userID) {
+    throw new ApiError(401, "UserID not found . . . . .!");
   }
   const clearWatchHistory = await User.findByIdAndUpdate(
     userID,
     {
-      $set:{
-        watchHistory:[]
-      }
+      $set: {
+        watchHistory: [],
+      },
     },
-    {new:true}
-  )
+    { new: true }
+  );
   return res.json(
     new ApiResponse(
-      201,clearWatchHistory,'watch history is cleared . . . . !'
+      201,
+      clearWatchHistory,
+      "watch history is cleared . . . . !"
     )
-  )
-})
+  );
+});
+
 
 export {
   publishVideo,
@@ -601,5 +605,5 @@ export {
   watchLatervideos,
   removeWatchLaterVideos,
   allWatchLaterVideos,
-  clearWatchHistory
+  clearWatchHistory,
 };

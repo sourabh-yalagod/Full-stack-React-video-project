@@ -22,6 +22,7 @@ import WatchHistory from "./UI-components/WatchHistory.tsx";
 import WatchLaterVideos from "./UI-components/WatchLater.tsx";
 import VideoPlaylist from "./UI-components/Playlist.tsx";
 import PlaylistVideos from "./UI-components/PlaylistVideos.tsx";
+import Subscription from "./UI-components/Subscription.tsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -35,6 +36,7 @@ const router = createBrowserRouter(
         <Route path="user-profile/:userId" element={<MyProfile />} />
         <Route path="video-play-lists/:userId" element={<VideoPlaylist />} />
         <Route path="playlist-videos/:playlistId" element={<PlaylistVideos />} />
+        <Route path="subscription-status/:userId" element={<Subscription />} />
         <Route
           path="settings/customize-profile/:userId"
           element={<UpdateProfile />}

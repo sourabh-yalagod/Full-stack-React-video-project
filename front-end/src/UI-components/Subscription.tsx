@@ -3,15 +3,18 @@ import { Loader2, LucideTrash2, NutOffIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { calclulateVideoTime } from "./CalculateTime";
-const WatchHistory = () => {
+import { SideMenuBar } from "./SideBarMenu";
+
+const Subscription = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
-  const [apiResponse, setApiResponse]: any = useState("");
+  const [apiResponse, setapiResponse]: any = useState("");
   const [loading, setLoading]: any = useState(false);
   const [error, setError]: any = useState("");
+  const [order, setOrder]= useState('');
   console.log(userId);
 
-  // API request for watch history videos
+  // Api request for Subscription videos
   useEffect(() => {
     (async () => {
       setLoading(true);
@@ -19,10 +22,11 @@ const WatchHistory = () => {
       try {
         setError("");
         const response = await axios.get(
-          `/api/v1/users/watch-history/${userId}`
+          `/api/v1/users/subscriptions-status/${localStorage.getItem("userId")}`
         );
-        setApiResponse(response?.data?.data);
-        console.log("API Response:", apiResponse);
+        setapiResponse(response?.data?.data);
+        console.log("Response from Subscription : ",apiResponse);
+        
       } catch (error) {
         const err = error as AxiosError;
         setError(err.message ?? "Error while API call");
@@ -32,7 +36,7 @@ const WatchHistory = () => {
     })();
   }, [userId]);
 
-  // component renders when API is loading
+  // loading state till the response from the backend comes
   if (loading) {
     return (
       <div className="min-h-screen w-full px-3 bg-#121212 grid place-items-center">
@@ -43,9 +47,8 @@ const WatchHistory = () => {
     );
   }
 
-  // componet reders when API results some Errors
+  // error is the API request is resulted error
   if (error) {
-    alert(error)
     return (
       <div className="min-h-screen w-full px-3 bg-#121212 grid place-items-center">
         <div className="text-white text-3xl flex gap-4">
@@ -55,71 +58,59 @@ const WatchHistory = () => {
       </div>
     );
   }
-
-  const clearWatchHistory = async () => {
-    setLoading(true);
-    console.log("Fetching profile for UserId:", userId);
-    try {
-      setError("");
-      const response = await axios.put(`/api/v1/videos/clear-watchhistory`);
-      setApiResponse(response?.data?.data);
-      console.log("API Response:", apiResponse);
-      navigate(0)
-    } catch (error) {
-      const err = error as AxiosError;
-      setError(err.message ?? "Error while API call");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  
+  const asc = apiResponse?.videos?.sort((a:any, b:any) => {
+    return new Date(a?.video?.createdAt) - new Date(b?.video?.createdAt);
+  });
+  console.log(apiResponse.videos);
+  
   return (
-    <div className="min-h-screen grid justify-center w-full px-3 bg-#121212 relative">
-      <div className="mt-10 w-full min-h-auto grid md:mt-16">
-        <button
-        className="p-2 border-slate-700 border-[1px] rounded-xl text-white absolute top-1 right-1"
-        onClick={()=>clearWatchHistory()}
-        >Clear Watch history</button>
+    <div className="min-h-screen w-full px-3 bg-#121212 pt-16 relative">
+      <div>
+        <h1 className="text-center text-white text-3xl tracking-wider font-black">Subscription</h1>
+        <SideMenuBar />
         {apiResponse?.videos?.length > 0 ? (
-          <ul className="flex justify-center items-start flex-wrap gap-3 py-5">
-            {apiResponse?.videos?.map((video: any) => {
+          <ul
+          className="flex justify-center flex-wrap gap-3 py-5"
+          >
+            {asc.map((video: any) => {
               return (
                 <div
-                  key={video._id}
-                  className="flex-1 min-w-[250px] max-w-[380px] border-slate-700 p-2 rounded-xl border-[1px] relative"
+                key={video.video._id}
+                className="flex-1 min-w-[320px] border-slate-700 p-2 rounded-xl border-[1px] relative"
                 >
                   <div className="relative">
                     <video
-                      onClick={() => navigate(`/${video?._id}`)}
+                      onClick={() => navigate(`/${video?.video?._id}`)}
                       className="w-full object-cover"
-                      poster={video?.thumbnail}
-                      src={video?.videoFile}
+                      poster={video?.video?.thumbnail}
+                      src={video?.video?.videoFile}
                     />
                     <div className="absolute bg-black bottom-1 px-1 py-[1px] rounded-lg text-center right-1 text-white">
-                      {Math.floor(video?.duration)}
+                      {Math.floor(video?.video?.duration)}
                     </div>
                   </div>
                   <div className="flex items-center gap-1 w-full overflow-scroll mt-2 relative">
                     <img
                       onClick={() =>
-                        navigate(`/signin/user-profile/${apiResponse._id}`)
+                        navigate(`/signin/user-profile/${apiResponse?._id}`)
                       }
-                      src={apiResponse?.avatar ?? "https://img.freepik.com/premium-photo/graphic-designer-digital-avatar-generative-ai_934475-9292.jpg"}
+                      src={video?.video?.Uploader?.avatar ?? ""}
                       className="w-9 h-9 rounded-full border-2 border-white"
                     />
                     <div className="grid gap-1 pl-1">
                       <p className="text-white text-[16px] ml-2 overflow-hidden">
-                        {video?.title?.length > 28 ? (
-                          <>{video?.title?.slice(0, 25)}. . . . .</>
+                        {video?.video?.title?.length > 28 ? (
+                          <>{video?.video?.title?.slice(0, 25)}. . . . .</>
                         ) : (
-                          video?.title
+                          video?.video?.title
                         )}
                       </p>
                       <div className="flex gap-3 text-[13px]">
                         <p className="text-slate-600 ">
-                          {apiResponse.username}
+                          {video?.video?.Uploader.username}
                         </p>
-                        <p className="text-slate-600 ">views {video.views}</p>
+                        <p className="text-slate-600 ">views {video?.video?.views}</p>
                         <p className="text-slate-600 ">
                           {calclulateVideoTime(video.createdAt)}
                         </p>
@@ -132,8 +123,7 @@ const WatchHistory = () => {
           </ul>
         ) : (
           <div className="text-3xl flex gap-5 min-h-screen w-full justify-center items-center mb-11 text-center text-white my-auto">
-            <LucideTrash2 className="text-white size-12 text-center" />
-            <p>Watch history is Empty. . . . .</p>
+            <LucideTrash2 className="text-white size-12 text-center" /><p>No videos . . . . .</p>
           </div>
         )}
       </div>
@@ -141,4 +131,4 @@ const WatchHistory = () => {
   );
 };
 
-export default WatchHistory;
+export default Subscription;
