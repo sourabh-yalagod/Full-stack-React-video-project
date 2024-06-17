@@ -20,6 +20,7 @@ const AllFavourateVideos = () => {
   const { userId } = useParams();
   const [apiResponse, setApiResponse]: any = useState("");
   const [loading, setLoading]: any = useState(false);
+  const [isLoading, setIsLoading]: any = useState(false);
   const [error, setError]: any = useState("");
   console.log(userId);
   const [likeResponse, setLikeResponse]: any = useState("");
@@ -59,6 +60,7 @@ const AllFavourateVideos = () => {
 
   // remove video from the favourate video list
   const removeVideo = async (videoId: any) => {
+    setIsLoading(true);
     try {
       const response = await axios.post(
         `/api/v1/likes/toggle-like-status/${videoId}`,
@@ -71,6 +73,8 @@ const AllFavourateVideos = () => {
     } catch (error) {
       const axiosError = error as AxiosError;
       setError(axiosError);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -93,15 +97,12 @@ const AllFavourateVideos = () => {
       </h1>
       <div className="mt-5 w-full min-h-auto grid place-items-center md:mt-16">
         {apiResponse.length > 0 ? (
-          <ul
-            className="mt-8 grid place-items-start space-y-2 justify-center w-full min-h-screen 
-            sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-2 md:m-3 md:min-w-1/3"
-          >
+          <ul className="flex justify-center flex-wrap gap-3 py-5">
             {apiResponse.map((video: any) => {
               return (
                 <div
                   key={video._id}
-                  className="relative z-20 bg-[#212121] min-w-[290px] sm:min-w-1/2 sm:min-w-1/3 p-2 gap-2 rounded-2xl md:min-w-[250px] md:w-full  overflow-hidden"
+                  className="flex-1 min-w-[320px] max-w-[420px] border-slate-700 p-2 rounded-xl border-[1px] relative"
                 >
                   <div className="relative">
                     <video
@@ -121,9 +122,9 @@ const AllFavourateVideos = () => {
                     <DropdownMenuContent className="text-white text-[13px] grid space-y-1 border-slate-600 bg-opacity-50 cursor-pointer rounded-[7px] bg-slate-900 text-center w-fit mr-8 p-0">
                       <div
                         onClick={() => removeVideo(video._id)}
-                        className="px-2 py-1 m-1 rounded-[9px] transition-all pb-2 hover:bg-slate-800"
+                        className="px-2 py-1 m-1 rounded-[9px] transition-all grid place-items-center pb-2 hover:bg-slate-800"
                       >
-                        Remove video
+                        {isLoading ? <Loader2 className="animate-spin" /> : "Remove video"}
                       </div>
                       <a
                         type="download"
@@ -137,16 +138,19 @@ const AllFavourateVideos = () => {
                   <div className="flex items-center gap-1 w-full overflow-scroll mt-2 relative">
                     <img
                       onClick={() =>
-                        navigate(`/signin/user-profile/${video.Uploader._id}`)
+                        navigate(`/signin/user-profile/${video.owner}`)
                       }
-                      src={video?.Uploader?.avatar}
+                      src={
+                        video?.Uploader?.avatar ??
+                        "https://img.freepik.com/premium-photo/graphic-designer-digital-avatar-generative-ai_934475-9292.jpg"
+                      }
                       className="w-9 h-9 rounded-full border-2 border-white"
-                      alt="https://img.freepik.com/premium-photo/graphic-designer-digital-avatar-generative-ai_934475-9292.jpg"
+                      alt=""
                     />
                     <div className="grid gap-1 pl-1">
                       <p className="text-white text-[16px] ml-2 overflow-hidden">
                         {video.title.length > 28 ? (
-                          <>{video.title.slice(0, 25)}. . . . .</>
+                          <>{video.title.slice(0, 28)}. . . . .</>
                         ) : (
                           video.title
                         )}

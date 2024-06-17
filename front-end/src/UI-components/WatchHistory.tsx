@@ -10,6 +10,8 @@ const WatchHistory = () => {
   const [loading, setLoading]: any = useState(false);
   const [error, setError]: any = useState("");
   console.log(userId);
+
+  // API request for watch history videos
   useEffect(() => {
     (async () => {
       setLoading(true);
@@ -30,6 +32,7 @@ const WatchHistory = () => {
     })();
   }, [userId]);
 
+  // component renders when API is loading
   if (loading) {
     return (
       <div className="min-h-screen w-full px-3 bg-#121212 grid place-items-center">
@@ -40,7 +43,9 @@ const WatchHistory = () => {
     );
   }
 
+  // componet reders when API results some Errors
   if (error) {
+    alert(error)
     return (
       <div className="min-h-screen w-full px-3 bg-#121212 grid place-items-center">
         <div className="text-white text-3xl flex gap-4">
@@ -51,19 +56,37 @@ const WatchHistory = () => {
     );
   }
 
+  const clearWatchHistory = async () => {
+    setLoading(true);
+    console.log("Fetching profile for UserId:", userId);
+    try {
+      setError("");
+      const response = await axios.put(`/api/v1/videos/clear-watchhistory`);
+      setApiResponse(response?.data?.data);
+      console.log("API Response:", apiResponse);
+      navigate(0)
+    } catch (error) {
+      const err = error as AxiosError;
+      setError(err.message ?? "Error while API call");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen w-full px-3 bg-#121212">
-      <div className="mt-10 w-full min-h-auto grid place-items-center md:mt-16">
+    <div className="min-h-screen grid justify-center w-full px-3 bg-#121212 relative">
+      <div className="mt-10 w-full min-h-auto grid md:mt-16">
+        <button
+        className="p-2 border-slate-700 border-[1px] rounded-xl text-white absolute top-1 right-1"
+        onClick={()=>clearWatchHistory()}
+        >Clear Watch history</button>
         {apiResponse?.videos?.length > 0 ? (
-          <ul
-            className="mt-8 grid place-items-start space-y-2 justify-center w-full min-h-screen 
-            sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-2 md:m-3 md:min-w-1/3"
-          >
+          <ul className="flex justify-center items-start flex-wrap gap-3 py-5">
             {apiResponse?.videos?.map((video: any) => {
               return (
                 <div
                   key={video._id}
-                  className="relative z-20 bg-[#212121] min-w-[290px] sm:min-w-1/2 sm:min-w-1/3 p-2 gap-2 rounded-2xl md:min-w-[250px] md:w-full  overflow-hidden"
+                  className="flex-1 min-w-[250px] max-w-[380px] border-slate-700 p-2 rounded-xl border-[1px] relative"
                 >
                   <div className="relative">
                     <video
@@ -111,7 +134,7 @@ const WatchHistory = () => {
         ) : (
           <div className="text-3xl flex gap-5 min-h-screen w-full justify-center items-center mb-11 text-center text-white my-auto">
             <LucideTrash2 className="text-white size-12 text-center" />
-            <p>No videos . . . . .</p>
+            <p>Watch history is Empty. . . . .</p>
           </div>
         )}
       </div>

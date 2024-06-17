@@ -204,14 +204,13 @@ const MyProfile = () => {
         </button>
         {apiResponse?.videos?.length > 0 ? (
           <ul
-            className="grid space-y-1 place-items-start justify-center w-full min-h-screen 
-            sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-2 md:m-2 md:min-w-1/3"
+            className="flex justify-center items-start flex-wrap gap-3 py-5"
           >
             {apiResponse?.videos?.map((video: any) => {
               return (
                 <div
                   key={video._id}
-                  className="relative z-20 bg-[#212121] min-w-[290px] sm:min-w-1/2 sm:min-w-1/3 p-2 gap-2 rounded-2xl md:min-w-[250px] md:w-full  overflow-hidden"
+                  className="flex-1 min-w-[250px] max-w-[380px] border-slate-700 p-2 rounded-xl border-[1px] relative"
                 >
                   <div className="relative">
                     <video

@@ -217,6 +217,14 @@ const getVideo = AsyncHandler(async (req, res) => {
     },
     { new: true }
   );
+  const history = await User.updateOne(
+    { _id: userId },
+    {
+      $addToSet: { watchHistory: videoId },
+    },
+    { new: true }
+  );
+  console.log("history : ",history);
   const videoDetail = await Video.aggregate([
     // fetched the video by ID
     {
@@ -277,6 +285,8 @@ const getVideo = AsyncHandler(async (req, res) => {
               chennelSubscribed: 1,
               isSubscribed: 1,
               email: 1,
+              watchLater: 1,
+              watchHistory: 1,
             },
           },
         ],
@@ -352,12 +362,7 @@ const getVideo = AsyncHandler(async (req, res) => {
       },
     },
   ]);
-  await User.updateOne(
-    { _id: req.user._id },
-    {
-      $addToSet: { watchHistory: videoID },
-    }
-  );
+
   console.log(videoDetail);
   return res.json(
     new ApiResponse(
@@ -367,6 +372,7 @@ const getVideo = AsyncHandler(async (req, res) => {
     )
   );
 });
+
 const updateVideo = AsyncHandler(async (req, res) => {
   const { videoId } = req.params;
   const { title, description } = req.body;
@@ -418,9 +424,9 @@ const deleteVideo = AsyncHandler(async (req, res) => {
 
   if (!deleteVideoFileFromCloudinary || !deleteThumbnailFromCloudinary) {
     console.log("Resources are not yet deleted from Cloudinary");
-    throw new ApiError(402,'Resources are not yet deleted from Cloudinary')
+    throw new ApiError(402, "Resources are not yet deleted from Cloudinary");
   }
-  
+
   const comments = await Comment.deleteMany({
     video: videoId,
   });
@@ -476,7 +482,8 @@ const watchLatervideos = AsyncHandler(async (req, res) => {
     { _id: req.user._id },
     {
       $addToSet: { watchLater: videoId },
-    },{new:true}
+    },
+    { new: true }
   );
   return res.json(
     new ApiResponse(
@@ -563,6 +570,28 @@ const allWatchLaterVideos = AsyncHandler(async (req, res) => {
   );
 });
 
+const clearWatchHistory = AsyncHandler(async(req,res)=>{
+  const userId = req.user._id;
+  const userID = new mongoose.Types.ObjectId(userId);
+  if(!userID){
+    throw new ApiError(401,"UserID not found . . . . .!");
+  }
+  const clearWatchHistory = await User.findByIdAndUpdate(
+    userID,
+    {
+      $set:{
+        watchHistory:[]
+      }
+    },
+    {new:true}
+  )
+  return res.json(
+    new ApiResponse(
+      201,clearWatchHistory,'watch history is cleared . . . . !'
+    )
+  )
+})
+
 export {
   publishVideo,
   getVideo,
@@ -572,4 +601,5 @@ export {
   watchLatervideos,
   removeWatchLaterVideos,
   allWatchLaterVideos,
+  clearWatchHistory
 };

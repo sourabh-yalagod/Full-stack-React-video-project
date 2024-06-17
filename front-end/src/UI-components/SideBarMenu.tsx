@@ -146,7 +146,7 @@ export function SideMenuBar() {
             }
           >
             <ViewIcon className="w-6 h-6" />
-            <span>Watch History</span>
+            <p>Watch History</p>
           </div>
           <div
             className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
