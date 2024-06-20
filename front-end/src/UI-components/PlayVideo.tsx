@@ -49,6 +49,8 @@ const PlayVideo = () => {
   const [newThumbnail, setNewThumbnail]: any = useState("");
   const [apiResponse, setApiResponse]: any = useState({});
   const [isloading, setIsLoading] = useState(false);
+  const [editCommentBox, setEditCommentBox] = useState(false);
+  const [editableComment, setEditableComment] = useState('');
 
   // Video playing functions
   const togglePlayPause = () => {
@@ -202,19 +204,21 @@ const PlayVideo = () => {
     }
   };
 
-  const changeComment = async (commentId: any) => {
-    // setLoading(true);
+  const changeComment = async (commentId: string) => {
+    setIsLoading(true);
     setError("");
     try {
-      const response = await axios.patch(`/api/v1/comments/c/${commentId}`);
-      console.log("Resposen for Editing the comment : ", response.data);
+      const response = await axios.patch(`/api/v1/comments/c/${commentId}`,);
+      console.log("Resposen for Editing the comment : ", response.data.data);
     } catch (error: any) {
       const axiosError = error as AxiosError;
       setError(axiosError);
       alert(error.message);
     } finally {
-      // setLoading(false)
+      setIsLoading(false)
     }
+    console.log('Clicked');
+    
   };
 
   if (!apiResponse) {
@@ -490,7 +494,7 @@ const PlayVideo = () => {
             <MessageCircleHeartIcon />
           </div>
         ) : (
-          apiResponse?.allComments.map((e: any) => (
+          apiResponse?.allComments?.map((e: any) => (
             <div
               key={e._id}
               // className="flex border-[1px] space-y-2 md:justify-around gap-3 rounded-xl px-2 pt-6 pb-3 my-2 border-slate-700 relative"
@@ -523,15 +527,18 @@ const PlayVideo = () => {
                   className="text-slate-600 text-xs cursor-pointer absolute bottom-2 right-2"
                   onClick={() => setSeeMoreComment(!seeMoreComment)}
                 >
-                  See more.....
+                  {seeMoreComment? "See less . . . . ." : "See more....."}
                 </p>
                 <p
                   onClick={() => changeComment(e._id)}
                   className="absolute right-[5%] p-1 rounded-full bg-slate-600 hover:scale-110 top-[25%]"
                 >
-                  <EditIcon className="size-4" />
+                  <EditIcon
+                  onClick={()=>setEditCommentBox(!editCommentBox)}
+                  className="size-4" />
                 </p>
               </div>
+              {editCommentBox && <input type="text" value={editableComment} onChange={(e)=>setEditableComment(e.target.value)} />}
             </div>
           ))
         )}

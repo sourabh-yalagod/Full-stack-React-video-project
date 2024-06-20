@@ -1,107 +1,105 @@
-"use client";
-import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
-import axios, { AxiosError } from "axios";
-// import { useToast } from "@/components/ui/use-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { AxiosError } from "axios";
 import { Loader2 } from "lucide-react";
-import { NavLink , useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { createNewAccount } from "@/Redux/Slice/SignUp";
-interface User{
-  id: string;
+import { NavLink, useNavigate } from "react-router-dom";
+import { RootState } from "@/Redux/store";
+import { registerUser } from "@/Redux/ThunkFunction/Register";
+
+interface AccountDetails {
   username: string;
-  refreshToken: string;
+  email: string;
+  password: string;
+  fullname: string;
+  avatar: File[];
+  coverImage: File[];
 }
+
 const SignUp = () => {
-  const navigate = useNavigate()
-  const [isUploading, setIsUploading] = useState(false);
-  const dispatch = useDispatch()
-  const signUpSchema = z.object({
-    fullname: z.string(),
-    username: z.string(),
-    avatar: z.any(),
-    coverImage: z.any(),
-    password: z.string(),
-    email: z.string().email(),
-  });
+  const dispatch = useDispatch();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<AccountDetails>();
 
-  const { register, handleSubmit, formState: { errors }} = useForm({
-    resolver: zodResolver(signUpSchema),
-    defaultValues: {
-      fullname: "",
-      username: "",
-      coverImage: "",
-      avatar: "",
-      password: "",
-      email: "",
-    },
-  });
+  const navigate = useNavigate();
+  const { isLoading, error, pending, success } = useSelector(
+    (state: RootState) => state.auth
+  );
+  console.log("isLoading", isLoading);
+  console.log("Error", error);
+  console.log("pending", pending);
 
-  const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
-    setIsUploading(true);
-    
+  const onSubmit = async (data: AccountDetails) => {
     try {
       const formData = new FormData();
       formData.append("fullname", data.fullname);
       formData.append("username", data.username);
-      formData.append("avatar", data.avatar[0]); 
+      formData.append("avatar", data.avatar[0]);
       formData.append("coverImage", data.coverImage[0]);
       formData.append("password", data.password);
       formData.append("email", data.email);
-      
-      console.log(formData);
-      const response = await axios.post("/api/v1/users/register",formData);
-      console.log(response.data.data);
 
-      const user:User = {
-        id:response?.data.data._id,
-        username:response?.data.data.username,
-        refreshToken:response.data.data.refreshToken
+      dispatch(registerUser(formData));
+      if (success) {
+        navigate("/signin");
       }
-      dispatch(createNewAccount(user))
-      localStorage.setItem("user",JSON.stringify(user))
-      navigate('/signin')
     } catch (error) {
       const err = error as AxiosError;
-      
-      const errorMessage = err.message || "User account creation failed due to some reasons. Please check again.";
+      const errorMessage =
+        err.message ||
+        "User account creation failed due to some reasons. Please check again.";
       console.log(errorMessage);
-    } finally {
-      setIsUploading(false);
     }
   };
 
   return (
-    <div className="min-h-screen grid place-items-center">
-      <div className="text-white grid place-items-center border-2 max-w-[470px] w-full rounded-xl p-8">
+    <div className="min-h-screen grid place-items-center bg-gray-100 dark:bg-gray-900">
+      <div className="text-black dark:text-white grid place-items-center border-2 max-w-[470px] w-full rounded-xl p-8 bg-white dark:bg-gray-800">
         <h1 className="text-center text-5xl underline py-5 mb-3">Sign Up</h1>
         <form
           className="space-y-8 w-full grid place-content-between"
           onSubmit={handleSubmit(onSubmit)}
           method="post"
         >
-          <div className="flex justify-between">
-            <label htmlFor="fullname" className="text-[18px]">Fullname:</label>
+          <div className="flex justify-between relative">
+            <label htmlFor="fullname" className="text-[18px]">
+              Fullname:
+            </label>
             <input
               type="text"
               id="fullname"
-              {...register("fullname")}
-              className="bg-transparent border-b-2 outline-none border-slate-700 ml-3 w-full"
+              {...register("fullname", {
+                required: "Fullname is required",
+                pattern: {
+                  value: /^[a-zA-Z\s]+$/,
+                  message: "Fullname can only contain letters and spaces",
+                },
+                minLength: {
+                  value: 3,
+                  message: "Minmum lenght shoulg be 3 character",
+                },
+              })}
+              className="bg-transparent border-b-2 outline-none border-slate-700 ml-3 w-full dark:border-gray-500 dark:focus:border-blue-500"
             />
+            {errors.fullname && (
+              <span className="text-red-500 absolute text-xs -bottom-5 left-5">
+                {errors.fullname.message}
+              </span>
+            )}
           </div>
-          {errors.fullname && (
-            <span className="text-red-500">{errors.fullname.message}</span>
-          )}
 
           <div className="flex justify-between">
-            <label htmlFor="username" className="text-[18px]">Username:</label>
+            <label htmlFor="username" className="text-[18px]">
+              Username:
+            </label>
             <input
               type="text"
               id="username"
-              {...register("username")}
-              className="bg-transparent border-b-2 outline-none border-slate-700 ml-3 w-full"
+              {...register("username", { required: "Username is required" })}
+              className="bg-transparent border-b-2 outline-none border-slate-700 ml-3 w-full dark:border-gray-500 dark:focus:border-blue-500"
             />
           </div>
           {errors.username && (
@@ -109,12 +107,14 @@ const SignUp = () => {
           )}
 
           <div className="flex justify-between">
-            <label htmlFor="avatar" className="text-[18px]">Avatar:</label>
+            <label htmlFor="avatar" className="text-[18px]">
+              Avatar:
+            </label>
             <input
               type="file"
               id="avatar"
-              {...register("avatar")}
-              className="bg-transparent outline-none border-slate-700 ml-3"
+              {...register("avatar", { required: "Avatar is required" })}
+              className="bg-transparent outline-none border-slate-700 ml-3 dark:border-gray-500"
             />
           </div>
           {errors.avatar && (
@@ -122,12 +122,16 @@ const SignUp = () => {
           )}
 
           <div className="flex justify-between">
-            <label htmlFor="coverImage" className="text-[18px]">Cover Image:</label>
+            <label htmlFor="coverImage" className="text-[18px]">
+              Cover Image:
+            </label>
             <input
               type="file"
               id="coverImage"
-              {...register("coverImage")}
-              className="bg-transparent outline-none border-slate-700 ml-3"
+              {...register("coverImage", {
+                required: "Cover Image is required",
+              })}
+              className="bg-transparent outline-none border-slate-700 ml-3 dark:border-gray-500"
             />
           </div>
           {errors.coverImage && (
@@ -135,12 +139,14 @@ const SignUp = () => {
           )}
 
           <div className="flex justify-between">
-            <label htmlFor="password" className="text-[18px]">Password:</label>
+            <label htmlFor="password" className="text-[18px]">
+              Password:
+            </label>
             <input
               type="password"
               id="password"
-              {...register("password")}
-              className="bg-transparent border-b-2 outline-none border-slate-700 ml-3 w-full"
+              {...register("password", { required: "Password is required" })}
+              className="bg-transparent border-b-2 outline-none border-slate-700 ml-3 w-full dark:border-gray-500 dark:focus:border-blue-500"
             />
           </div>
           {errors.password && (
@@ -148,28 +154,43 @@ const SignUp = () => {
           )}
 
           <div className="flex justify-between">
-            <label htmlFor="email" className="text-[18px]">Email:</label>
+            <label htmlFor="email" className="text-[18px]">
+              Email:
+            </label>
             <input
               type="email"
               id="email"
-              {...register("email")}
-              className="bg-transparent border-b-2 outline-none border-slate-700 ml-3 w-full"
+              {...register("email", { required: "Email is required" })}
+              className="bg-transparent border-b-2 outline-none border-slate-700 ml-3 w-full dark:border-gray-500 dark:focus:border-blue-500"
             />
           </div>
           {errors.email && (
             <span className="text-red-500">{errors.email.message}</span>
           )}
-
           <button
             type="submit"
-            className="bg-blue-500 hover:bg-blue-700 outline-none border-slate-700 ml-3 font-bold py-2 px-4 rounded mt-4"
-            disabled={isUploading}
+            className="bg-blue-500 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-900 text-white outline-none border-slate-700 ml-3 font-bold py-2 px-4 rounded mt-4"
           >
-            {isUploading ? (<Loader2 className="animate-spin" />&&'Please wait....') : "Sign Up"}
+            {isLoading
+              ? <Loader2 className="animate-spin" /> && "Please wait...."
+              : "Sign Up"}
+          </button>
+          <button
+            type="reset"
+            onClick={() => reset()}
+            className="bg-red-500 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-900 text-white outline-none border-slate-700 ml-3 font-bold py-2 px-4 rounded mt-4"
+          >
+            Reset
           </button>
         </form>
-        <div className="w-full flex justify-center pt-4 gap-4">
-          have already an Account ? <NavLink to="/signin" className="text-blue-900 underline">Log-in</NavLink>
+        <div className="w-full flex justify-center pt-4 gap-4 text-black dark:text-white">
+          Have an account?{" "}
+          <NavLink
+            to="/signin"
+            className="text-blue-500 dark:text-blue-300 underline"
+          >
+            Log-in
+          </NavLink>
         </div>
       </div>
     </div>

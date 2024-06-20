@@ -1,10 +1,21 @@
-import { Outlet } from 'react-router-dom'
+import { ThemeProvider } from "@/components/theme-provider";
+import SignUp from "./SignUp";
+import { ThemeButton } from "@/utils/ThemeButtom";
+import { Provider } from "react-redux";
+import store  from "@/Redux/store";
+import SignIn from "./SignIn";
 const Layout = () => {
-    return (
+  return (
     <div>
-        <Outlet/>   
+      <ThemeProvider>
+        <ThemeButton />
+        <Provider store={store}>
+          {/* <Outlet /> */}
+          <SignIn />
+        </Provider>
+      </ThemeProvider>
     </div>
-  )
-}
+  );
+};
 
-export default Layout
+export default Layout;

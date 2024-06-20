@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import { EllipsisVertical, Loader2, StopCircle } from "lucide-react";
+import { EllipsisVertical, Loader2, Moon, StopCircle, Sun } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
 import {
@@ -10,10 +10,12 @@ import {
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { calclulateVideoTime } from "./CalculateTime.ts";
-import { SideMenuBar } from "./SideBarMenu.tsx";
 // import { signOut } from "./services/SignOut.ts";
-import { clearLoggedUser } from "@/Redux/Slice/SignIn.ts";
 import BottomNavBar from "./BottomNavBar.tsx";
+import { TitleFormatar } from "@/Services/TitleFormater.ts";
+import FullPageLoading from "@/utils/FullPageLoading.tsx";
+import { SkeletonCard } from "@/utils/Skeleton.tsx";
+import Hero from "@/components/Header/Hero.tsx";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -22,7 +24,6 @@ const Dashboard = () => {
   const [result, setResult]: any = useState([]);
   const [pages, setPages] = useState(0);
   const [limit, setLimit] = useState(5);
-  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [isloadVideos, setIsLoadVideos] = useState(true);
   // signout function
@@ -31,7 +32,6 @@ const Dashboard = () => {
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("userId");
     localStorage.removeItem("user");
-    dispatch(clearLoggedUser());
     navigate("/");
   };
 
@@ -61,9 +61,11 @@ const Dashboard = () => {
     if (
       document.documentElement.scrollTop +
         document.documentElement.clientHeight >=
-      document.documentElement.scrollHeight - 50
+      document.documentElement.scrollHeight - 200
     ) {
+      setTimeout(() => {
         setIsLoadVideos(true);
+      }, 1000);
     }
   });
 
@@ -79,15 +81,16 @@ const Dashboard = () => {
             signal: signal,
           }
         );
-        setLimit(5)
+        setLimit(5);
         console.log("API request : ", result);
 
         if (isloadVideos && response.data.length) {
           setPages((pages) => pages + 1);
           setResult((prev: any) => [...prev, ...response.data]);
-          console.log(pages);
           setIsLoadVideos(false);
+          
         }
+        console.log("isloadVideos : ",isloadVideos);
         // setResult((prev: any) => [...prev, ...response.data]);
         // console.log("Response for Dashboard : ", result);
         setError("");
@@ -156,22 +159,20 @@ const Dashboard = () => {
   window.addEventListener("keyup", (e) => {
     if (searchQuery) if (e.key == "Enter") handleSearch();
   });
-  
   return (
-    <div className="min-h-screen w-full grid relative place-items-center mx-auto">
-      <BottomNavBar/>
-      <div className="min-h-screen w-full p-2 grid place-items-center">
+    <div className="min-h-screen w-full grid relative place-items-center mx-auto dark:bg-gray-900 bg-white">
+      {/* <ThemeButton /> */}
+      <Hero/>
+      <BottomNavBar />
+      <div className="min-h-screen w-full p-2 grid place-items-center transition-all">
         <div className="flex w-full gap-3 sm:justify-between justify-center items-center mt-20">
-          <div className="absolute left-1 top-2 animate-pulse">
-            <SideMenuBar />
-          </div>
           <div className="w-full max-w-[500px] min-w-[270px] gap-4 relative overflow-hidden">
             <input
               type="text"
               onChange={(e) => setSearchQuery(e.target.value)}
               value={searchQuery}
               placeholder="Search Here....."
-              className="bg-transparent pl-4 text-slate-400 grid place-items-center text-[20px] w-full border-slate-400 outline-none border-[1px] p-2 rounded-xl"
+              className="bg-transparent pl-4 text-gray-700 dark:text-slate-400 grid place-items-center text-[20px] w-full border-gray-700 dark:border-slate-400 outline-none border-[1px] p-2 rounded-xl"
             />
             <button
               onClick={() => handleSearch()}
@@ -200,14 +201,12 @@ const Dashboard = () => {
         </div>
         <div className="mt-8 w-full min-h-screen flex items-start justify-center">
           {result.length > 0 ? (
-            <ul
-              className="flex justify-center flex-wrap gap-3 py-5"
-            >
+            <ul className="flex justify-center flex-wrap gap-3 py-5">
               {result.map((video: any) => {
                 return (
                   <div
                     key={video._id}
-                    className="flex-1 min-w-[320px] max-w-[500px] border-slate-700 p-2 rounded-xl border-[1px] relative"
+                    className="flex-1 min-w-[320px] max-w-[500px] border-gray-700 dark:border-slate-700 p-2 rounded-xl border-[1px] relative"
                   >
                     {/* video projection */}
                     <div className="relative">
@@ -223,15 +222,15 @@ const Dashboard = () => {
                       </div>
                     </div>
 
-                    {/* three dot menu for some operatios(add to watch later , download video) */}
+                    {/* three dot menu for some operations(add to watch later, download video) */}
                     <DropdownMenu>
-                      <DropdownMenuTrigger className="text-white absolute right-2 bottom-[5%] z-10">
+                      <DropdownMenuTrigger className="text-gray-700 dark:text-white absolute right-2 bottom-[5%] z-10">
                         <EllipsisVertical className="outline-none" />
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent className="text-white text-[13px] grid space-y-1 border-slate-600 bg-opacity-50 cursor-pointer rounded-[7px] bg-slate-900 text-center w-fit mr-8 p-0">
+                      <DropdownMenuContent className="text-gray-700 dark:text-white text-[13px] grid space-y-1 border-gray-700 dark:border-slate-600 bg-opacity-50 cursor-pointer rounded-[7px] bg-gray-100 dark:bg-slate-900 text-center w-fit mr-8 p-0">
                         <div
                           onClick={() => addToWatchLater(video?._id)}
-                          className="px-2 py-1 m-1 rounded-[9px] grid place-items-center transition-all pb-2 hover:bg-slate-800"
+                          className="px-2 py-1 m-1 rounded-[9px] grid place-items-center transition-all pb-2 hover:bg-gray-200 dark:hover:bg-slate-800"
                         >
                           {isLoading ? (
                             <Loader2 className="animate-spin" />
@@ -241,7 +240,7 @@ const Dashboard = () => {
                         </div>
                         <a
                           type="download"
-                          className="px-2 py-1 m-1 rounded-[9px] transition-all pb-2 hover:bg-slate-800"
+                          className="px-2 py-1 m-1 rounded-[9px] transition-all pb-2 hover:bg-gray-200 dark:hover:bg-slate-800"
                           href={video?.videoFile}
                         >
                           download
@@ -263,19 +262,20 @@ const Dashboard = () => {
                         className="w-9 h-9 rounded-full border-2 border-white"
                       />
                       <div className="grid gap-1 pl-1">
-                        <p className="text-white text-[16px] ml-2 overflow-hidden">
-                          {video?.title?.length > 20
-                            ? `${video?.title?.slice(0, 20)}....`
-                            : video?.title}
+                        <p className="text-gray-700 dark:text-white text-[16px] ml-2 overflow-hidden">
+                          {/* {video?.title?.length > 20
+                        ? `${video?.title?.slice(0, 20)}....`
+                        : video?.title} */}
+                          {TitleFormatar(video.title)}
                         </p>
                         <div className="flex gap-3 text-[13px]">
-                          <p className="text-slate-600 ">
+                          <p className="text-gray-500 dark:text-slate-600 ">
                             {video?.owner?.username}
                           </p>
-                          <p className="text-slate-600 ">
+                          <p className="text-gray-500 dark:text-slate-600 ">
                             views {video?.views}
                           </p>
-                          <p className="text-slate-600 ">
+                          <p className="text-gray-500 dark:text-slate-600 ">
                             {calclulateVideoTime(video?.createdAt)}
                           </p>
                         </div>
@@ -284,24 +284,11 @@ const Dashboard = () => {
                   </div>
                 );
               })}
-              {/* <div className="h-[300px] w-full flex justify-center">
-                {!isLoading ? (
-                    <img
-                      className="w-[400px] h-[250px] animate-pulse"
-                      src="https://thethemefoundry.com/wp-content/themes/ttf-site/images/single-theme/video-thumbnail.png"
-                    />
-                ) : (
-                  ""
-                )}
-              </div> */}
+              {!isloadVideos ? <SkeletonCard/> : "No more videos to load"}
+             
             </ul>
           ) : (
-            <div className="text-3xl items-center min-h-screen grid place-items-center gap-4 text-center text-white">
-              <div className="flex gap-4 items-center">
-                <p>Loading.....</p>
-                <Loader2 className="text-white size-14 text-8xl text-center animate-spin" />
-              </div>
-            </div>
+            <FullPageLoading />
           )}
         </div>
       </div>

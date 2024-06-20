@@ -1,4 +1,3 @@
-import { clearLoggedUser } from "@/Redux/Slice/SignIn";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -33,13 +32,12 @@ export function SideMenuBar() {
     localStorage.removeItem("refreshToken");
     localStorage.removeItem("userId");
     localStorage.removeItem("user");
-    dispatch(clearLoggedUser());
     navigate("/");
   };
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button className="text-white focus:outline-none focus:ring-2 focus:ring-offset-2 absolute top-2 left-2 z-10">
+        <Button className="text-white focus:outline-none focus:ring-2 focus:ring-offset-2  z-10">
           <LucideMenu />
         </Button>
       </SheetTrigger>
@@ -153,7 +151,6 @@ export function SideMenuBar() {
             onClick={() => {
               localStorage.removeItem("accessToken");
               localStorage.removeItem("userId");
-              dispatch(clearLoggedUser());
               navigate("/");
             }}
           >

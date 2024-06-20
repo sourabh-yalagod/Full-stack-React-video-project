@@ -1,123 +1,137 @@
-"use client";
-import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
-import axios, { AxiosError } from "axios";
-// import { useToast } from "@/components/ui/use-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { AxiosError } from "axios";
 import { Loader2 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { logedUser } from "@/Redux/Slice/SignIn";
-interface User{
-  id:string,
-  accessToken:string
-  refreshToken?:string
-}
-const SignIn = () => {
-  const navigator = useNavigate();
-  const dispatch = useDispatch()
-  
-  const [isUploading, setIsUploading] = useState(false);
-  // const { toast } = useToast();
-  // const router = useRoutes();
-  const signUpSchema = z.object({
-    username: z.string(),
-    password: z.string(),
-  });
+import { RootState } from "@/Redux/store";
+import { SignIn } from "@/Redux/ThunkFunction/SignIn";
+import { getId } from "@/Redux/Slice/UserSlice";
 
+interface loginDetail {
+  username: string;
+  password: string;
+}
+
+const SignUp = () => {
+  const userId = useSelector((state: RootState) => state.user.id);
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    resolver: zodResolver(signUpSchema),
-    defaultValues: {
-      username: "",
-      password: "",
-    },
-  });
-  
-  const onSubmit = async (data: z.infer<typeof signUpSchema>) => {
-    console.log(data);
-  
-    setIsUploading(true);
+    reset,
+  } = useForm<loginDetail>();
+
+  const navigate = useNavigate();
+  const { isLoading, error, success, data } = useSelector(
+    (state: RootState) => state.auth
+  );
+  // if (data) {
+  //   dispatch(getId(data?.data?.loggedUser?._id));
+  // }
+
+  if(data){
+    dispatch(getId(data?.data?.loggedUser))
+  }
+  const onSubmit = async (data: loginDetail) => {
     try {
-      const response = await axios.post("/api/v1/users/login", data);
-      console.log(response);
-      
-      const loggedUser: User = {
-        id: response.data.data.loggedUser._id,
-        accessToken: response.data.data.accessToken
-      };
-      localStorage.setItem('accessToken',response.data.data.accessToken)
-      localStorage.setItem('userId',response.data.data.loggedUser._id)
-      dispatch(logedUser(loggedUser)); 
-      navigator(`user-profile/${localStorage.getItem('userId')}`)
+      dispatch(SignIn(data));
+      if (success) {
+        navigate("/");
+        console.log("Done");
+        console.log("userId : ",userId);
+      }
     } catch (error) {
       const err = error as AxiosError;
-
       const errorMessage =
         err.message ||
-        "User account creation failed due to some reasons. Please check again.";
+        "User log-in failed due to some reasons. Please check again.";
       console.log(errorMessage);
-    } finally {
-      setIsUploading(false);
     }
   };
   
   return (
-    <div className="min-h-screen grid place-items-center">
-      <div className="text-white border-2 max-w-[490px] w-full rounded-lg p-6">
-        <h1 className="text-center text-5xl underline py-5 mb-3">Sign In</h1>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+      <div className="text-black dark:text-white border-2 max-w-[470px] w-full rounded-xl p-8 bg-white dark:bg-gray-800 shadow-lg">
+        <h1 className="text-center text-5xl underline py-5 mb-3">Sign Up</h1>
         <form
-          className="space-y-8 grid place-items-center"
+          className="space-y-8 w-full relative"
           onSubmit={handleSubmit(onSubmit)}
           method="post"
         >
-          <div className="flex w-full">
-            <label htmlFor="username" className="text-[18px]">
-              username 
+          <div className="relative">
+            <label htmlFor="username" className="text-[18px] block">
+              Username:
             </label>
             <input
               type="text"
               id="username"
-              {...register("username")}
-              className="bg-transparent outline-none border-b-[3px] w-full border-slate-600 mx-4"
-              />
+              {...register("username", {
+                required: "Username is required",
+                // pattern: {
+                //   value: /^[a-zA-Z0-9_]{3,30}$/,
+                //   message: "Username should be 3-30 characters and contain only letters, numbers, and underscores"
+                // }
+              })}
+              className="bg-transparent border-b-2 outline-none border-slate-700 dark:border-gray-500 dark:focus:border-blue-500 w-full"
+            />
+            {errors.username && (
+              <span className="text-red-500 absolute -bottom-7 left-0 text-xs">
+                {errors.username.message}
+              </span>
+            )}
           </div>
-          {errors.username && (
-            <span className="text-red-500">{errors.username.message}</span>
-          )}
-          <div className="flex w-full">
-            <label htmlFor="password" className="text-[18px]">
-              Password
+
+          <div className="relative">
+            <label htmlFor="password" className="text-[18px] block">
+              Password:
             </label>
             <input
               type="password"
               id="password"
-              {...register("password")}
-              className="bg-transparent outline-none border-b-[3px] w-full border-slate-600 mx-4"
+              {...register("password", {
+                required: "Password is required",
+                // pattern: {
+                //   value: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/,
+                //   message: "Password must be at least 8 characters long and include uppercase, lowercase, and a number"
+                // }
+              })}
+              className="bg-transparent border-b-2 outline-none border-slate-700 dark:border-gray-500 dark:focus:border-blue-500 w-full"
             />
+            {errors.password && (
+              <span className="text-red-500 absolute -bottom-7 left-0 text-xs">
+                {errors.password.message}
+              </span>
+            )}
           </div>
-          {errors.password && (
-            <span className="text-red-500">{errors.password.message}</span>
-          )}
-
           <button
             type="submit"
-            className="bg-blue-500 hover:bg-blue-700 outline-none border-slate-700 ml-3 font-bold py-2 px-4 rounded mt-4"
-            disabled={isUploading}
+            className="bg-blue-500 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-900 text-white outline-none font-bold py-2 px-4 rounded mt-4 w-full"
           >
-            {isUploading
-              ? <Loader2 className="animate-spin" /> && "Please wait...."
-              : "Sign-In"}
+            {isLoading ? (
+              <>
+                <Loader2 className="animate-spin inline-block mr-2" /> Please
+                wait....
+              </>
+            ) : (
+              "Sign Up"
+            )}
+          </button>
+          <button
+            type="reset"
+            onClick={() => reset()}
+            className="bg-red-500 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-900 text-white outline-none font-bold py-2 px-4 rounded mt-4 w-full"
+          >
+            Reset
           </button>
         </form>
-        <div className="w-full flex justify-center pt-4 gap-4">
-          Create a new Account
-          <NavLink to="/signup" className="text-blue-500 underline">
-            Sign-Up
+        <div className="w-full flex justify-center pt-4 gap-4 text-black dark:text-white">
+          Don't have an account?{" "}
+          <NavLink
+            to="/signup"
+            className="text-blue-500 dark:text-blue-300 underline"
+          >
+            Sign-In
           </NavLink>
         </div>
       </div>
@@ -125,4 +139,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default SignUp;
