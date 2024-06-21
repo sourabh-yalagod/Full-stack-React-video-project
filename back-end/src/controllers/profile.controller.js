@@ -200,6 +200,13 @@ const getUserInfo = AsyncHandler(async (req, res) => {
         from: "videos",
         localField: "_id",
         foreignField: "owner",
+        pipeline:[
+          {
+            $sort:{
+              createdAt:-1
+            }
+          }
+        ],
         as: "videos",
       },
     },

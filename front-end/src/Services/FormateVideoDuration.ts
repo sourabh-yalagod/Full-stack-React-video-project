@@ -1,4 +1,4 @@
-function formatVideoDuration(seconds: number): string {
+export function formatVideoDuration(seconds: number): string {
   seconds = Math.floor(seconds);
 
   const hours = Math.floor(seconds / 3600);

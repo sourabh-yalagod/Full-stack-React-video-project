@@ -43,14 +43,14 @@ const PlayVideo = () => {
   const [likeResponse, setLikeResponse] = useState<any>({});
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [showFullDescription, setShowFullDescription] = useState(false);
-  const [seeMoreComment, setSeeMoreComment] = useState(false);
+  const [seeMoreComment, setSeeMoreComment] = useState(true);
   const [newTitle, setNewTitle] = useState("");
   const [newDescription, setNewDescription] = useState("");
   const [newThumbnail, setNewThumbnail]: any = useState("");
   const [apiResponse, setApiResponse]: any = useState({});
   const [isloading, setIsLoading] = useState(false);
   const [editCommentBox, setEditCommentBox] = useState(false);
-  const [editableComment, setEditableComment] = useState('');
+  const [editableComment, setEditableComment] = useState("");
 
   // Video playing functions
   const togglePlayPause = () => {
@@ -142,7 +142,6 @@ const PlayVideo = () => {
 
   if (error) {
     console.log(error);
-
     return (
       <div className="min-h-sreen grid place-items-center">
         <div className="text-white text-xl text-center flex gap-3">
@@ -208,17 +207,16 @@ const PlayVideo = () => {
     setIsLoading(true);
     setError("");
     try {
-      const response = await axios.patch(`/api/v1/comments/c/${commentId}`,);
+      const response = await axios.patch(`/api/v1/comments/c/${commentId}`);
       console.log("Resposen for Editing the comment : ", response.data.data);
     } catch (error: any) {
       const axiosError = error as AxiosError;
       setError(axiosError);
       alert(error.message);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-    console.log('Clicked');
-    
+    console.log("Clicked");
   };
 
   if (!apiResponse) {
@@ -248,7 +246,7 @@ const PlayVideo = () => {
   };
 
   return (
-    <div className="w-full grid p-1">
+    <div className="w-full grid p-1 text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 pb-10 mx-auto">
       {/* this is the video and controllers Div */}
       <div className="w-full max-w-4xl md:mt-14 mx-auto bg-black group relative">
         <video
@@ -290,8 +288,8 @@ const PlayVideo = () => {
           </div>
         </div>
       </div>
-      <div className="relative my-2 px-3 w-full rounded-xl bg-#121212 border-[1px] border-slate-800 text-slate-300 text-[15px] sm:text-xl">
-        <p className="absolute top-0 left-3 text-slate-600 min-h-2 text-[13px] pb-4">
+      <div className="relative my-2 px-3 w-full rounded-xl bg-white dark:bg-[#121212] border-[1px] border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-[15px] sm:text-xl">
+        <p className="absolute top-0 left-3 text-slate-600 dark:text-slate-400 min-h-2 text-[13px] pb-4">
           Title
         </p>
         <div className="flex pt-5 pb-2">
@@ -300,7 +298,7 @@ const PlayVideo = () => {
         </div>
       </div>
       {/* this is the subscription display Div */}
-      <div className="flex w-full bg-slate-800 my-1 rounded-xl p-1 gap-2 text-white items-center justify-center">
+      <div className="flex w-full bg-slate-200 dark:bg-slate-800 my-1 rounded-xl p-1 gap-2 text-slate-700 dark:text-white items-center justify-center border-slate-500 border-[1px]">
         <div className="flex w-full items-center justify-around gap-10">
           <div className="flex items-center gap-2 justify-between relative">
             <img
@@ -325,9 +323,8 @@ const PlayVideo = () => {
               className={`${
                 apiResponse?.Uploader?.isSubscribed
                   ? "bg-gray-700"
-                  : "bg-red-600 "
-              }
-             text-white py-1 px-3 rounded-xl sm:text-xl md:text-2xl`}
+                  : "bg-red-600"
+              } text-white py-1 px-3 rounded-xl sm:text-xl md:text-2xl`}
             >
               <p className="flex gap-2 items-center">
                 Subscribe
@@ -342,7 +339,7 @@ const PlayVideo = () => {
         </div>
       </div>
       {/* video figures */}
-      <div className="w-full flex gap-2 p-1 items-center justify-around border-[1px] text-[11px] text-slate-600 border-slate-700 rounded-xl">
+      <div className="w-full flex gap-2 p-1 items-center justify-around text-[11px] text-slate-600 dark:text-slate-400 rounded-xl border-slate-500 border-[1px]">
         <div className="">
           <p onClick={() => handleLikes()} className="flex gap-1">
             <ThumbsUp className="size-5" />
@@ -362,7 +359,7 @@ const PlayVideo = () => {
         </div>
         <div
           onClick={() => addToWatchLater(videoId)}
-          className="grid place-items-center gap-1 border-[1px] p-2 sm:py-3 sm:px-1 border-slate-700 rounded-xl items-center hover:scale-95 transition-all cursor-pointer"
+          className="grid place-items-center gap-1 border-[1px] p-2 sm:py-3 sm:px-1 border-slate-300 dark:border-slate-700 rounded-xl items-center hover:scale-95 transition-all cursor-pointer"
         >
           <p>
             {isloading ? (
@@ -372,96 +369,101 @@ const PlayVideo = () => {
             )}
           </p>
         </div>
-        {apiResponse.owner == localStorage.getItem('userId') ? <p className="grid place-items-center ">
-          <Dialog>
-            <DialogTrigger asChild>
-              <button className="gap-1">
-                <Edit className="size-5"/>Edit
-              </button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] text-white rounded-xl bg-opacity-50 bg-slate-900">
-              <DialogHeader>
-                <DialogTitle>Edit video</DialogTitle>
-                <DialogDescription>
-                  Make changes to your profile here. Click save when you're
-                  done.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4">
-                <div className="grid gap-1 underline">
-                  <label htmlFor="title" className="text-[17px]">
-                    Title
-                  </label>
-                  <input
-                    id="title"
-                    value={newTitle}
-                    onChange={(e) => setNewTitle(e.target.value)}
-                    className="w-full min-w-[200px] bg-transparent border-[1px] rounded-xl outline-none p-1 pl-2"
-                  />
-                </div>
-                <div className="grid gap-1 underline">
-                  <label htmlFor="description" className="text-[17px]">
-                    Description
-                  </label>
-                  <textarea
-                    id="description"
-                    value={newDescription}
-                    onChange={(e) => setNewDescription(e.target.value)}
-                    className="w-full min-w-[200px] bg-transparent border-[1px] rounded-xl outline-none p-1 pl-2"
-                  />
-                </div>
-                <div className="grid gap-1 underline">
-                  <label htmlFor="thumbnail" className="text-[17px]">
-                    Thumbnail
-                  </label>
-                  <input
-                    id="thumbnail"
-                    onChange={(e) => setNewThumbnail(e.target.files)}
-                    type="file"
-                    className="w-auto bg-transparent border-[1px] rounded-xl outline-none p-1 pl-2"
-                  />
-                </div>
-              </div>
-              <DialogFooter>
-                <button
-                  onClick={() => handleVideoUpdate()}
-                  className="w-full p-2 rounded-xl border-[1px]"
-                >
-                  Save Changs
+        {apiResponse.owner == localStorage.getItem("userId") ? (
+          <p className="grid place-items-center">
+            <Dialog>
+              <DialogTrigger asChild>
+                <button className="gap-1">
+                  <Edit className="size-5" />
+                  Edit
                 </button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        </p>:""}
-        <p className="grid place-items-center ">
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px] text-white rounded-xl bg-opacity-50 bg-slate-900">
+                <DialogHeader>
+                  <DialogTitle>Edit video</DialogTitle>
+                  <DialogDescription>
+                    Make changes to your profile here. Click save when you're
+                    done.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4">
+                  <div className="grid gap-1 underline">
+                    <label htmlFor="title" className="text-[17px]">
+                      Title
+                    </label>
+                    <input
+                      id="title"
+                      value={newTitle}
+                      onChange={(e) => setNewTitle(e.target.value)}
+                      className="w-full min-w-[200px] bg-transparent border-[1px] rounded-xl outline-none p-1 pl-2"
+                    />
+                  </div>
+                  <div className="grid gap-1 underline">
+                    <label htmlFor="description" className="text-[17px]">
+                      Description
+                    </label>
+                    <textarea
+                      id="description"
+                      value={newDescription}
+                      onChange={(e) => setNewDescription(e.target.value)}
+                      className="w-full min-w-[200px] bg-transparent border-[1px] rounded-xl outline-none p-1 pl-2"
+                    />
+                  </div>
+                  <div className="grid gap-1 underline">
+                    <label htmlFor="thumbnail" className="text-[17px]">
+                      Thumbnail
+                    </label>
+                    <input
+                      id="thumbnail"
+                      onChange={(e) => setNewThumbnail(e.target.files)}
+                      type="file"
+                      className="w-auto bg-transparent border-[1px] rounded-xl outline-none p-1 pl-2"
+                    />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <button
+                    onClick={() => handleVideoUpdate()}
+                    className="w-full p-2 rounded-xl border-[1px]"
+                  >
+                    Save Changes
+                  </button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </p>
+        ) : (
+          ""
+        )}
+        <p className="grid place-items-center">
           <Eye className="size-5" />
           Views - {apiResponse?.views}
         </p>
       </div>
-      {/* title and description of refrerenced video */}
-      <ScrollArea className="relative p-4 h-full my-1 max-h-[300px] w-full border-[1px] border-slate-800 rounded-xl">
-        <p className="absolute top-0 left-3 text-slate-600 text-[13px] pb-4">
+      {/* description of referenced video */}
+      <ScrollArea className="relative px-2 h-full my-1 max-h-[300px] w-full rounded-xl border-slate-500 border-[1px]">
+        <p className="absolute top-0 left-3 text-slate-600 dark:text-slate-400 text-[13px] pb-4">
           Description
         </p>
         <button
-          className=" absolute bottom-0 right-3 text-[12px] text-slate-600"
+          className=" absolute bottom-0 right-3 text-[12px] text-slate-600 dark:text-slate-400"
           onClick={() => setShowFullDescription(!showFullDescription)}
         >
           Show {showFullDescription ? "less......" : "more......"}
         </button>
-        <p className="pt-5 pb-2 text-slate-500">
+        <p className="pt-5 pb-2 text-slate-500 dark:text-slate-300">
           {showFullDescription
             ? `${apiResponse?.description}`
             : `${apiResponse?.description.substring(0, 150)}......`}
         </p>
       </ScrollArea>
       {/* Comments displayed using map method */}
-      <ScrollArea className="w-full text-white mt-4 grid place-items-center h-72 border-[1px] border-slate-800 rounded-xl p-1">
-        <div className="text-white text-[20px] py-4 flex w-full justify-around items-center gap-5 md:ml-5 space-y-2">
+      <ScrollArea className="w-full text-white mt-4 grid place-items-center max-h-72 rounded-xl p-1 border-slate-500 border-[1px]">
+        <div className="text-slate-700 dark:text-white text-[20px] py-4 flex w-full justify-around items-center gap-5 md:ml-5 space-y-2">
           <h1>Comments : {apiResponse?.allComments.length || "0"}</h1>
           <h1
             onClick={() => setCommentInput(!commentInput)}
-            className="text-gray-400 text-sm bg-gray-800 p-1 rounded-xl flex gap-1 cursor-default"
+            className="text-gray-400 dark:text-slate-400 text-sm bg-gray-200 dark:bg-gray-800 p-1 rounded-xl flex gap-1 cursor-default"
           >
             <MessageCirclePlus />
             Add Comment . . . .
@@ -471,7 +473,7 @@ const PlayVideo = () => {
           <div>
             <div className="flex gap-1">
               <input
-                className="w-full pl-3 max-w-md bg-transparent border-[1px] rounded-xl px-1 outline-none text-white text-sm"
+                className="w-full pl-3 max-w-md bg-transparent border-[1px] rounded-xl px-1 outline-none text-slate-700 dark:text-white text-sm"
                 type="text"
                 onChange={(e) => setNewComment(e.target.value)}
                 value={newComment}
@@ -479,7 +481,7 @@ const PlayVideo = () => {
               />
               <button
                 onClick={() => handleNewComment()}
-                className="text-white p-2 bg-#121212 bg-blue-600 rounded-xl active:bg-blue-800"
+                className="text-white p-2 bg-blue-600 rounded-xl active:bg-blue-800"
               >
                 Submit
               </button>
@@ -489,7 +491,7 @@ const PlayVideo = () => {
           ""
         )}
         {!(apiResponse?.allComments.length > 0) ? (
-          <div className="flex w-full justify-center gap-2 text-slate-500 items-center">
+          <div className="flex w-full justify-center gap-2 text-slate-500 dark:text-slate-400 items-center">
             No Comments......
             <MessageCircleHeartIcon />
           </div>
@@ -497,10 +499,9 @@ const PlayVideo = () => {
           apiResponse?.allComments?.map((e: any) => (
             <div
               key={e._id}
-              // className="flex border-[1px] space-y-2 md:justify-around gap-3 rounded-xl px-2 pt-6 pb-3 my-2 border-slate-700 relative"
-              className="flex relative w-full min-w-[360px] justify-between p-2 border-[1px] border-slate-700 rounded-xl space-y-4 my-1"
+              className="flex relative w-full text-slate-700 dark:text-slate-300 min-w-[360px] justify-between p-2 border-[1px] border-slate-300 dark:border-slate-700 rounded-xl space-y-4 my-1"
             >
-              <div className="min-h-2 text-gray-500 underline w-full justify-between px-3 absolute top-0 text-[12px] flex gap-3">
+              <div className="min-h-2 underline w-full justify-between px-3 absolute top-0 text-[12px] flex gap-3">
                 <p className="absolute right-[3%]">
                   {calclulateVideoTime(e.createdAt)}
                 </p>
@@ -516,7 +517,7 @@ const PlayVideo = () => {
                 />
                 <p className="text-[11px]">{e.username}</p>
               </div>
-              <div className="text-slate-50 ml-4 flex-1 w-full">
+              <div className="text-slate-500 dark:text-slate-300 ml-4 flex-1 w-full">
                 <p>
                   {seeMoreComment
                     ? `${e.content.substring(0, 30)}`
@@ -524,21 +525,28 @@ const PlayVideo = () => {
                   {e.content.length > 30 ? "......." : "."}
                 </p>
                 <p
-                  className="text-slate-600 text-xs cursor-pointer absolute bottom-2 right-2"
+                  className="text-slate-600 dark:text-slate-400 text-xs cursor-pointer absolute bottom-2 right-2"
                   onClick={() => setSeeMoreComment(!seeMoreComment)}
                 >
-                  {seeMoreComment? "See less . . . . ." : "See more....."}
+                  {seeMoreComment ? "See less . . . . ." : "See more....."}
                 </p>
                 <p
                   onClick={() => changeComment(e._id)}
                   className="absolute right-[5%] p-1 rounded-full bg-slate-600 hover:scale-110 top-[25%]"
                 >
                   <EditIcon
-                  onClick={()=>setEditCommentBox(!editCommentBox)}
-                  className="size-4" />
+                    onClick={() => setEditCommentBox(!editCommentBox)}
+                    className="size-4"
+                  />
                 </p>
               </div>
-              {editCommentBox && <input type="text" value={editableComment} onChange={(e)=>setEditableComment(e.target.value)} />}
+              {editCommentBox && (
+                <input
+                  type="text"
+                  value={editableComment}
+                  onChange={(e) => setEditableComment(e.target.value)}
+                />
+              )}
             </div>
           ))
         )}

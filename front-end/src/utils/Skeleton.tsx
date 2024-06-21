@@ -2,7 +2,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useState } from "react";
 
 export function SkeletonCard() {
-  const [array, setArray] = useState(new Array(3).fill(null));
+  const [array, setArray] = useState(new Array(2).fill(null));
   console.log(array);
 
   return (

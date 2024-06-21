@@ -6,12 +6,14 @@ const userSlice = createSlice({
   name: "user",
   initialState: {
     id: null ,
+    token:null ,
     status: 'idle',
     error: null,
   },
   reducers: {
-    getId: (state:object, action) => {
-      state.id = action.payload._id;
+    getUser: (state, action) => {
+      state.id = action.payload.id;
+      state.token = action.payload?.accessToken;
     },
   },
   extraReducers: (builder) => {
@@ -21,14 +23,14 @@ const userSlice = createSlice({
       })
       .addCase(SignIn.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.id = action?.payload._id;
+        state.id = action?.payload?.id;
+        state.token = action?.payload?.token;
       })
       .addCase(SignIn.rejected, (state) => {
         state.status = 'failed';
-        // state.error = action.payload;
       });
   },
 });
 
 export default userSlice.reducer;
-export const { getId } = userSlice.actions;
+export const { getUser } = userSlice.actions;

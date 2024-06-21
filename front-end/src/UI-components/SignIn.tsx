@@ -5,7 +5,7 @@ import { Loader2 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { RootState } from "@/Redux/store";
 import { SignIn } from "@/Redux/ThunkFunction/SignIn";
-import { getId } from "@/Redux/Slice/UserSlice";
+import { getUser } from "@/Redux/Slice/UserSlice";
 
 interface loginDetail {
   username: string;
@@ -13,7 +13,7 @@ interface loginDetail {
 }
 
 const SignUp = () => {
-  const userId = useSelector((state: RootState) => state.user.id);
+  const userCredential = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
   const {
     register,
@@ -26,20 +26,17 @@ const SignUp = () => {
   const { isLoading, error, success, data } = useSelector(
     (state: RootState) => state.auth
   );
-  // if (data) {
-  //   dispatch(getId(data?.data?.loggedUser?._id));
-  // }
 
   if(data){
-    dispatch(getId(data?.data?.loggedUser))
+    dispatch(getUser(data?.data))
+    localStorage.setItem('userId',data.data.id)
+    localStorage.setItem('token',data.data.accessToken)
   }
   const onSubmit = async (data: loginDetail) => {
     try {
       dispatch(SignIn(data));
       if (success) {
         navigate("/");
-        console.log("Done");
-        console.log("userId : ",userId);
       }
     } catch (error) {
       const err = error as AxiosError;

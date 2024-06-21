@@ -99,7 +99,6 @@ const RegisterUser = AsyncHandler(async (req, res) => {
 
 const loginUser = AsyncHandler(async (req, res) => {
   const { email, username, password } = req.body;
-  console.log(email,username,password);
   if (!(username || email)) {
     throw new ApiError(401, "Email or Username can't be empty!");
   }
@@ -136,6 +135,7 @@ const loginUser = AsyncHandler(async (req, res) => {
         new ApiResponse(
           200,
           {
+            id:user._id,
             loggedUser,
             accessToken,
             refreshToken,

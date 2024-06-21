@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import { EllipsisVertical, Loader2, Moon, StopCircle, Sun } from "lucide-react";
+import { EllipsisVertical, Loader2, StopCircle } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 
 import {
@@ -7,7 +7,6 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { calclulateVideoTime } from "./CalculateTime.ts";
 // import { signOut } from "./services/SignOut.ts";
@@ -16,6 +15,7 @@ import { TitleFormatar } from "@/Services/TitleFormater.ts";
 import FullPageLoading from "@/utils/FullPageLoading.tsx";
 import { SkeletonCard } from "@/utils/Skeleton.tsx";
 import Hero from "@/components/Header/Hero.tsx";
+import { formatVideoDuration } from "@/Services/FormateVideoDuration.ts";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -184,7 +184,7 @@ const Dashboard = () => {
           <div className="hidden sm:block mr-2 lg:mr-10">
             {!localStorage.getItem("accessToken") ? (
               <button
-                onClick={() => navigate("signin")}
+                onClick={() => navigate("/signin")}
                 className="text-[18px] mx-1 font-semibold bg-blue-600 px-3 py-1 rounded-2xl text-white"
               >
                 Sign-In
@@ -217,8 +217,8 @@ const Dashboard = () => {
                         src={video?.videoFile}
                       />
 
-                      <div className="absolute bg-black bottom-1 px-[3px] py-[1px] rounded-lg text-center right-1 text-white">
-                        {Math.floor(video?.duration)}
+                      <div className="absolute bg-black bottom-0 rounded-[6px] text-[12px] p-1 right-0 text-white">
+                        {formatVideoDuration(video?.duration)}
                       </div>
                     </div>
 

@@ -3,10 +3,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import axios, { AxiosError } from "axios";
-// import { useToast } from "@/components/ui/use-toast";
-import { Loader2, Upload } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
-
 
 const UploadVideo = () => {
   const navigate = useNavigate();
@@ -34,11 +32,9 @@ const UploadVideo = () => {
   });
   const formdata = new FormData();
 
-
   const onSubmit = async (data: z.infer<typeof videoUploadSchema>) => {
     setIsUploading(true);
     try {
-      
       formdata.append("title", data.title);
       formdata.append("description", data.description);
       formdata.append("videoFile", data.videoFile[0]);
@@ -50,12 +46,10 @@ const UploadVideo = () => {
       );
       console.log(response);
       const id = response.data.data.owner;
-      
       localStorage.setItem("user", response.data.data.owner);
       navigate(`/signin/user-profile/${id}`);
-      } catch (error) {
-        const err = error as AxiosError;
-
+    } catch (error) {
+      const err = error as AxiosError;
       const errorMessage =
         err.message ||
         "User account creation failed due to some reasons. Please check again.";
@@ -66,8 +60,8 @@ const UploadVideo = () => {
   };
 
   return (
-    <div className="min-h-screen grid place-items-center uploadVideo">
-      <div className="text-white border-2 min-w-[350px] w-full max-w-[450px] sm:min-w-sm rounded-xl py-7 grid place-items-center">
+    <div className="min-h-screen grid place-items-center bg-gray-100 dark:bg-gray-900 uploadVideo">
+      <div className="text-gray-900 dark:text-white border-2 border-gray-300 dark:border-gray-700 min-w-[350px] w-full max-w-[450px] sm:min-w-sm rounded-xl py-7 grid place-items-center bg-white dark:bg-gray-800 text-sm space-y-7 px-3">
         <h1 className="text-center text-5xl underline py-5">
           Upload Video
         </h1>
@@ -84,7 +78,7 @@ const UploadVideo = () => {
               type="text"
               id="title"
               {...register("title")}
-              className="bg-transparent border-b-2 outline-none border-slate-700 ml-3 w-full overflow-scroll"
+              className="bg-transparent border-b-2 outline-none border-gray-700 dark:border-gray-500 ml-3 w-full overflow-scroll"
             />
           </div>
           {errors.title && (
@@ -98,7 +92,7 @@ const UploadVideo = () => {
             <textarea
               id="description"
               {...register("description")}
-              className="bg-transparent border-b-2 w-full outline-none min-w-[350px] text-[15px] border-slate-700 border-[1px] rounded-sm"
+              className="bg-transparent border-b-2 w-full outline-none min-w-[350px] text-[15px] border-gray-700 dark:border-gray-500 border-[1px] rounded-sm"
             />
           </div>
           {errors.description && (
@@ -113,7 +107,7 @@ const UploadVideo = () => {
               type="file"
               id="thumbnail"
               {...register("thumbnail")}
-              className="bg-transparent outline-none border-slate-700 ml-3"
+              className="bg-transparent outline-none border-gray-700 dark:border-gray-500 ml-3"
             />
           </div>
           {errors.thumbnail && (
@@ -128,7 +122,7 @@ const UploadVideo = () => {
               type="file"
               id="videoFile"
               {...register("videoFile")}
-              className="bg-transparent outline-none border-slate-700 ml-3"
+              className="bg-transparent outline-none border-gray-700 dark:border-gray-500 ml-3"
             />
           </div>
           {errors.videoFile && (
@@ -136,30 +130,29 @@ const UploadVideo = () => {
           )}
           <div className="flex w-full justify-around items-center">
             <NavLink
-              className="bg-red-500 text-center hover:bg-blue-700 outline-none border-slate-700 font-bold py-2 px-4 "
+              className="bg-red-500 text-center hover:bg-red-700 outline-none border-gray-700 dark:border-gray-500 font-bold py-2 px-4 "
               to="/"
             >
               Back
             </NavLink>
             <NavLink
-              className="bg-green-500  text-center hover:bg-blue-700 outline-none border-slate-700 font-bold py-2 px-4 rounded "
+              className="bg-green-500 text-center hover:bg-green-700 outline-none border-gray-700 dark:border-gray-500 font-bold py-2 px-4 rounded "
               to={`/signin/user-profile/${localStorage.getItem("userId")}`}
             >
               Profile
             </NavLink>
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-700 outline-none border-slate-700 font-bold py-2 px-4 rounded "
+              className="bg-blue-500 hover:bg-blue-700 outline-none border-gray-700 dark:border-gray-500 font-bold py-2 px-4 rounded "
             >
               {isUploading ? (
                 <Loader2 className="animate-spin" />
               ) : (
-                <Upload /> && "Upload Video"
+                "Upload Video"
               )}
             </button>
           </div>
         </form>
-        <div className="w-full flex justify-center pt-4 gap-4"></div>
       </div>
     </div>
   );

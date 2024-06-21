@@ -14,6 +14,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { formatVideoDuration } from "@/Services/FormateVideoDuration";
 
 const AllFavourateVideos = () => {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ const AllFavourateVideos = () => {
           `/api/v1/likes/all-favourate-videos/${userId}`
         );
         setApiResponse(response?.data?.data);
-        console.log("API Response:", apiResponse);
+        console.log("API Response for all Favourate Videos :", apiResponse);
       } catch (error) {
         const err = error as AxiosError;
         setError(err.message ?? "Error while API call");
@@ -50,9 +51,9 @@ const AllFavourateVideos = () => {
   if (loading) {
     return (
       <div className="min-h-screen w-full px-3 bg-#121212 grid place-items-center">
-        <div className="text-3xl flex gap-4 text-center text-white">
+        <div className="text-3xl flex items-center gap-4 text-center text-slate-700">
           <p>Loading......</p>
-          <Loader2 className="text-white size-12 text-center animate-bounce mt-10" />
+          <Loader2 className="text-slate-700 size-12 text-center animate-bounce mt-10" />
         </div>
       </div>
     );
@@ -112,7 +113,7 @@ const AllFavourateVideos = () => {
                       src={video.videoFile}
                     />
                     <div className="absolute bg-black bottom-1 px-1 py-[1px] rounded-lg text-center right-1 text-white">
-                      {Math.floor(video.duration)}
+                      {formatVideoDuration(video.duration)}
                     </div>
                   </div>
                   <DropdownMenu>
@@ -171,8 +172,8 @@ const AllFavourateVideos = () => {
             })}
           </ul>
         ) : (
-          <div className="text-3xl flex gap-5 min-h-screen w-full justify-center items-center mb-11 text-center text-white my-auto">
-            <LucideTrash2 className="text-white size-12 text-center" />
+          <div className="text-3xl flex gap-5 min-h-screen w-full justify-center items-center mb-11 text-center text-slate-700 my-auto">
+            <LucideTrash2 className="text-slate-700 size-12 text-center" />
             <p>No videos . . . . .</p>
           </div>
         )}

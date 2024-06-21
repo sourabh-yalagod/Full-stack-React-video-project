@@ -77,7 +77,7 @@ const WatchHistory = () => {
     <div className="min-h-screen grid justify-center w-full px-3 bg-#121212 relative">
       <div className="mt-10 w-full min-h-auto grid md:mt-16">
         <button
-        className="p-2 border-slate-700 border-[1px] rounded-xl text-white absolute top-1 right-1"
+        className="p-2 border-slate-700 border-[1px] rounded-xl text-slate-700 absolute top-3 right-3"
         onClick={()=>clearWatchHistory()}
         >Clear Watch history</button>
         {apiResponse?.videos?.length > 0 ? (
