@@ -37,16 +37,17 @@ export function SideMenuBar() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button className="text-white focus:outline-none focus:ring-2 focus:ring-offset-2  z-10">
-          <LucideMenu />
+        <Button className="focus:outline-none focus:ring-2 focus:ring-offset-2 absolute left-0 top-0 z-10 ">
+          <LucideMenu className="text-slate-900 dark:text-white" />
         </Button>
       </SheetTrigger>
       <SheetContent className="bg-slate-900 bg-opacity-40 max-w-[250px] w-full text-white sm:max-w-[290px] md:max-w-[320px] lg:max-w-[350px]">
         <SheetHeader>
           <SheetTitle className="flex items-center w-full justify-around text-[15px] sm:text-xl">
-            <div 
-            onClick={()=>navigate('/')}
-            className="flex gap-5 cursor-pointer hover:scale-105 transition-all">
+            <div
+              onClick={() => navigate("/")}
+              className="flex gap-5 cursor-pointer hover:scale-105 transition-all"
+            >
               <Home />
               <p>Home</p>
             </div>
@@ -70,7 +71,7 @@ export function SideMenuBar() {
           </SheetTitle>
         </SheetHeader>
 
-        <div className="grid min-h-auto justify-around py-4 gap-4 overflow-clip text-white">
+        <div className="grid justify-around mt-5 text-white space-y-1">
           <div
             className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
             onClick={() => navigate("/signup")}
@@ -94,7 +95,11 @@ export function SideMenuBar() {
           </div>
           <div
             className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
-            onClick={() => navigate(`/signin/video-play-lists/${localStorage.getItem('userId')}`)}
+            onClick={() =>
+              navigate(
+                `/signin/video-play-lists/${localStorage.getItem("userId")}`
+              )
+            }
           >
             <VideotapeIcon className="w-6 h-6" />
             <span>My Playlist</span>
@@ -140,7 +145,9 @@ export function SideMenuBar() {
           <div
             className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
             onClick={() =>
-              navigate(`/signin/watch-history/${localStorage.getItem("userId")}`)
+              navigate(
+                `/signin/watch-history/${localStorage.getItem("userId")}`
+              )
             }
           >
             <ViewIcon className="w-6 h-6" />

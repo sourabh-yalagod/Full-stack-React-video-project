@@ -6,6 +6,10 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { RootState } from "@/Redux/store";
 import { SignIn } from "@/Redux/ThunkFunction/SignIn";
 import { getUser } from "@/Redux/Slice/UserSlice";
+import { useToast } from "@/components/ui/use-toast";
+import { title } from "process";
+import { Button } from "@/components/ui/button";
+import { ToastAction } from "@radix-ui/react-toast";
 
 interface loginDetail {
   username: string;
@@ -13,6 +17,7 @@ interface loginDetail {
 }
 
 const SignUp = () => {
+  const { toast } = useToast();
   const userCredential = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
   const {
@@ -26,27 +31,56 @@ const SignUp = () => {
   const { isLoading, error, success, data } = useSelector(
     (state: RootState) => state.auth
   );
+  console.log("isLoading, error, success, data", {
+    isLoading,
+    error,
+    success,
+    data,
+  });
 
-  if(data){
-    dispatch(getUser(data?.data))
-    localStorage.setItem('userId',data.data.id)
-    localStorage.setItem('token',data.data.accessToken)
+  if (data) {
+    dispatch(getUser(data?.data));
+    localStorage.setItem("userId", data.data.id);
+    localStorage.setItem("token", data.data.accessToken);
   }
+
   const onSubmit = async (data: loginDetail) => {
     try {
       dispatch(SignIn(data));
       if (success) {
-        navigate("/");
+        (() => {
+          toast({
+            title: "Sign In  successfull.....!",
+            description:
+              "user have logged with correct username and password Please enjoy the videos . .. . . .. !",
+            duration: 1000,
+          });
+        })();
+        setTimeout(() => {
+          navigate("/");
+        }, 1000);
+      }
+      if (error) {
+        (() => {
+          toast({
+            title: "Sign-In failed.....!",
+            description:error,
+            duration: 1000,
+          });
+        })();
       }
     } catch (error) {
+      console.log("Erro");
       const err = error as AxiosError;
+      console.log(err?.response?.data);
+
       const errorMessage =
         err.message ||
         "User log-in failed due to some reasons. Please check again.";
       console.log(errorMessage);
     }
   };
-  
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
       <div className="text-black dark:text-white border-2 max-w-[470px] w-full rounded-xl p-8 bg-white dark:bg-gray-800 shadow-lg">

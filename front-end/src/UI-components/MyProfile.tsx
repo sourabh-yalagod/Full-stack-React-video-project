@@ -7,7 +7,6 @@ import {
   Loader2,
   NotebookPen,
   NutOffIcon,
-  Upload,
   Verified,
   Video,
 } from "lucide-react";

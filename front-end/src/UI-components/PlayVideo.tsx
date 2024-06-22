@@ -246,7 +246,7 @@ const PlayVideo = () => {
   };
 
   return (
-    <div className="w-full grid p-1 text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 pb-10 mx-auto">
+    <div className="w-full grid p-1 text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 pb-10 mx-auto">
       {/* this is the video and controllers Div */}
       <div className="w-full max-w-4xl md:mt-14 mx-auto bg-black group relative">
         <video
@@ -288,7 +288,7 @@ const PlayVideo = () => {
           </div>
         </div>
       </div>
-      <div className="relative my-2 px-3 w-full rounded-xl bg-white dark:bg-[#121212] border-[1px] border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-[15px] sm:text-xl">
+      <div className="relative my-2 px-3 w-full rounded-xl bg-white dark:bg-slate-700 bg-opacity-60 border-[1px] border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-[15px] sm:text-xl">
         <p className="absolute top-0 left-3 text-slate-600 dark:text-slate-400 min-h-2 text-[13px] pb-4">
           Title
         </p>

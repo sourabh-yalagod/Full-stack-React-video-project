@@ -3,17 +3,17 @@ import { ThemeButton } from "@/utils/ThemeButtom";
 
 const Hero = () => {
   return (
-    <div className="w-full flex justify-between gap-4 text-slate-800 dark:bg-slate-800 dark:text-slate-500">
-      <div className="flex gap-2 items-center justify-around">
+    <div className="w-full flex justify-between items-center py-4 px-10 gap-4 text-slate-800 dark:bg-slate-900 dark:text-slate-500 relative">
+      <div className="flex gap-2 items-center justify-around ml-5">
         <SideMenuBar />
         <img
-          className="w-14 h-14 animate-accordion-down"
+          className="w-10 h-10 sm:w-14 sm:h-14 rounded-full"
           src={
-            "https://w7.pngwing.com/pngs/406/78/png-transparent-android-media-player-video-player-android-blue-angle-video-player.png"
+            "https://lh3.googleusercontent.com/rormhrw_yZt2v1OKZBaiFCSt8b8QU02kEKiuilfgnpGkOMQd87xm7b7SyIlGoHsL18M"
           }
         />
-        <p className="text-slate-800 text-3xl font-bold dark:text-white">
-          Play Video
+        <p className="text-slate-800 text-2xl font-bold dark:text-white">
+          Video-Tube
         </p>
       </div>
       <div>

@@ -161,11 +161,9 @@ const Dashboard = () => {
   });
   return (
     <div className="min-h-screen w-full grid relative place-items-center mx-auto dark:bg-gray-900 bg-white">
-      {/* <ThemeButton /> */}
-      <Hero/>
       <BottomNavBar />
       <div className="min-h-screen w-full p-2 grid place-items-center transition-all">
-        <div className="flex w-full gap-3 sm:justify-between justify-center items-center mt-20">
+        <div className="flex w-full gap-3 sm:justify-between justify-center items-center">
           <div className="w-full max-w-[500px] min-w-[270px] gap-4 relative overflow-hidden">
             <input
               type="text"
