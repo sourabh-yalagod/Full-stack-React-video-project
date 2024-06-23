@@ -176,36 +176,30 @@ const VideoPlaylist = () => {
     );
   }
   return (
-    <div className="min-h-screen w-full px-3 bg-#121212 pt-16 relative py-5">
-      <h1 className="text-center text-white text-2xl font-black">
+    <div className="min-h-screen w-full px-3 dark:bg-gray-900 pt-7 relative">
+      <h1 className="text-center text-gray-900 dark:text-white text-2xl font-black">
         All Play lists
       </h1>
-      <SideMenuBar />
-      <div className="flex justify-center text-slate-400 flex-wrap gap-3 py-5">
+      <div className="flex justify-center text-gray-900 dark:text-slate-400 flex-wrap gap-3 py-5">
         {apiResponse ? (
-          apiResponse.map((playlist: any) => (
+          apiResponse.map((playlist:any) => (
             <div
               key={playlist._id}
-              className="flex-1 min-w-[250px] max-w-[350px] p-1 border-slate-700 rounded-xl border-[1px] relative"
+              className="flex-1 min-w-[250px] max-w-[350px] p-1 border-gray-900 dark:border-slate-700 rounded-xl border-[1px] relative"
             >
               <img
-                onClick={() =>
-                  navigate(`/signin/playlist-videos/${playlist._id}`)
-                }
-                src={
-                  playlist.thumbnail ??
-                  "https://cdn-icons-png.freepik.com/512/4475/4475979.png"
-                }
+                onClick={() => navigate(`/signin/playlist-videos/${playlist._id}`)}
+                src={playlist.thumbnail ?? "https://cdn-icons-png.freepik.com/512/4475/4475979.png"}
                 className="w-full rounded-xl object-cover"
               />
               <DropdownMenu>
-                <DropdownMenuTrigger className="text-white absolute right-2 bottom-1 z-10">
+                <DropdownMenuTrigger className="text-gray-900 dark:text-white absolute right-2 bottom-1 z-10">
                   <EllipsisVertical className="outline-none" />
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="text-white text-[13px] grid space-y-1 border-slate-600 bg-opacity-50 cursor-pointer rounded-[7px] bg-black text-center w-fit mr-8 p-0">
+                <DropdownMenuContent className="text-gray-900 dark:text-white text-[13px] grid space-y-1 border-gray-900 dark:border-slate-600 bg-opacity-50 cursor-pointer rounded-[7px] bg-gray-200 dark:bg-black text-center w-fit mr-8 p-0">
                   <div
                     onClick={() => deletePlaylist(playlist._id)}
-                    className="px-2 py-1 border-slate-700 rounded-lg grid place-items-center hover:bg-gray-900 transition-all"
+                    className="px-2 py-1 border-gray-900 dark:border-slate-700 rounded-lg grid place-items-center hover:bg-gray-300 dark:hover:bg-gray-900 transition-all"
                   >
                     {isloading ? (
                       <Loader2 className="animate-spin" />
@@ -215,15 +209,13 @@ const VideoPlaylist = () => {
                   </div>
                   <Dialog>
                     <DialogTrigger asChild>
-                      <button className="px-2 py-1 border-slate-700 rounded-lg hover:bg-gray-900 transition-all">
-                        Edit Playlist{" "}
+                      <button className="px-2 py-1 border-gray-900 dark:border-slate-700 rounded-lg hover:bg-gray-300 dark:hover:bg-gray-900 transition-all">
+                        Edit Playlist
                       </button>
                     </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px] text-slate-200 rounded-xl bg-opacity-50 bg-slate-900">
+                    <DialogContent className="sm:max-w-[425px] text-gray-900 dark:text-slate-200 rounded-xl bg-opacity-50 bg-gray-100 dark:bg-slate-900">
                       <DialogHeader>
-                        <DialogTitle className="text-xl">
-                          Edit Playlist{" "}
-                        </DialogTitle>
+                        <DialogTitle className="text-xl">Edit Playlist</DialogTitle>
                         <DialogDescription className="font-semibold tracking-wider">
                           Edit the playlist <br /> as you want
                         </DialogDescription>
@@ -265,9 +257,7 @@ const VideoPlaylist = () => {
                       </div>
                       <DialogFooter>
                         <button
-                          onClick={() =>
-                            handlePlaylistModification(playlist?._id)
-                          }
+                          onClick={() => handlePlaylistModification(playlist?._id)}
                           className="w-full p-2 rounded-xl border-[1px] grid place-items-center"
                         >
                           {isloading ? (
@@ -285,26 +275,25 @@ const VideoPlaylist = () => {
             </div>
           ))
         ) : (
-          <div className="text-3xl flex gap-5 min-h-screen w-full justify-center items-center mb-11 text-center text-white my-auto">
-            <LucideTrash2 className="text-white size-12 text-center" />
+          <div className="text-3xl flex gap-5 min-h-screen w-full justify-center items-center mb-11 text-center text-gray-900 dark:text-white my-auto">
+            <LucideTrash2 className="text-gray-900 dark:text-white size-12 text-center" />
             <p>No Playlists were found . . . . .</p>
           </div>
         )}
       </div>
-      <div className="w-full grid place-items-center text-white">
+      <div className="w-full grid place-items-center text-gray-900 dark:text-white">
         <Dialog>
           <DialogTrigger asChild>
-            <button className="flex gap-3 p-3 border-[1px] rounded-xl border-slate-500">
+            <button className="flex gap-3 p-3 border-[1px] rounded-xl border-gray-500 dark:border-slate-500">
               <PlusCircle />
-              Create New Playlist{" "}
+              Create New Playlist
             </button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] text-slate-200 rounded-xl bg-opacity-50 bg-slate-900">
+          <DialogContent className="sm:max-w-[425px] text-gray-900 dark:text-slate-200 rounded-xl bg-opacity-50 bg-gray-100 dark:bg-slate-900">
             <DialogHeader>
               <DialogTitle className="text-xl">Create New Playlist</DialogTitle>
               <DialogDescription className="font-semibold tracking-wider">
-                create a play-list and group <br /> the similar videos together
-                . . . . !
+                Create a play-list and group <br /> the similar videos together . . . . !
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4">
@@ -344,7 +333,7 @@ const VideoPlaylist = () => {
             </div>
             <DialogFooter>
               <button
-                onClick={() => handleCreatePlaylist()}
+                onClick={handleCreatePlaylist}
                 className="w-full p-2 rounded-xl border-[1px] grid place-items-center"
               >
                 {isloading ? (

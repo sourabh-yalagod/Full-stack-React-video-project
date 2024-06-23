@@ -153,7 +153,6 @@ const getUserInfo = AsyncHandler(async (req, res) => {
   if (!userID) {
     throw new ApiError(401, "User ID not found from Params....!");
   }
-  console.log("User Profile UserID : ", userID);
   const userProfileDetails = await User.aggregate([
     // subscription
     {

@@ -60,7 +60,7 @@ const UploadVideo = () => {
   };
 
   return (
-    <div className="min-h-screen grid place-items-center bg-gray-100 dark:bg-gray-900 uploadVideo">
+    <div className="min-h-screen grid place-items-center bg-gray-100 dark:bg-gray-900">
       <div className="text-gray-900 dark:text-white border-2 border-gray-300 dark:border-gray-700 min-w-[350px] w-full max-w-[450px] sm:min-w-sm rounded-xl py-7 grid place-items-center bg-white dark:bg-gray-800 text-sm space-y-7 px-3">
         <h1 className="text-center text-5xl underline py-5">
           Upload Video

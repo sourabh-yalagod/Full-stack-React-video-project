@@ -24,14 +24,16 @@ import likeRouter from "./routers/like.router.js";
 import dashboardRouter from "./routers/dashboard.router.js"
 import profileRouter from "./routers/user-profile.router.js"
 import playListRouter from "./routers/playlist.route.js"
+import homeRouter from "./routers/home.router.js  "
 
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/videos", videoRouter);
 app.use("/api/v1/comments", commentRouter);
 app.use("/api/v1/likes", likeRouter);
-app.use("/api/v1/dashboard", dashboardRouter);
+app.use("/api/v1/dashboard", dashboardRouter);  
 app.use("/api/v1/user-profiles",profileRouter);
 app.use("/api/v1/video-play-list",playListRouter);
+app.use("/api/v1/home",homeRouter);
 
 export { app };

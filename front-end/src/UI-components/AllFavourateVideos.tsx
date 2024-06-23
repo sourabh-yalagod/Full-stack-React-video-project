@@ -92,88 +92,84 @@ const AllFavourateVideos = () => {
   }
 
   return (
-    <div className="min-h-screen w-full px-3 bg-#121212">
-      <h1 className="text-center mt-10 text-2xl sm:text-3xl md:text-4xl text-white font-semibold">
-        Favourate Videos
+    <div className="min-h-screen w-full px-3 bg-white dark:bg-slate-900">
+      <h1 className="p-5 underline pt-10 text-2xl sm:text-3xl md:text-4xl text-gray-800 dark:text-white font-semibold">
+        Favorite Videos
       </h1>
       <div className="mt-5 w-full min-h-auto grid place-items-center md:mt-16">
         {apiResponse.length > 0 ? (
           <ul className="flex justify-center flex-wrap gap-3 py-5">
-            {apiResponse.map((video: any) => {
-              return (
-                <div
-                  key={video._id}
-                  className="flex-1 min-w-[320px] max-w-[420px] border-slate-700 p-2 rounded-xl border-[1px] relative"
-                >
-                  <div className="relative">
-                    <video
-                      onClick={() => navigate(`/${video._id}`)}
-                      className="w-full object-cover"
-                      poster={video.thumbnail}
-                      src={video.videoFile}
-                    />
-                    <div className="absolute bg-black bottom-1 px-1 py-[1px] rounded-lg text-center right-1 text-white">
-                      {formatVideoDuration(video.duration)}
-                    </div>
+            {apiResponse.map((video:any) => (
+              <div
+                key={video._id}
+                className="flex-1 min-w-[320px] max-w-[420px] border-gray-300 dark:border-slate-700 p-2 rounded-xl border-[1px] relative bg-white dark:bg-slate-800"
+              >
+                <div className="relative">
+                  <video
+                    onClick={() => navigate(`/${video._id}`)}
+                    className="w-full object-cover rounded-lg cursor-pointer"
+                    poster={video.thumbnail}
+                    src={video.videoFile}
+                  />
+                  <div className="absolute bg-black bottom-1 px-1 py-[1px] rounded-lg text-center right-1 text-white text-xs">
+                    {formatVideoDuration(video.duration)}
                   </div>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger className="text-white absolute right-2 bottom-[5%] z-10 cursor-pointer">
-                      <EllipsisVertical className="outline-none" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="text-white text-[13px] grid space-y-1 border-slate-600 bg-opacity-50 cursor-pointer rounded-[7px] bg-slate-900 text-center w-fit mr-8 p-0">
-                      <div
-                        onClick={() => removeVideo(video._id)}
-                        className="px-2 py-1 m-1 rounded-[9px] transition-all grid place-items-center pb-2 hover:bg-slate-800"
-                      >
-                        {isLoading ? <Loader2 className="animate-spin" /> : "Remove video"}
-                      </div>
-                      <a
-                        type="download"
-                        className="px-2 py-1 m-1 rounded-[9px] transition-all pb-2 hover:bg-slate-800"
-                        href={video.videoFile}
-                      >
-                        Download
-                      </a>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                  <div className="flex items-center gap-1 w-full overflow-scroll mt-2 relative">
-                    <img
-                      onClick={() =>
-                        navigate(`/signin/user-profile/${video.owner}`)
-                      }
-                      src={
-                        video?.Uploader?.avatar ??
-                        "https://img.freepik.com/premium-photo/graphic-designer-digital-avatar-generative-ai_934475-9292.jpg"
-                      }
-                      className="w-9 h-9 rounded-full border-2 border-white"
-                      alt=""
-                    />
-                    <div className="grid gap-1 pl-1">
-                      <p className="text-white text-[16px] ml-2 overflow-hidden">
-                        {video.title.length > 28 ? (
-                          <>{video.title.slice(0, 28)}. . . . .</>
-                        ) : (
-                          video.title
-                        )}
+                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="text-gray-800 dark:text-white absolute right-2 bottom-[5%] z-10 cursor-pointer">
+                    <EllipsisVertical className="outline-none" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="text-gray-800 dark:text-white text-[13px] grid space-y-1 border-gray-300 dark:border-slate-600 bg-opacity-50 cursor-pointer rounded-[7px] bg-white dark:bg-slate-900 text-center w-fit mr-8 p-0">
+                    <div
+                      onClick={() => removeVideo(video._id)}
+                      className="px-2 py-1 m-1 rounded-[9px] transition-all grid place-items-center pb-2 hover:bg-gray-200 dark:hover:bg-slate-800"
+                    >
+                      {isLoading ? <Loader2 className="animate-spin" /> : 'Remove video'}
+                    </div>
+                    <a
+                      type="download"
+                      className="px-2 py-1 m-1 rounded-[9px] transition-all pb-2 hover:bg-gray-200 dark:hover:bg-slate-800"
+                      href={video.videoFile}
+                    >
+                      Download
+                    </a>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <div className="flex items-center gap-2 w-full overflow-hidden mt-2 relative">
+                  <img
+                    onClick={() => navigate(`/signin/user-profile/${video.owner}`)}
+                    src={
+                      video?.Uploader?.avatar ??
+                      'https://img.freepik.com/premium-photo/graphic-designer-digital-avatar-generative-ai_934475-9292.jpg'
+                    }
+                    className="w-9 h-9 rounded-full border-2 border-white dark:border-gray-700 cursor-pointer"
+                    alt=""
+                  />
+                  <div className="grid gap-1 pl-1 overflow-hidden">
+                    <p className="text-gray-800 dark:text-slate-300 text-[16px] ml-2 overflow-hidden">
+                      {video.title.length > 28 ? (
+                        <>{video.title.slice(0, 28)}. . . . .</>
+                      ) : (
+                        video.title
+                      )}
+                    </p>
+                    <div className="flex gap-3 text-[13px]">
+                      <p className="text-gray-600 dark:text-slate-500">
+                        {video.Uploader.username}
                       </p>
-                      <div className="flex gap-3 text-[13px]">
-                        <p className="text-slate-600 ">
-                          {video.Uploader.username}
-                        </p>
-                        <p className="text-slate-600 ">views {video.views}</p>
-                        <p className="text-slate-600 ">
-                          {calclulateVideoTime(video.createdAt)}
-                        </p>
-                      </div>
+                      <p className="text-gray-600 dark:text-slate-500">views {video.views}</p>
+                      <p className="text-gray-600 dark:text-slate-500">
+                        {calclulateVideoTime(video.createdAt)}
+                      </p>
                     </div>
                   </div>
                 </div>
-              );
-            })}
+              </div>
+            ))}
           </ul>
         ) : (
-          <div className="text-3xl flex gap-5 min-h-screen w-full justify-center items-center mb-11 text-center text-slate-700 my-auto">
-            <LucideTrash2 className="text-slate-700 size-12 text-center" />
+          <div className="text-3xl flex gap-5 min-h-screen w-full justify-center items-center mb-11 text-center text-gray-800 dark:text-slate-700 my-auto">
+            <LucideTrash2 className="text-gray-800 dark:text-slate-700 size-12 text-center" />
             <p>No videos . . . . .</p>
           </div>
         )}

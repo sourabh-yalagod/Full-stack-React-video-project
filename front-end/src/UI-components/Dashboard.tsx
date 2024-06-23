@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 import { EllipsisVertical, Loader2, StopCircle } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-
+// import debounce from 'lodash/debounce';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,7 +14,6 @@ import BottomNavBar from "./BottomNavBar.tsx";
 import { TitleFormatar } from "@/Services/TitleFormater.ts";
 import FullPageLoading from "@/utils/FullPageLoading.tsx";
 import { SkeletonCard } from "@/utils/Skeleton.tsx";
-import Hero from "@/components/Header/Hero.tsx";
 import { formatVideoDuration } from "@/Services/FormateVideoDuration.ts";
 
 const Dashboard = () => {
@@ -113,13 +112,16 @@ const Dashboard = () => {
   }, [isloadVideos]);
 
   // API call when the search input is present
-  const handleSearch = useCallback(async () => {
+  const handleSearch = useCallback(async (search:string) => {
     const controller = new AbortController();
     const signal = controller.signal;
     try {
+      // const debouseSearch = debounce(searchQuery)
+      // console.log("debouseSearch : ",debouseSearch);
+      
       setIsLoading(true);
       const response = await axios.get("/api/v1/dashboard/search-video?", {
-        params: { search: searchQuery },
+        params: { search: search },
         signal: signal,
       });
       {
@@ -137,11 +139,9 @@ const Dashboard = () => {
       setIsLoading(false);
     }
     return () => {
-      console.log("Aborting");
-
       controller.abort();
     };
-  }, [searchQuery]);
+  }, []);
 
   // return if the API returns some errors
   if (error) {
@@ -157,8 +157,10 @@ const Dashboard = () => {
     );
   }
   window.addEventListener("keyup", (e) => {
-    if (searchQuery) if (e.key == "Enter") handleSearch();
+    if (searchQuery) if (e.key == "Enter") handleSearch("Animal");
   });
+  console.log("searchQuery : ",searchQuery);
+  
   return (
     <div className="min-h-screen w-full grid relative place-items-center mx-auto dark:bg-gray-900 bg-white">
       <BottomNavBar />
@@ -173,7 +175,7 @@ const Dashboard = () => {
               className="bg-transparent pl-4 text-gray-700 dark:text-slate-400 grid place-items-center text-[20px] w-full border-gray-700 dark:border-slate-400 outline-none border-[1px] p-2 rounded-xl"
             />
             <button
-              onClick={() => handleSearch()}
+              onClick={() => handleSearch(searchQuery)}
               className="absolute right-0 inset-y-0 bg-blue-600 text-white px-3 rounded-l-3xl rounded-xl"
             >
               {isLoading ? <Loader2 className="animate-spin" /> : "Search"}
