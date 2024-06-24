@@ -7,6 +7,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+// const [isloading, setIsLoading] = useState(false);
 import { EllipsisVertical } from "lucide-react";
 
 const Video = ({
@@ -21,7 +22,7 @@ any) => {
   const navigate = useNavigate();
   return (
     <div
-      key={video?._id}
+      key={Math.random()}
       className="flex-1 min-w-[320px] max-w-[500px] border-gray-700 dark:border-slate-700 p-2 rounded-xl border-[1px] relative"
     >
       {/* video projection */}
@@ -47,12 +48,19 @@ any) => {
           {dropMenuBar.map((field: any) => (
             <div
               key={field}
-              className="px-2 py-1 m-1 rounded-[9px] transition-all pb-2 hover:bg-gray-200 dark:hover:bg-slate-800"
+              className="px-2 py-1 m-1 grid place-items-center rounded-[9px] transition-all pb-2 hover:bg-gray-200 dark:hover:bg-slate-800"
               onClick={field.operation}
             >
               {field.name}
             </div>
           ))}
+          <a
+            href={video.videoFile}
+            className="px-2 py-1 m-1 grid place-items-center rounded-[9px] transition-all pb-2 hover:bg-gray-200 dark:hover:bg-slate-800 text-gray-700 dark:text-white"
+            target="_blank" // Open in a new tab
+            rel="noopener noreferrer"
+            type="download"
+          >Download</a>
         </DropdownMenuContent>
       </DropdownMenu>
 
@@ -71,7 +79,7 @@ any) => {
         />
         <div className="grid gap-1 pl-1">
           <p className="text-gray-700 dark:text-white text-[16px] ml-2 overflow-hidden">
-            {TitleFormatar(video.title)}
+            {TitleFormatar(video?.title) || ""}
           </p>
           <div className="flex gap-3 text-[13px]">
             <p className="text-gray-500 dark:text-slate-600 ">{username}</p>
