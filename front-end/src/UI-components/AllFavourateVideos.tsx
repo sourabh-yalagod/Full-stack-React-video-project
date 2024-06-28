@@ -8,7 +8,7 @@ import { useParams } from "react-router-dom";
 import Video from "@/utils/Video";
 import APIloading from "@/utils/APIloading";
 import APIError from "@/utils/APIError";
-import VideoNotFound from "@/utils/FullPageLoading";
+import VideoNotFound from "@/utils/VideoNotFound";
 
 const AllFavourateVideos = () => {
   const { userId } = useParams();
@@ -39,11 +39,6 @@ const AllFavourateVideos = () => {
     })();
   }, [userId]);
 
-  // loading state while API response return
-  {isLoading && <APIloading/>}
-  {error && <APIError/>}
-  console.log("Error : ",error);
-  
   // remove video from the favourate video list
   const removeVideo = async (videoId: any) => {
     setIsLoading(true);
@@ -64,20 +59,11 @@ const AllFavourateVideos = () => {
     }
   };
 
-  // error display if the API call gone wrong
-  // if (error) {
-  //   return (
-  //     <div className="min-h-screen w-full px-3 bg-#121212 grid place-items-center">
-  //       <div className="text-white text-3xl flex gap-4">
-  //         <NutOffIcon />
-  //         APi Error Try again . . . .
-  //       </div>
-  //     </div>
-  //   );
-  // }
 
   return (
     <div className="min-h-screen w-full px-3 bg-white dark:bg-slate-900">
+      {loading && <APIloading />}
+      {error && <APIError />}
       <h1 className="p-5 underline pt-10 text-2xl sm:text-3xl md:text-4xl text-gray-800 dark:text-white font-semibold">
         Favorite Videos
       </h1>

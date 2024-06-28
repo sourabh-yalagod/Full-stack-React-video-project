@@ -3,13 +3,14 @@ import { Loader2, LucideTrash2, NutOffIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { calclulateVideoTime } from "./CalculateTime";
+import APIError from "@/utils/APIError";
+import APIloading from "@/utils/APIloading";
 const WatchHistory = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
   const [apiResponse, setApiResponse]: any = useState("");
   const [loading, setLoading]: any = useState(false);
   const [error, setError]: any = useState("");
-  console.log(userId);
 
   // API request for watch history videos
   useEffect(() => {
@@ -32,30 +33,6 @@ const WatchHistory = () => {
     })();
   }, [userId]);
 
-  // component renders when API is loading
-  if (loading) {
-    return (
-      <div className="min-h-screen w-full px-3 bg-#121212 grid place-items-center">
-        <p className="text-3xl text-center text-white">
-          <Loader2 className="text-white size-5 text-center animate-spin mt-10" />
-        </p>
-      </div>
-    );
-  }
-
-  // componet reders when API results some Errors
-  if (error) {
-    alert(error)
-    return (
-      <div className="min-h-screen w-full px-3 bg-#121212 grid place-items-center">
-        <div className="text-white text-3xl flex gap-4">
-          <NutOffIcon />
-          Error (API)
-        </div>
-      </div>
-    );
-  }
-
   const clearWatchHistory = async () => {
     setLoading(true);
     console.log("Fetching profile for UserId:", userId);
@@ -74,6 +51,9 @@ const WatchHistory = () => {
 
   return (
     <div className="min-h-screen grid justify-center w-full p-5 bg-white dark:bg-slate-900 relative">
+      {loading && <APIloading />}
+      {error && <APIError />}
+
       <div className="mt-10 w-full min-h-auto grid md:mt-16">
         <button
           className="p-2 border-gray-300 border-[1px] dark:border-slate-700 rounded-xl text-gray-700 dark:text-slate-300 absolute top-3 right-3"
@@ -83,7 +63,7 @@ const WatchHistory = () => {
         </button>
         {apiResponse?.videos?.length > 0 ? (
           <ul className="flex justify-center items-start flex-wrap gap-3 py-5">
-            {apiResponse?.videos?.map((video:any) => (
+            {apiResponse?.videos?.map((video: any) => (
               <div
                 key={video._id}
                 className="flex-1 min-w-[250px] max-w-[380px] border-gray-300 dark:border-slate-700 p-2 rounded-xl border-[1px] relative bg-white dark:bg-slate-800"
@@ -104,7 +84,10 @@ const WatchHistory = () => {
                     onClick={() =>
                       navigate(`/signin/user-profile/${apiResponse._id}`)
                     }
-                    src={apiResponse.avatar ?? 'https://img.freepik.com/premium-photo/graphic-designer-digital-avatar-generative-ai_934475-9292.jpg'}
+                    src={
+                      apiResponse.avatar ??
+                      "https://img.freepik.com/premium-photo/graphic-designer-digital-avatar-generative-ai_934475-9292.jpg"
+                    }
                     className="w-9 h-9 rounded-full border-2 border-white dark:border-gray-700 cursor-pointer"
                   />
                   <div className="grid gap-1 pl-1 overflow-hidden">
@@ -119,7 +102,9 @@ const WatchHistory = () => {
                       <p className="text-gray-600 dark:text-slate-500">
                         {apiResponse.username}
                       </p>
-                      <p className="text-gray-600 dark:text-slate-500">views {video.views}</p>
+                      <p className="text-gray-600 dark:text-slate-500">
+                        views {video.views}
+                      </p>
                       <p className="text-gray-600 dark:text-slate-500">
                         {calclulateVideoTime(video.createdAt)}
                       </p>

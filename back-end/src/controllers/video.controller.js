@@ -430,7 +430,7 @@ const deleteVideo = AsyncHandler(async (req, res) => {
 
   if (!deleteVideoFileFromCloudinary || !deleteThumbnailFromCloudinary) {
     console.log("Resources are not yet deleted from Cloudinary");
-    throw new ApiError(402, "Resources are not yet deleted from Cloudinary");
+    // throw new ApiError(402, "Resources are not yet deleted from Cloudinary");
   }
 
   const comments = await Comment.deleteMany({

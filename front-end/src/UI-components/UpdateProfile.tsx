@@ -9,6 +9,8 @@ import {
 } from "@/components/ui/dialog";
 
 import { Input } from "@/components/ui/input";
+import APIError from "@/utils/APIError";
+import APIloading from "@/utils/APIloading";
 import axios from "axios";
 import {
   Image,
@@ -29,7 +31,7 @@ export default function UpdateProfile() {
   const [tokens, setTokens]: any = useState("");
   const [avatar, setAvatar]: any = useState("");
   const [coverImage, setCoverImage]: any = useState("");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const changePassword = useCallback(async () => {
     setIsLoading(true);
@@ -43,7 +45,7 @@ export default function UpdateProfile() {
       setOldPassword("");
       setNewPassword("");
       console.log("Response:", res?.data);
-      navigate('/signin')
+      navigate("/signin");
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setError(error.response?.data || "An error occurred");
@@ -103,8 +105,8 @@ export default function UpdateProfile() {
     try {
       const res = await axios.get("/api/v1/users/generate-newtokens");
       setTokens(res?.data);
-      localStorage.setItem('accessToken',tokens?.data?.accessToken)
-      localStorage.setItem('refreshToken',tokens?.data?.refreshToken)      
+      localStorage.setItem("accessToken", tokens?.data?.accessToken);
+      localStorage.setItem("refreshToken", tokens?.data?.refreshToken);
     } catch (error: any) {
       setError(error);
     } finally {
@@ -113,22 +115,23 @@ export default function UpdateProfile() {
   }, [tokens]);
 
   return (
-    <div className="min-h-screen w-full px-4 min-w-[375px]">
-      <h1 className="text-3xl text-center my-7 text-slate-300 font-semibold">
+    <div className="min-h-screen w-full px-4 min-w-[375px] bg-white dark:bg-gray-900">
+      {error && <APIError />}
+      <h1 className="text-3xl text-center py-7 text-slate-900 dark:text-slate-300 font-semibold">
         Customize Profile
       </h1>
-      <div className="grid place-items-center  text-slate-500 space-y-6">
+      <div className="grid place-items-center text-slate-700 dark:text-slate-500 space-y-6">
         {/* Change password Dialog box */}
         <Dialog>
           <DialogTrigger asChild>
             <Button
               variant="outline"
-              className="w-full py-6 max-w-[250px] border-slate-600 rounded-xl text-[18px] hover:scale-95 transition-all"
+              className="w-full py-6 max-w-[250px] border-slate-600 dark:border-slate-400 rounded-xl text-[18px] hover:scale-95 transition-all"
             >
               Change Password
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] w-full text-white border-white rounded-xl px-4">
+          <DialogContent className="sm:max-w-[425px] w-full text-slate-900 dark:text-white border-slate-900 dark:border-white rounded-xl px-4">
             <DialogHeader>
               <DialogTitle>Change Your Password</DialogTitle>
             </DialogHeader>
@@ -142,7 +145,7 @@ export default function UpdateProfile() {
                   id="old-password"
                   value={oldPassword}
                   onChange={(e) => setOldPassword(e.target.value)}
-                  className="rounded-xl w-full min-w-[200px]"
+                  className="rounded-xl w-full min-w-[200px] bg-gray-100 dark:bg-gray-800 text-black dark:text-white"
                 />
               </div>
               <div className="flex items-center w-full justify-between gap-5">
@@ -154,35 +157,37 @@ export default function UpdateProfile() {
                   id="new-password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="rounded-xl w-full min-w-[200px]"
+                  className="rounded-xl w-full min-w-[200px] bg-gray-100 dark:bg-gray-800 text-black dark:text-white"
                 />
               </div>
             </div>
-            {error && <p className="text-red-500">{error}</p>}
+            {error && <p className="text-red-500 dark:text-red-400">{error}</p>}
             {response && (
-              <p className="text-green-500">Password changed successfully!</p>
+              <p className="text-green-500 dark:text-green-400">
+                Password changed successfully!
+              </p>
             )}
             <DialogFooter>
               <button
                 onClick={changePassword}
-                className="px-2 py-1 rounded-xl border-[1px] border-white"
+                className="px-2 py-1 rounded-xl border-[1px] border-slate-900 dark:border-white"
               >
                 {isLoading ? <Loader2 className="animate-spin" /> : "Submit"}
               </button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
-        {/* change avatar Dailog Box */}
+        {/* change avatar Dialog Box */}
         <Dialog>
           <DialogTrigger asChild>
             <Button
               variant="outline"
-              className="w-full py-6 max-w-[250px] border-slate-600 rounded-xl text-[18px] hover:scale-95 transition-all"
+              className="w-full py-6 max-w-[250px] border-slate-600 dark:border-slate-400 rounded-xl text-[18px] hover:scale-95 transition-all"
             >
               Change Avatar
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] w-full text-white border-white rounded-xl px-4">
+          <DialogContent className="sm:max-w-[425px] w-full text-slate-900 dark:text-white border-slate-900 dark:border-white rounded-xl px-4">
             <DialogHeader>
               <DialogTitle>Change Your Avatar Image</DialogTitle>
             </DialogHeader>
@@ -195,35 +200,37 @@ export default function UpdateProfile() {
                 <input
                   type="file"
                   onChange={(e: any) => setAvatar(e.target.files)}
-                  className="rounded-xl w-full min-w-[200px] text-white"
+                  className="rounded-xl w-full min-w-[200px] bg-gray-100 dark:bg-gray-800 text-black dark:text-white"
                 />
               </div>
             </div>
-            {error && <p className="text-red-500">{error}</p>}
+            {error && <p className="text-red-500 dark:text-red-400">{error}</p>}
             {response && (
-              <p className="text-green-500">Avatar uploaded successfully!</p>
+              <p className="text-green-500 dark:text-green-400">
+                Avatar uploaded successfully!
+              </p>
             )}
             <DialogFooter>
               <button
                 onClick={() => changeAvatar()}
-                className="px-2 py-1 max-w-[250px] grid place-items-center mx-auto w-full rounded-xl border-[1px] border-white"
+                className="px-2 py-1 max-w-[250px] grid place-items-center mx-auto w-full rounded-xl border-[1px] border-slate-900 dark:border-white"
               >
                 {isLoading ? <Loader2 className="animate-spin" /> : "Upload"}
               </button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
-        {/* Change Cover Image Dailog box */}
+        {/* Change Cover Image Dialog box */}
         <Dialog>
           <DialogTrigger asChild>
             <Button
               variant="outline"
-              className="w-full py-6 max-w-[250px] border-slate-600 rounded-xl text-[18px] hover:scale-95 transition-all"
+              className="w-full py-6 max-w-[250px] border-slate-600 dark:border-slate-400 rounded-xl text-[18px] hover:scale-95 transition-all"
             >
               Change Cover Image
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px] w-full text-white border-white rounded-xl px-4">
+          <DialogContent className="sm:max-w-[425px] w-full text-slate-900 dark:text-white border-slate-900 dark:border-white rounded-xl px-4">
             <DialogHeader>
               <DialogTitle className="flex gap-2">
                 <PowerOffIcon />
@@ -239,20 +246,20 @@ export default function UpdateProfile() {
                 <input
                   type="file"
                   onChange={(e: any) => setCoverImage(e.target.files)}
-                  className="rounded-xl w-full min-w-[200px] text-white"
+                  className="rounded-xl w-full min-w-[200px] bg-gray-100 dark:bg-gray-800 text-black dark:text-white"
                 />
               </div>
             </div>
-            {error && <p className="text-red-500">{error}</p>}
+            {error && <p className="text-red-500 dark:text-red-400">{error}</p>}
             {response && (
-              <p className="text-green-500">
+              <p className="text-green-500 dark:text-green-400">
                 Cover Image uploaded successfully!
               </p>
             )}
             <DialogFooter>
               <button
                 onClick={() => changeCoverImage()}
-                className="px-2 py-1 max-w-[250px] grid place-items-center mx-auto w-full rounded-xl border-[1px] border-white"
+                className="px-2 py-1 max-w-[250px] grid place-items-center mx-auto w-full rounded-xl border-[1px] border-slate-900 dark:border-white"
               >
                 {isLoading ? <Loader2 className="animate-spin" /> : "Upload"}
               </button>
@@ -263,25 +270,29 @@ export default function UpdateProfile() {
           <DialogTrigger asChild>
             <Button
               variant="outline"
-              className="w-full py-6 max-w-[250px] border-slate-600 rounded-xl text-[18px] hover:scale-95 transition-all"
+              className="w-full py-6 max-w-[250px] border-slate-600 dark:border-slate-400 rounded-xl text-[18px] hover:scale-95 transition-all"
             >
               Get New Tokens
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[455px] w-full grid place-items-center text-white border-white rounded-xl px-4">
+          <DialogContent className="sm:max-w-[455px] w-full grid place-items-center text-slate-900 dark:text-white border-slate-900 dark:border-white rounded-xl px-4">
             <p>Click to Generate new Token (AUTH TOKENS)</p>
             <Button
               onClick={() => genereteNewTokens()}
-              className="border-[1px] min-w-20 w-full border-slate-600 p-2 rounded-xl mt-3 max-w-40 hover:scale-95 transition-all"
+              className="border-[1px] min-w-20 w-full border-slate-600 dark:border-slate-400 p-2 rounded-xl mt-3 max-w-40 hover:scale-95 transition-all"
             >
               {isLoading ? <Loader2 className="animate-spin" /> : "Get Tokens"}
             </Button>
-            {
-                <p className="text-red-700">{error && 'Token generating Process failed.....!'}</p>
-            }
-            {
-                <p className="text-green-700">{tokens && 'Tokens generated successfully.....!'}</p>
-            }
+            {error && (
+              <p className="text-red-700 dark:text-red-400">
+                Token generating Process failed.....!
+              </p>
+            )}
+            {tokens && (
+              <p className="text-green-700 dark:text-green-400">
+                Tokens generated successfully.....!
+              </p>
+            )}
           </DialogContent>
         </Dialog>
       </div>

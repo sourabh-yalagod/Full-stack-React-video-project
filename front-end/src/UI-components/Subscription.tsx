@@ -5,6 +5,15 @@ import { useNavigate, useParams } from "react-router-dom";
 import { calclulateVideoTime } from "./CalculateTime";
 import { SideMenuBar } from "./SideBarMenu";
 
+
+interface Video {
+  createdAt: string 
+}
+
+interface VideoItem {
+  video: Video;
+}
+
 const Subscription = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
@@ -59,10 +68,11 @@ const Subscription = () => {
     );
   }
   
-  const asc = apiResponse?.videos?.sort((a:any, b:any) => {
-    return new Date(a?.video?.createdAt) - new Date(b?.video?.createdAt);
+  const asc = apiResponse?.videos?.sort((a: VideoItem, b: VideoItem) => {
+    return new Date(a?.video?.createdAt).getTime() - new Date(b?.video?.createdAt).getTime();
   });
   console.log(apiResponse.videos);
+  
   
   return (
     <div className="min-h-screen w-full px-3 bg-#121212 pt-16 relative">

@@ -1,23 +1,9 @@
 import axios, { AxiosError } from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  Bell,
-  EllipsisVertical,
-  Loader2,
-  NotebookPen,
-  NutOffIcon,
-  Verified,
-  Video,
-} from "lucide-react";
+import { Bell, Loader2, NotebookPen, NutOffIcon, Verified, Videotape } from "lucide-react";
 import { UserProfileData } from "./UserProfileData";
-import { calclulateVideoTime } from "./CalculateTime";
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import Video from "@/utils/Video";
 
 interface User {
   fullname: string;
@@ -147,7 +133,7 @@ const MyProfile = () => {
 
   // DOM
   return (
-    <div className="mx-auto w-full grid items-start dark:bg-slate-800">
+    <div className="mx-auto w-full grid items-start dark:bg-slate-900">
       <div
         className="w-full h-[140px] sm:h-[180px] md:h-[220px] bg-slate-400 dark:bg-slate-700 bg-cover bg-center relative"
         style={{
@@ -198,9 +184,9 @@ const MyProfile = () => {
               return (
                 <div
                   key={video._id}
-                  className="flex-1 min-w-[350px] borde-[1px] max-w-[400px] border-slate-500 p-2 rounded-xl border-[1px] relative"
+                  className="flex-1 min-w-[350px] borde-[1px] max-w-[400px] p-2 rounded-xl relative"
                 >
-                  <div className="relative">
+                  {/* <div className="relative">
                     <video
                       onClick={() => navigate(`/${video._id}`)}
                       className="w-full object-cover"
@@ -284,7 +270,20 @@ const MyProfile = () => {
                         <p>{calclulateVideoTime(video.createdAt)}</p>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
+                  <Video
+                    video={video}
+                    userId={apiResponse._id}
+                    avatar={apiResponse?.avatar}
+                    username={apiResponse?.username}
+                    dropMenuBar={[
+                      {
+                        name: isloading?<Loader2 className="animate-spin"/>:"Delete Video",
+                        operation: () => deleteVideo(video._id),
+                      },
+                      
+                    ]}
+                  />
                 </div>
               );
             })}
@@ -300,7 +299,7 @@ const MyProfile = () => {
               onClick={() => navigate("/signin/upload-video")}
               className="flex gap-4 text-[17px] items-center bg-slate-600 dark:bg-slate-800 text-white px-3 py-1 rounded-xl hover:scale-105 transition-all"
             >
-              <Video />
+              <Videotape />
               Upload Video
             </button>
           </div>

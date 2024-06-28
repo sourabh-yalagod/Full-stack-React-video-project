@@ -1,13 +1,16 @@
 import axios, { AxiosError } from "axios";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
+// import debounce from 'lodash/debounce';
 import { useNavigate } from "react-router-dom";
+// import { signOut } from "./services/SignOut.ts";
 import BottomNavBar from "./BottomNavBar.tsx";
 import { SkeletonCard } from "@/utils/Skeleton.tsx";
 import Video from "@/utils/Video.tsx";
 import VideoNotFound from "@/utils/VideoNotFound.tsx";
 import APIloading from "@/utils/APIloading.tsx";
 import APIError from "@/utils/APIError.tsx";
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
@@ -16,9 +19,7 @@ const Dashboard = () => {
   const [pages, setPages] = useState(0);
   const [limit, setLimit] = useState(5);
   const [isLoading, setIsLoading] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [isloadVideos, setIsLoadVideos] = useState(true);
- 
   // signout function
   const signOut = () => {
     localStorage.removeItem("accessToken");
@@ -39,11 +40,16 @@ const Dashboard = () => {
       console.log("Response from add to watch later : ", response.data);
     } catch (error: any) {
       const axiosError = error as AxiosError;
-      setError(axiosError.response?.data);
+      setError(axiosError);
     } finally {
       setIsLoading(false);
     }
   };
+
+  // track the user scrolling behaviour
+  // console.log("scrollHeight : ", document.documentElement.scrollHeight);
+  // console.log("innerHeight  : ", window.innerHeight);
+  // console.log("scrollTop  : ", document.documentElement.scrollTop);
 
   window.addEventListener("scroll", () => {
     if (
@@ -62,7 +68,6 @@ const Dashboard = () => {
     const controller = new AbortController();
     const signal = controller.signal;
     (async () => {
-      setLoading(true);
       try {
         const response = await axios.get(
           `/api/v1/dashboard?limit=${limit}&pages=${pages}`,
@@ -79,6 +84,8 @@ const Dashboard = () => {
           setIsLoadVideos(false);
         }
         console.log("isloadVideos : ", isloadVideos);
+        // setResult((prev: any) => [...prev, ...response.data]);
+        // console.log("Response for Dashboard : ", result);
         setError("");
         setSearchQuery("");
       } catch (error: any) {
@@ -90,8 +97,6 @@ const Dashboard = () => {
         } else {
           setError("Error: " + error.message);
         }
-      } finally {
-        setLoading(false);
       }
     })();
 
@@ -100,9 +105,10 @@ const Dashboard = () => {
     };
   }, [isloadVideos]);
 
+
   return (
-    <div className="min-h-screen w-full grid relative place-items-center py-3 mx-auto dark:bg-gray-900 bg-white">
-      {loading && <APIloading />}
+    <div className="min-h-screen w-full grid relative place-items-center mx-auto dark:bg-gray-900 bg-white">
+      {isLoading && <APIloading />}
       {error && <APIError />}
       <BottomNavBar />
       <div className="min-h-screen w-full p-2 grid place-items-center transition-all">
@@ -122,7 +128,7 @@ const Dashboard = () => {
             </button>
           </div>
           <div className="hidden sm:block mr-2 lg:mr-10">
-            {!localStorage.getItem("userId") ? (
+            {!localStorage.getItem("accessToken") ? (
               <button
                 onClick={() => navigate("/signin")}
                 className="text-[18px] mx-1 font-semibold bg-blue-600 px-3 py-1 rounded-2xl text-white"
@@ -141,7 +147,7 @@ const Dashboard = () => {
         </div>
         <div className="mt-8 w-full min-h-screen flex items-start justify-center">
           {result.length > 0 ? (
-            <ul className="flex flex-wrap gap-1 justify-center">
+            <ul className="flex justify-center flex-wrap gap-3 py-5">
               {result.map((video: any) => {
                 return (
                   // <div
@@ -224,7 +230,7 @@ const Dashboard = () => {
                   // </div>
                   <div
                     key={video._id}
-                    className="flex-1 min-w-[320px] max-w-[500px] dark:border-slate-700 p-1 rounded-xl relative"
+                    className="flex-1 min-w-[320px] max-w-[500px] dark:border-slate-700 p-2 rounded-xl relative"
                   >
                     <Video
                       video={video}
@@ -245,13 +251,7 @@ const Dashboard = () => {
                   </div>
                 );
               })}
-              {!isloadVideos ? (
-                <SkeletonCard />
-              ) : (
-                <p className="absolute my-2 animate-pulse bottom-0 text-xl text-white w-full text-center">
-                  No more videos to load . . . . !
-                </p>
-              )}
+              {!isloadVideos ? <SkeletonCard /> : "No more videos to load"}
             </ul>
           ) : (
             <VideoNotFound />

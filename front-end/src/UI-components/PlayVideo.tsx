@@ -27,6 +27,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { calclulateVideoTime } from "./CalculateTime";
+import APIloading from "@/utils/APIloading";
+import APIError from "@/utils/APIError";
 
 const PlayVideo = () => {
   const navigate = useNavigate();
@@ -95,7 +97,7 @@ const PlayVideo = () => {
         `/api/v1/comments/add-comment/${videoId}`,
         {
           content: newComment || `newComment from User`,
-          userId: apiResponse.Uploader._id,
+          userId: apiResponse?.Uploader?._id,
         }
       );
 
@@ -134,21 +136,14 @@ const PlayVideo = () => {
 
   if (loading) {
     return (
-      <div className="grid min-h-screen place-items-center">
-        <LoaderCircle className="animate-spin size-20 text-white" />
-      </div>
+      <APIloading/>
     );
   }
 
   if (error) {
     console.log(error);
     return (
-      <div className="min-h-sreen grid place-items-center">
-        <div className="text-white text-xl text-center flex gap-3">
-          <LucideGhost />
-          <p>Error loading data: {error.message}</p>
-        </div>
-      </div>
+      <APIError/>
     );
   }
 
@@ -158,7 +153,7 @@ const PlayVideo = () => {
       const response = await axios.post(
         `/api/v1/likes/toggle-like-status/${videoId}`,
         {
-          userId: apiResponse.Uploader._id,
+          userId: apiResponse?.Uploader?._id,
         }
       );
       setLikeResponse(response.data.data);
@@ -303,14 +298,14 @@ const PlayVideo = () => {
           <div className="flex items-center gap-2 justify-between relative">
             <img
               onClick={() =>
-                navigate(`/signin/user-profile/${apiResponse?.Uploader._id}`)
+                navigate(`/signin/user-profile/${apiResponse?.Uploader?._id}`)
               }
               className="rounded-full w-10 h-10 sm:h-12 sm:w-12"
-              src={apiResponse?.Uploader.avatar}
+              src={apiResponse?.Uploader?.avatar}
               alt="https://cdn-icons-png.flaticon.com/512/4794/4794936.png"
             />
             <div className="flex items-center gap-4 justify-center">
-              <p className="flex">{apiResponse?.Uploader.username}</p>
+              <p className="flex">{apiResponse?.Uploader?.username}</p>
               <p className="flex text-[13px] text-slate-500 sm:text-[18px]">
                 Subscribers : {apiResponse?.Uploader?.subscriberCount ?? " 0"}
               </p>
@@ -349,7 +344,7 @@ const PlayVideo = () => {
         <div
           onClick={() =>
             navigator.clipboard
-              .writeText(apiResponse.videoFile)
+              .writeText(apiResponse?.videoFile)
               .then(() => console.log("Copied"))
           }
           className="grid place-items-center hover:scale-105 transition-all cursor-pointer"
@@ -369,7 +364,7 @@ const PlayVideo = () => {
             )}
           </p>
         </div>
-        {apiResponse.owner == localStorage.getItem("userId") ? (
+        {apiResponse?.owner == localStorage.getItem("userId") ? (
           <p className="grid place-items-center">
             <Dialog>
               <DialogTrigger asChild>
