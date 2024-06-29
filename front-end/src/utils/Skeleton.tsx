@@ -3,8 +3,6 @@ import { useState } from "react";
 
 export function SkeletonCard() {
   const [array] = useState(new Array(2).fill(null));
-  console.log(array);
-
   return (
     <>
       {array.map((_, index) => (

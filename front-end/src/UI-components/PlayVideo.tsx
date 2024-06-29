@@ -6,8 +6,6 @@ import {
   EditIcon,
   Eye,
   Loader2Icon,
-  LoaderCircle,
-  LucideGhost,
   MessageCircleHeartIcon,
   MessageCirclePlus,
   Pause,
@@ -41,7 +39,7 @@ const PlayVideo = () => {
   const [newComment, setNewComment]: any = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<any>(null);
-  const [likeStatus, setLikeStatus] = useState(false);
+  const [likeStatus, setLikeStatus] = useState("");
   const [likeResponse, setLikeResponse] = useState<any>({});
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [showFullDescription, setShowFullDescription] = useState(false);
@@ -53,6 +51,7 @@ const PlayVideo = () => {
   const [isloading, setIsLoading] = useState(false);
   const [editCommentBox, setEditCommentBox] = useState(false);
   const [editableComment, setEditableComment] = useState("");
+  const [allComments, setAllComments] = useState([]);
 
   // Video playing functions
   const togglePlayPause = () => {
@@ -89,8 +88,14 @@ const PlayVideo = () => {
     }
   };
   // API handling functions
+  console.log("allComments : ",allComments);
+  
   const handleNewComment = useCallback(async () => {
-    console.log("New Comment : ", newComment);
+    // const comment = {
+    //   content: newComment || `newComment from User`,
+    //   userId: apiResponse?.Uploader?._id,
+    // }
+    // setAllComments(prev => [...prev, comment]);
     setError(null);
     try {
       const response = await axios.post(
@@ -104,6 +109,7 @@ const PlayVideo = () => {
       console.log("New Comment Response : ", response.data);
       setCommentInput(false);
       setNewComment("");
+      // navigate(0)
     } catch (error) {
       const axiosError = error as AxiosError;
       setError(axiosError);
@@ -122,6 +128,7 @@ const PlayVideo = () => {
         );
         setApiResponse(response.data.data);
         console.log("ApiResponse : ", apiResponse);
+        setAllComments(apiResponse?.allComments);
         setLoading(false);
       } catch (error) {
         if (axios.isCancel(error)) {
@@ -135,20 +142,14 @@ const PlayVideo = () => {
   }, [videoId]);
 
   if (loading) {
-    return (
-      <APIloading/>
-    );
+    return <APIloading />;
   }
 
   if (error) {
-    console.log(error);
-    return (
-      <APIError/>
-    );
+    return <APIError />;
   }
 
   const handleLikes = async () => {
-    setLikeStatus(!likeStatus);
     try {
       const response = await axios.post(
         `/api/v1/likes/toggle-like-status/${videoId}`,
@@ -455,7 +456,10 @@ const PlayVideo = () => {
       {/* Comments displayed using map method */}
       <ScrollArea className="w-full text-white mt-4 grid place-items-center max-h-72 rounded-xl p-1 border-slate-500 border-[1px]">
         <div className="text-slate-700 dark:text-white text-[20px] py-4 flex w-full justify-around items-center gap-5 md:ml-5 space-y-2">
-          <h1>Comments : {apiResponse?.allComments.length || "0"}</h1>
+          <h1>
+            Comments :{" "}
+            {allComments?.length || apiResponse?.allComments.length || "0"}
+          </h1>
           <h1
             onClick={() => setCommentInput(!commentInput)}
             className="text-gray-400 dark:text-slate-400 text-sm bg-gray-200 dark:bg-gray-800 p-1 rounded-xl flex gap-1 cursor-default"
@@ -485,15 +489,15 @@ const PlayVideo = () => {
         ) : (
           ""
         )}
-        {!(apiResponse?.allComments.length > 0) ? (
+        {!(apiResponse.allComments?.length > 0) ? (
           <div className="flex w-full justify-center gap-2 text-slate-500 dark:text-slate-400 items-center">
             No Comments......
             <MessageCircleHeartIcon />
           </div>
         ) : (
-          apiResponse?.allComments?.map((e: any) => (
+          (allComments ?? apiResponse?.allComments).map((e: any) => (
             <div
-              key={e._id}
+              key={e?._id ?? Math.random()}
               className="flex relative w-full text-slate-700 dark:text-slate-300 min-w-[360px] justify-between p-2 border-[1px] border-slate-300 dark:border-slate-700 rounded-xl space-y-4 my-1"
             >
               <div className="min-h-2 underline w-full justify-between px-3 absolute top-0 text-[12px] flex gap-3">
@@ -549,9 +553,4 @@ const PlayVideo = () => {
     </div>
   );
 };
-{
-  /* <ThumbsUpIcon onClick={() => handleLikes()} />
-        <p>{0}</p> */
-}
-
 export default PlayVideo;

@@ -3,9 +3,9 @@ import { ThemeButton } from "@/utils/ThemeButtom";
 
 const Hero = () => {
   return (
-    <div className="w-full flex justify-between items-center py-4 px-10 gap-4 text-slate-800 dark:bg-slate-900 dark:text-slate-500 relative">
+    <div className="w-full flex justify-between items-center p-7 pt-12 gap-4 text-slate-800 dark:bg-slate-900 dark:text-slate-500 relative">
+      <SideMenuBar />
       <div className="flex gap-2 items-center justify-around ml-5">
-        <SideMenuBar />
         <img
           className="w-10 h-10 sm:w-14 sm:h-14 rounded-full"
           src={
