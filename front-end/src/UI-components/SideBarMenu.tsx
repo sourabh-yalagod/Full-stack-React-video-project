@@ -37,7 +37,7 @@ export function SideMenuBar() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button className="focus:outline-none focus:ring-2 focus:ring-offset-2 absolute left-0 top-3 z-10 ">
+        <Button className="focus:outline-none focus:ring-2 sm:hidden focus:ring-offset-2 absolute left-0 top-3 z-10 ">
           <LucideMenu className="text-slate-900 dark:text-white" />
         </Button>
       </SheetTrigger>

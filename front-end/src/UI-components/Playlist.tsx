@@ -24,7 +24,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { SideMenuBar } from "./SideBarMenu";
 
 const VideoPlaylist = () => {
   const navigate = useNavigate();

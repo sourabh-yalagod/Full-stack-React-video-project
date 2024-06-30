@@ -179,7 +179,7 @@ const PlayVideo = () => {
   };
 
   const handleVideoUpdate = async () => {
-    setLoading(true);
+    setIsLoading(true);
     try {
       const formdata = new FormData();
       formdata.append("thumbnail", newThumbnail[0]);
@@ -195,7 +195,7 @@ const PlayVideo = () => {
       const axiosError = error as AxiosError;
       setError(axiosError);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -355,7 +355,7 @@ const PlayVideo = () => {
         </div>
         <div
           onClick={() => addToWatchLater(videoId)}
-          className="grid place-items-center gap-1 border-[1px] p-2 sm:py-3 sm:px-1 border-slate-300 dark:border-slate-700 rounded-xl items-center hover:scale-95 transition-all cursor-pointer"
+          className="grid gap-1 place-items-center border-[1px] p-2 sm:py-3 sm:px-1 border-slate-300 dark:border-slate-700 rounded-xl items-center hover:scale-95 transition-all cursor-pointer"
         >
           <p>
             {isloading ? (
@@ -420,9 +420,9 @@ const PlayVideo = () => {
                 <DialogFooter>
                   <button
                     onClick={() => handleVideoUpdate()}
-                    className="w-full p-2 rounded-xl border-[1px]"
+                    className="w-full p-2 rounded-xl border-[1px] grid place-items-center"
                   >
-                    Save Changes
+                    {isloading ? <Loader2Icon className="animate-spin"/>:"Save Changes"}
                   </button>
                 </DialogFooter>
               </DialogContent>

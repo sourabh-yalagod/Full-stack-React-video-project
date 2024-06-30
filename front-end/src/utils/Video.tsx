@@ -23,12 +23,12 @@ any) => {
   return (
     <div
       key={Math.random()}
-      className="flex-1 min-w-[320px] max-w-[480px] border-gray-700 dark:border-slate-700 p-2 rounded-xl border-[1px] relative"
+      className="flex-1 min-w-[320px] max-w-[480px] border-gray-700 p-2 rounded-xl border-[1px] relative"
     >
       {/* video projection */}
       <div className="relative">
         <video
-          onClick={() => navigate(`/${video?._id}`)}
+          onClick={() => navigate(`/play-video/${video?._id}`)}
           className="w-full object-cover rounded-xl"
           poster={video?.thumbnail}
           src={video?.videoFile}

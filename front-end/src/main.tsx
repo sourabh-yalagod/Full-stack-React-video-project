@@ -28,7 +28,7 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
       <Route path="" element={<Dashboard />} />
-      <Route path="/:videoId" element={<PlayVideo />} />
+      <Route path="/play-video/:videoId" element={<PlayVideo />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="signin" element={<SignIn />} />
       <Route path="/signin" element={<SafeRouters />}>
