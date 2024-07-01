@@ -8,6 +8,7 @@ import Video from "@/utils/Video.tsx";
 import VideoNotFound from "@/utils/VideoNotFound.tsx";
 import APIloading from "@/utils/APIloading.tsx";
 import APIError from "@/utils/APIError.tsx";
+import { sortArray } from "@/Services/sortArray.ts";
 const Dashboard = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
@@ -81,6 +82,11 @@ const Dashboard = () => {
         console.log("isloadVideos : ", isloadVideos);
         setError("");
         setSearchQuery("");
+
+        const re = sortArray(result,'views')
+        console.log("re : ",re);
+        
+
       } catch (error: any) {
         if (error.response) {
           setError(error.response.data);
@@ -101,7 +107,7 @@ const Dashboard = () => {
   }, [isloadVideos]);
 
   return (
-    <div className="min-h-screen w-full grid relative place-items-center py-3 dark:bg-gray-900 bg-white">
+    <div className="min-h-screen transition-all w-full flex relative place-items-center py-3 dark:bg-gray-900 bg-white">
       {loading && <APIloading />}
       {error && <APIError />}
       {/* only display for mobile screen */}
