@@ -329,12 +329,13 @@ const getVideo = AsyncHandler(async (req, res) => {
             $addFields: {
               username: "$CommentOwner.username",
               avatar: "$CommentOwner.avatar",
+              userId: "$CommentOwner._id",
             },
           },
           {
-            $sort:{
-              createdAt:-1
-            }
+            $sort: {
+              createdAt: -1,
+            },
           },
           {
             $project: {
@@ -342,6 +343,7 @@ const getVideo = AsyncHandler(async (req, res) => {
               username: 1,
               avatar: 1,
               createdAt: 1,
+              userId:1
             },
           },
         ],
@@ -599,7 +601,6 @@ const clearWatchHistory = AsyncHandler(async (req, res) => {
     )
   );
 });
-
 
 export {
   publishVideo,

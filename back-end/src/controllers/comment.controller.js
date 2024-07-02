@@ -16,14 +16,14 @@ const getAllComments = AsyncHandler(async (req, res) => {
     throw new ApiError(403, "Comments are not fetched.....!");
   }
   return res.json(
-    new ApiResponse(201,comments,'Comments are fetched successfully....')
+    new ApiResponse(201, comments, "Comments are fetched successfully....")
   );
 });
 
 const addCommnet = AsyncHandler(async (req, res) => {
-  const { content , userId } = req.body;
+  const { content, userId } = req.body;
   const owner = req.user._id;
-  const {videoId} =  req.params;
+  const { videoId } = req.params;
 
   if (!content?.length) {
     throw new ApiError(404, "comment content is not fetched.....!");
@@ -46,7 +46,7 @@ const addCommnet = AsyncHandler(async (req, res) => {
   }
   const comment = await Comment.create({
     content,
-    userId:userId,
+    userId: userId,
     owner: owner,
     username: user.username,
     video,
@@ -90,16 +90,15 @@ const editComments = AsyncHandler(async (req, res) => {
   const userId = req.user._id;
   const videoId = req.params.videoId;
   console.log(videoId);
+  console.log(userId);
   if (!videoId || !userId) {
     throw new ApiError(
       404,
       "Both video and User is required for comment creation.....!"
     );
   }
-  const comment = await Comment.findOne({ video: videoId }).where({
-    owner: userId,
-  });
-
+  const comment = await Comment.findOne({ video: videoId, owner: userId });
+  console.log(comment);
   if (!comment) {
     throw new ApiError(404, "Comment editing process failed.....!");
   }

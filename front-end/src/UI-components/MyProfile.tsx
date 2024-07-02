@@ -1,9 +1,10 @@
 import axios, { AxiosError } from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Bell, Loader2, NotebookPen, NutOffIcon, Verified, Videotape } from "lucide-react";
+import { Bell, Loader2, NutOffIcon, Verified, Videotape } from "lucide-react";
 import { UserProfileData } from "./UserProfileData";
 import Video from "@/utils/Video";
+import VideoNotFound from "@/utils/VideoNotFound";
 
 interface User {
   fullname: string;
@@ -186,91 +187,6 @@ const MyProfile = () => {
                   key={video._id}
                   className="flex-1 min-w-[350px] borde-[1px] max-w-[400px] p-2 rounded-xl relative"
                 >
-                  {/* <div className="relative">
-                    <video
-                      onClick={() => navigate(`/${video._id}`)}
-                      className="w-full object-cover"
-                      poster={video.thumbnail}
-                      controls={false}
-                      src={video.videoFile}
-                    />
-                  </div>
-                  <div className="flex py-2 items-center gap- w-full relative">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger className="text-slate-900 dark:text-white absolute right-2 bottom-2">
-                        <EllipsisVertical className="outline-none" />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent className="text-slate-900 dark:text-white relative text-[13px] grid space-y-1 border-slate-600 dark:border-slate-800 bg-opacity-50 cursor-pointer rounded-[7px] bg-slate-100 dark:bg-slate-900 text-center w-fit mr-8 p-0">
-                        <div className="px-2 py-1 m-1 rounded-[9px] grid place-items-center transition-all pb-2 hover:bg-slate-300 dark:hover:bg-slate-800">
-                          Save to watch-later
-                        </div>
-                        {userId == localStorage.getItem("userId") ? (
-                          <div
-                            onClick={() => deleteVideo(video._id)}
-                            className="px-2 py-1 m-1 grid place-items-center rounded-[9px] transition-all pb-2 hover:bg-slate-300 dark:hover:bg-slate-800"
-                          >
-                            {isloading ? (
-                              <Loader2 className="animate-spin" />
-                            ) : (
-                              "Delete video"
-                            )}
-                          </div>
-                        ) : (
-                          ""
-                        )}
-                        <a
-                          type="download"
-                          className="px-2 py-1 m-1 rounded-[9px] grid place-items-center transition-all pb-2 hover:bg-slate-300 dark:hover:bg-slate-800"
-                          href={video.videoFile}
-                        >
-                          Download
-                        </a>
-                        <div className="px-2 py-1 m-1 rounded-[9px] grid place-items-center transition-all pb-2 hover:bg-slate-300 dark:hover:bg-slate-800">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger className="text-slate-900 dark:text-white">
-                              Add to playlist
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="absolute right-0 bottom-0 text-slate-900 dark:text-white text-[13px] grid space-y-1 border-slate-600 dark:border-slate-800 bg-opacity-50 cursor-pointer rounded-[7px] bg-slate-100 dark:bg-slate-900 text-center w-fit mr-8 p-0">
-                              {apiResponse.playlist.map((list: any) => (
-                                <div
-                                  onClick={() =>
-                                    addToPlaylist(video._id, list._id)
-                                  }
-                                  className="px-2 py-1 m-1 rounded-[9px] grid place-items-center transition-all pb-2 hover:bg-slate-300 dark:hover:bg-slate-800"
-                                  key={list._id}
-                                >
-                                  {list.title.length > 25
-                                    ? `${list.title.slice(0, 25)}. . . .`
-                                    : `${list.title}`}
-                                </div>
-                              ))}
-                            </DropdownMenuContent>
-                          </DropdownMenu>
-                        </div>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-
-                    <img
-                      onClick={() =>
-                        navigate(`/signin/user-profile/${apiResponse.owner}`)
-                      }
-                      src={apiResponse?.avatar}
-                      className="w-9 h-9 rounded-full border-2 border-white dark:border-slate-800"
-                      alt="Avatar"
-                    />
-                    <div className="text-slate-900 dark:text-white grid place-items-start text-[15px] ml-2 overflow-hidden">
-                      <p>
-                        {video.title.length > 25
-                          ? `${video.title.slice(0, 25)}. . . .`
-                          : `${video.title}`}
-                      </p>
-                      <div className="flex gap-3 text-[12px] text-slate-600 dark:text-slate-400">
-                        <p>{apiResponse.username}</p>
-                        <p>views {video.views}</p>
-                        <p>{calclulateVideoTime(video.createdAt)}</p>
-                      </div>
-                    </div>
-                  </div> */}
                   <Video
                     video={video}
                     userId={apiResponse._id}
@@ -290,11 +206,7 @@ const MyProfile = () => {
           </ul>
         ) : (
           <div className="text-xl grid gap-8 justify-center place-items-center text-center text-slate-900 dark:text-white">
-            <Loader2 className="text-slate-900 dark:text-white text-8xl text-center animate-spin mt-10" />
-            <p className="flex items-center gap-3">
-              <NotebookPen />
-              No videos Found . . . . . .!
-            </p>
+            <VideoNotFound/>
             <button
               onClick={() => navigate("/signin/upload-video")}
               className="flex gap-4 text-[17px] items-center bg-slate-600 dark:bg-slate-800 text-white px-3 py-1 rounded-xl hover:scale-105 transition-all"
