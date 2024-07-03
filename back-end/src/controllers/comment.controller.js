@@ -21,11 +21,15 @@ const getAllComments = AsyncHandler(async (req, res) => {
 });
 
 const addCommnet = AsyncHandler(async (req, res) => {
-  const { content, userId } = req.body;
+  const { comment, userId } = req.body;
   const owner = req.user._id;
   const { videoId } = req.params;
+  console.log(comment);
+  console.log(owner);
+  console.log(videoId);
+  console.log(userId);
 
-  if (!content?.length) {
+  if (!comment?.length) {
     throw new ApiError(404, "comment content is not fetched.....!");
   }
   if (!videoId || !userId || !owner) {
@@ -44,17 +48,17 @@ const addCommnet = AsyncHandler(async (req, res) => {
   if (!video) {
     throw new ApiError(404, "Video not found for comment creation.....!");
   }
-  const comment = await Comment.create({
-    content,
+  const newcomment = await Comment.create({
+    content: comment,
     userId: userId,
     owner: owner,
     username: user.username,
     video,
   });
-  if (!comment) {
+  if (!newcomment) {
     throw new ApiError(404, "Comment is not created.....!");
   }
-  console.log(comment);
+  console.log(newcomment);
   const countComment = await Comment.aggregate([
     {
       $match: {
@@ -86,41 +90,44 @@ const addCommnet = AsyncHandler(async (req, res) => {
 });
 
 const editComments = AsyncHandler(async (req, res) => {
-  const { newComment } = req.body;
-  const userId = req.user._id;
-  const videoId = req.params.videoId;
-  console.log(videoId);
-  console.log(userId);
-  if (!videoId || !userId) {
+  const { comment } = req.body;
+  console.log(req?.params?.commentId);
+  const commentId = new mongoose.Types.ObjectId(req?.params?.commentId);
+  if (!commentId) {
     throw new ApiError(
       404,
-      "Both video and User is required for comment creation.....!"
+      "Both comment-ID is required for comment creation.....!"
     );
   }
-  const comment = await Comment.findOne({ video: videoId, owner: userId });
-  console.log(comment);
+  const comments = await Comment.findByIdAndUpdate(
+    commentId,
+    {
+      $set: {
+        content: comment,
+      },
+    },
+    { new: true }
+  );
+  console.log("comment : ", comments);
   if (!comment) {
     throw new ApiError(404, "Comment editing process failed.....!");
   }
-  comment.content = newComment;
-  await comment.save();
   return res.json(
     new ApiResponse(203, comment.content, `Comment updated successfully....`)
   );
 });
 
 const deleteComment = AsyncHandler(async (req, res) => {
-  const videoId = req.params.videoId || req.query.videoId;
-  const userId = req.user._id;
-
-  if (!videoId || !userId) {
+  const commentId = req?.params?.commentId ?? req?.query?.commentId;
+  const commentID = new mongoose.Types.ObjectId(commentId)
+  if (!commentID) {
     throw new ApiError(
       401,
       "Both the user and Video ID are required for Comment Deletion."
     );
   }
 
-  const comment = await Comment.findOne({ video: videoId, owner: userId });
+  const comment = await Comment.findByIdAndDelete(commentID);
 
   if (!comment) {
     throw new ApiError(
@@ -128,10 +135,9 @@ const deleteComment = AsyncHandler(async (req, res) => {
       "Comment not found or you are not authorized to delete it."
     );
   }
-  const deleteedComment = await Comment.findByIdAndDelete(comment._id);
 
   return res.json(
-    new ApiResponse(200, deleteedComment, "Comment deleted successfully.")
+    new ApiResponse(200, comment, "Comment deleted successfully.")
   );
 });
 

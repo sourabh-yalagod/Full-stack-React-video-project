@@ -4,6 +4,6 @@ import { verifyAuth } from "../middlewares/verifyAuth.js";
 const router = Router();
 
 router.route('/add-comment/:videoId').post(verifyAuth,addCommnet);
-router.route('/c/:videoId').patch(verifyAuth,editComments);
-router.route('/c/:videoId').delete(verifyAuth,deleteComment);
+router.route('/c/edit-comment/:commentId').patch(verifyAuth,editComments);
+router.route('/c/delete-comment/:commentId').delete(verifyAuth,deleteComment);
 export default router;
