@@ -1,6 +1,6 @@
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BottomNavBar from "./BottomNavBar.tsx";
 import { SkeletonCard } from "@/utils/Skeleton.tsx";
@@ -9,17 +9,25 @@ import VideoNotFound from "@/utils/VideoNotFound.tsx";
 import APIloading from "@/utils/APIloading.tsx";
 import APIError from "@/utils/APIError.tsx";
 import { sortArray } from "@/Services/sortArray.ts";
+import { useDebounceCallback } from "usehooks-ts";
+import { useToast } from "@/components/ui/use-toast";
+import { useAddToWatchLater } from "@/hooks/AddToWatchLater.ts";
 const Dashboard = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchQueryResults, setSearchQueryResults]: any = useState([]);
   const [error, setError]: any = useState("");
+  const [sort, setSort] = useState("");
   const [result, setResult]: any = useState([]);
   const [pages, setPages] = useState(0);
   const [limit, setLimit] = useState(5);
   const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isloadVideos, setIsLoadVideos] = useState(true);
- 
+  const { addToWatchLater, watchLaterLoading } = useAddToWatchLater();
+  const debounced = useDebounceCallback(setSearchQuery, 500);
+
+  const { toast } = useToast();
   // signout function
   const signOut = () => {
     localStorage.removeItem("accessToken");
@@ -27,23 +35,6 @@ const Dashboard = () => {
     localStorage.removeItem("userId");
     localStorage.removeItem("user");
     navigate("/");
-  };
-
-  // add to watchlater videos
-  const addToWatchLater = async (videoId: any) => {
-    setIsLoading(true);
-    setError("");
-    try {
-      const response = await axios.post(`/api/v1/users/watch-later`, {
-        videoId,
-      });
-      console.log("Response from add to watch later : ", response.data);
-    } catch (error: any) {
-      const axiosError = error as AxiosError;
-      setError(axiosError.response?.data);
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   window.addEventListener("scroll", () => {
@@ -54,7 +45,7 @@ const Dashboard = () => {
     ) {
       setTimeout(() => {
         setIsLoadVideos(true);
-      }, 1000);
+      }, 1500);
     }
   });
 
@@ -72,21 +63,12 @@ const Dashboard = () => {
           }
         );
         setLimit(5);
-        console.log("API request : ", result);
-
         if (isloadVideos && response.data.length) {
           setPages((pages) => pages + 1);
           setResult((prev: any) => [...prev, ...response.data]);
           setIsLoadVideos(false);
         }
-        console.log("isloadVideos : ", isloadVideos);
         setError("");
-        setSearchQuery("");
-
-        const re = sortArray(result,'views')
-        console.log("re : ",re);
-        
-
       } catch (error: any) {
         if (error.response) {
           setError(error.response.data);
@@ -106,8 +88,46 @@ const Dashboard = () => {
     };
   }, [isloadVideos]);
 
+  const searchQueryResult = useCallback(() => {
+    (async () => {
+      setIsLoading(true);
+      try {
+        const response = await axios.get(
+          `/api/v1/dashboard/search-video?search=${searchQuery}`
+        );
+        setError("");
+        setSearchQueryResults(response?.data?.data);
+        console.log(searchQueryResults);
+      } catch (error: any) {
+        (() => {
+          toast({
+            title: "Error while search......!",
+            description: error?.response?.message,
+            variant: "destructive",
+          });
+        })();
+        navigate(0);
+      } finally {
+        setIsLoading(false);
+        setSearchQuery("");
+      }
+    })();
+  }, [searchQuery]);
+
+  useEffect(() => {
+    let sortedArray = sortArray(result, sort);
+    setResult(sortedArray);
+  }, [sort]);
   return (
     <div className="min-h-screen transition-all w-full flex relative place-items-center py-3 dark:bg-gray-900 bg-white">
+      {/* <select className="absolute top-0" onChange={(e) => setSort(e.target.value)}>
+        
+        <option value="_">None</option>
+        <option value="new">new</option>
+        <option value="old">old</option>
+        <option value="views">views</option>
+        <option value="duration">duration</option>
+      </select> */}
       {loading && <APIloading />}
       {error && <APIError />}
       {/* only display for mobile screen */}
@@ -118,12 +138,13 @@ const Dashboard = () => {
           <div className="w-full max-w-[500px] min-w-[270px] gap-4 relative overflow-hidden">
             <input
               type="text"
-              onChange={(e) => setSearchQuery(e.target.value)}
-              value={searchQuery}
+              onChange={(e) => debounced(e.target.value)}
+              defaultValue={searchQuery}
               placeholder="Search Here....."
               className="bg-transparent pl-4 text-gray-700 dark:text-slate-400 grid place-items-center text-[20px] w-full border-gray-700 dark:border-slate-400 outline-none border-[1px] p-2 rounded-xl"
             />
             <button
+              onClick={() => searchQueryResult()}
               className="absolute right-0 inset-y-0 bg-blue-600 text-white px-3 rounded-l-3xl rounded-xl"
             >
               {isLoading ? <Loader2 className="animate-spin" /> : "Search"}
@@ -150,7 +171,10 @@ const Dashboard = () => {
         <div className="mt-8 w-full min-h-screen flex items-start justify-center">
           {result.length > 0 ? (
             <ul className="flex flex-wrap gap-1 justify-center">
-              {result.map((video: any) => {
+              {(searchQueryResults.length > 0
+                ? searchQueryResults
+                : result
+              ).map((video: any) => {
                 return (
                   <div
                     key={video._id}
@@ -163,7 +187,7 @@ const Dashboard = () => {
                       avatar={video?.owner?.avatar}
                       dropMenuBar={[
                         {
-                          name: isLoading ? (
+                          name: watchLaterLoading ? (
                             <Loader2 className="animate-spin" />
                           ) : (
                             "Add to watch Later"
@@ -176,7 +200,11 @@ const Dashboard = () => {
                 );
               })}
               {!isloadVideos ? (
-                <SkeletonCard />
+                searchQueryResults ? (
+                  <SkeletonCard />
+                ) : (
+                  ""
+                )
               ) : (
                 <p className="absolute my-2 animate-pulse bottom-0 text-xl text-white w-full text-center">
                   No more videos to load . . . . !
@@ -192,4 +220,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default memo(Dashboard);

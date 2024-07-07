@@ -1,16 +1,13 @@
 import axios, { AxiosError } from "axios";
-import { Loader2, LucideTrash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import Video from "@/utils/Video";
 import APIloading from "@/utils/APIloading";
 import APIError from "@/utils/APIError";
 import VideoNotFound from "@/utils/VideoNotFound";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
-  CarouselItem,
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
@@ -65,30 +62,32 @@ const Subscription = () => {
   }
   return (
     <div className="min-h-screen w-full grid place-items-center pt-5 bg-gray-100 dark:bg-slate-900 relative">
-      <Carousel className="max-w-md mx-auto px-5">
+      <Carousel className="max-w-md mx-auto px-5 dark:text-white">
         <CarouselContent>
           {apiResponse?.Channels?.map((channel: any) => (
             // console.log("channel : ",channel)
-            <Channel
-              username={channel?.Channel?.username ?? ""}
-              fullname={channel?.Channel?.fullname ?? ""}
-              channelId={channel.channel}
-              avatar={
-                channel?.Channel?.avatar ??
-                "https://static.vecteezy.com/system/resources/previews/024/183/502/non_2x/male-avatar-portrait-of-a-young-man-with-a-beard-illustration-of-male-character-in-modern-color-style-vector.jpg"
-              }
-            />
+            <div key={channel._id}>
+              <Channel
+                username={channel?.Channel?.username ?? ""}
+                fullname={channel?.Channel?.fullname ?? ""}
+                channelId={channel.channel}
+                avatar={
+                  channel?.Channel?.avatar ??
+                  "https://static.vecteezy.com/system/resources/previews/024/183/502/non_2x/male-avatar-portrait-of-a-young-man-with-a-beard-illustration-of-male-character-in-modern-color-style-vector.jpg"
+                }
+              />
+            </div>
           ))}
         </CarouselContent>
         <CarouselPrevious />
         <CarouselNext />
       </Carousel>
       {apiResponse?.videos?.length > 0 ? (
-        <ul className="flex justify-center flex-wrap gap-3 py-5">
+        <ul className=" grid place-items-center gap-3 py-5">
           {asc.map((video: any) => {
             return (
               <div
-                key={video.video._id}
+                key={video?._id + Math.random()}
                 className="flex-1 grid place-items-center min-w-[320px] rounded-xl relative"
               >
                 <Video

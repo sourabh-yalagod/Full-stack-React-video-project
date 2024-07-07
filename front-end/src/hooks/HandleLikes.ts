@@ -2,22 +2,24 @@ import axios, { AxiosError } from "axios";
 import { useState } from "react";
 
 export const useHandleLikes = () => {
-  const [res, setRes] = useState("");
-  const [error, setError] = useState("");
-  const handleLikes = async ({ apiResponse, videoId }: any) => {
+  const [likeResponse, setLikeResponse] = useState("");
+  const [likeError, setLikeError] = useState("");
+  const handleLikes = async ({ userId, videoId }: any) => {
+    console.log({ userId, videoId });
+
     try {
       const response = await axios.post(
         `/api/v1/likes/toggle-like-status/${videoId}`,
         {
-          userId: apiResponse?.Uploader?._id,
+          userId: userId,
         }
       );
-      setRes(response.data.data);
+      setLikeResponse(response.data.data);
       console.log("likeResponse : ", response.data);
     } catch (error) {
       const axiosError: any = error as AxiosError;
-      setError(axiosError);
+      setLikeError(axiosError);
     }
   };
-  return { error, handleLikes, res };
+  return { likeError, handleLikes, likeResponse };
 };

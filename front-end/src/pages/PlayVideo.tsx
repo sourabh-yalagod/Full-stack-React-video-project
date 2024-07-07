@@ -8,6 +8,7 @@ import Subscrption from "@/components/Subscrption";
 import VideoFigures from "@/components/VideoFigures";
 import Description from "@/components/Description";
 import Comments from "@/components/Comments";
+import RecommendSession from "@/components/RecommendSession";
 
 const PlayVideo = () => {
   const { videoId } = useParams();
@@ -51,12 +52,21 @@ const PlayVideo = () => {
     return <APIloading />;
   }
   return (
-    <div className="w-full grid p-1 text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 pb-10 mx-auto">
-      <VideoController apiResponse={apiResponse} />
-      <Subscrption apiResponse={apiResponse} />
-      <VideoFigures apiResponse={apiResponse} videoId={videoId}/>
-      <Description apiResponse={apiResponse}/>
-      <Comments apiResponse={apiResponse} videoId={videoId}/>
+    <div className="w-full grid lg:flex lg:justify-between lg:gap-4 p-1 lg:grid-cols-2 text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 pb-10 mx-auto">
+      <div className="lg:w-full">
+        {" "}
+        <VideoController apiResponse={apiResponse} />
+        <Subscrption apiResponse={apiResponse} />
+        <VideoFigures apiResponse={apiResponse} videoId={videoId} />
+        <Description apiResponse={apiResponse} />
+        <Comments apiResponse={apiResponse} videoId={videoId} />
+      </div>
+      <RecommendSession
+        className=""
+        videos={apiResponse?.recommendedVideos[0]?.videos}
+        avatar={apiResponse?.Uploader?.avatar}
+        username={apiResponse?.Uploader?.username}
+      />
     </div>
   );
 };

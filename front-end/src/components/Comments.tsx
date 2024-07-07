@@ -1,4 +1,4 @@
-import { calclulateVideoTime } from "@/UI-components/CalculateTime";
+import { calclulateVideoTime } from "@/Services/CalculateTime";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { MessageCircleHeartIcon } from "lucide-react";
 import { useState } from "react";
@@ -6,9 +6,9 @@ import CustomizeComment from "./CustomizeComment";
 
 const Comments = ({ apiResponse, videoId }: any) => {
   const [seeMoreComment, SetSeeMoreComment] = useState(false);
-  const userId = localStorage.getItem("userId");
+  const userId = apiResponse?.Uploader?._id;
   return (
-    <ScrollArea className="w-full text-white overflow-scroll mt-4 grid place-items-center max-h-72 rounded-xl p-1 border-slate-500 border-[1px]">
+    <ScrollArea className="w-full text-white overflow-scroll mt-4 grid place-items-center h-72 lg:h-auto rounded-xl p-1 border-slate-500 border-[1px]">
       <div className="text-slate-700 dark:text-white text-[20px] py-4 flex w-full justify-around items-center gap-5 md:ml-5 space-y-2">
         <h1>Comments : {apiResponse?.allComments?.length || "0"}</h1>
         <h1 className="text-gray-400 dark:text-slate-400 text-sm bg-gray-200 dark:bg-gray-800 p-1 rounded-xl flex gap-1 cursor-default">
@@ -56,10 +56,10 @@ const Comments = ({ apiResponse, videoId }: any) => {
               >
                 {seeMoreComment ? "See less . . . . ." : "See more....."}
               </p>
-              <p className="absolute right-[5%] p-1 rounded-full bg-slate-600 hover:scale-110 top-[25%]">
-                {userId == e?.userId && (
+              <p className="absolute right-[5%] p-1 rounded-full bg-slate-600 text-white hover:scale-110 top-[30%]">
+                {(localStorage.getItem('userId') == e?.owner) ? (
                   <CustomizeComment commentId={e?._id} type="edit" />
-                )}
+                ):""}
               </p>
             </div>
           </div>

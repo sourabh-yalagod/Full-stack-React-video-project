@@ -1,5 +1,5 @@
 
-import { SideMenuBar } from "@/UI-components/SideBarMenu";
+import { SideMenuBar } from "@/pages/SideBarMenu";
 import { ThemeButton } from "@/utils/ThemeButtom";
 import { SearchCode } from "lucide-react";
 import { useEffect, useState } from "react";

@@ -5,6 +5,8 @@ import { Bell, Loader2, NutOffIcon, Verified, Videotape } from "lucide-react";
 import { UserProfileData } from "./UserProfileData";
 import Video from "@/utils/Video";
 import VideoNotFound from "@/utils/VideoNotFound";
+import APIloading from "@/utils/APIloading";
+import APIError from "@/utils/APIError";
 
 interface User {
   fullname: string;
@@ -54,24 +56,6 @@ const MyProfile = () => {
     comments: apiResponse ? apiResponse?.comments[0]?.totalComments : "-",
   };
 
-  // function handled the adding videos to playlist
-  const addToPlaylist = async (videoId: string, playlistId: string) => {
-    console.log(videoId, playlistId);
-
-    try {
-      setIsloading(true);
-      setError("");
-      const response = await axios.patch(
-        `/api/v1/video-play-list/new-video/${videoId}/${playlistId}`
-      );
-      console.log("API Response for playlist:", response.data);
-    } catch (error) {
-      const err = error as AxiosError;
-      setError(err.message ?? "Error while API call");
-    } finally {
-      setIsloading(false);
-    }
-  };
 
   // functio handles the subscription stistics
   const handleSubscription = useCallback(async () => {
@@ -111,24 +95,20 @@ const MyProfile = () => {
   // if API results error then this component runs
   if (error) {
     return (
-      <div className="w-full h-screen grid place-items-center">
-        <h1 className="text-white text-center flex gap-2">
-          <NutOffIcon />
-          {error}
-        </h1>
-      </div>
+      <VideoNotFound/>
     );
   }
 
   // while API process/loading this component runs
   if (loading) {
     return (
-      <div className="w-full h-screen grid place-items-center">
-        <h1 className="text-white text-center flex gap-2">
-          <Loader2 className="text-2xl text-white animate-spin" />
-          "Please wait...."
-        </h1>
-      </div>
+      <APIloading/>
+    );
+  }
+  
+  if (error) {
+    return (
+      <APIError/>
     );
   }
 
@@ -205,11 +185,11 @@ const MyProfile = () => {
             })}
           </ul>
         ) : (
-          <div className="text-xl grid gap-8 justify-center place-items-center text-center text-slate-900 dark:text-white">
+          <div className="text-xl mt-24 grid gap-8 justify-center place-items-center text-center text-slate-900 dark:text-white">
             <VideoNotFound/>
             <button
               onClick={() => navigate("/signin/upload-video")}
-              className="flex gap-4 text-[17px] items-center bg-slate-600 dark:bg-slate-800 text-white px-3 py-1 rounded-xl hover:scale-105 transition-all"
+              className="flex gap-4 z-40 text-[17px] items-center bg-slate-600 text-white px-3 py-1 rounded-xl hover:scale-105 transition-all"
             >
               <Videotape />
               Upload Video

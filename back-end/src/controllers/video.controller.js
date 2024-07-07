@@ -208,9 +208,11 @@ const publishVideo = AsyncHandler(async (req, res) => {
 
 const getVideo = AsyncHandler(async (req, res) => {
   const { videoId } = req.params;
-  const userId = req.user._id;
+  const userId = req?.user?._id;
   const videoID = new mongoose.Types.ObjectId(videoId);
   const userID = new mongoose.Types.ObjectId(userId);
+
+  // console.log("userID : ",userID);
   await Video.findByIdAndUpdate(
     videoID,
     {
@@ -218,14 +220,17 @@ const getVideo = AsyncHandler(async (req, res) => {
     },
     { new: true }
   );
-  const history = await User.updateOne(
-    { _id: userId },
-    {
-      $addToSet: { watchHistory: videoId },
-    },
-    { new: true }
-  );
-  console.log("history : ", history);
+
+  if (userID) {
+    await User.updateOne(
+      { _id: userId },
+      {
+        $addToSet: { watchHistory: videoId },
+      },
+      { new: true }
+    );
+  }
+
   const videoDetail = await Video.aggregate([
     // fetched the video by ID
     {
@@ -234,7 +239,6 @@ const getVideo = AsyncHandler(async (req, res) => {
         isPublished: true,
       },
     },
-
     // Uploader details using the owner field
     {
       $lookup: {
@@ -329,7 +333,7 @@ const getVideo = AsyncHandler(async (req, res) => {
             $addFields: {
               username: "$CommentOwner.username",
               avatar: "$CommentOwner.avatar",
-              userId: "$CommentOwner._id",
+              owner: "$CommentOwner._id",
             },
           },
           {
@@ -343,7 +347,7 @@ const getVideo = AsyncHandler(async (req, res) => {
               username: 1,
               avatar: 1,
               createdAt: 1,
-              userId:1
+              owner: 1,
             },
           },
         ],
@@ -367,6 +371,36 @@ const getVideo = AsyncHandler(async (req, res) => {
           },
         ],
         as: "totalLikes",
+      },
+    },
+    // related videos for recommendetions
+    {
+      $lookup: {
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        pipeline: [
+          {
+            $lookup: {
+              from: "videos",
+              localField: "_id",
+              foreignField: "owner",
+              as: "videos",
+            },
+          },
+
+          {
+            $addFields: {
+              videos: "$videos",
+            },
+          },
+          {
+            $project: {
+              videos: 1,
+            },
+          },
+        ],
+        as: "recommendedVideos",
       },
     },
   ]);

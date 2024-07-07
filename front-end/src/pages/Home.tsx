@@ -1,6 +1,6 @@
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { Loader2 } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import BottomNavBar from "./BottomNavBar.tsx";
 import { SkeletonCard } from "@/utils/Skeleton.tsx";
@@ -11,6 +11,8 @@ import APIError from "@/utils/APIError.tsx";
 import { sortArray } from "@/Services/sortArray.ts";
 import { useDebounceCallback } from "usehooks-ts";
 import { useToast } from "@/components/ui/use-toast";
+import { useAddToWatchLater } from "@/hooks/AddToWatchLater.ts";
+import { useSignOut } from "@/hooks/SignOut.ts";
 const Dashboard = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
@@ -23,35 +25,10 @@ const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isloadVideos, setIsLoadVideos] = useState(true);
-  let [sortedArray] = useState([]);
+  const { addToWatchLater, watchLaterLoading } = useAddToWatchLater();
   const debounced = useDebounceCallback(setSearchQuery, 500);
-
+  const {signOut} = useSignOut()
   const { toast } = useToast();
-  // signout function
-  const signOut = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("user");
-    navigate("/");
-  };
-
-  // add to watchlater videos
-  const addToWatchLater = async (videoId: any) => {
-    setIsLoading(true);
-    setError("");
-    try {
-      const response = await axios.post(`/api/v1/users/watch-later`, {
-        videoId,
-      });
-      console.log("Response from add to watch later : ", response.data);
-    } catch (error: any) {
-      const axiosError = error as AxiosError;
-      setError(axiosError.response?.data);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   window.addEventListener("scroll", () => {
     if (
@@ -61,7 +38,7 @@ const Dashboard = () => {
     ) {
       setTimeout(() => {
         setIsLoadVideos(true);
-      }, 1000);
+      }, 1500);
     }
   });
 
@@ -72,7 +49,6 @@ const Dashboard = () => {
     (async () => {
       setLoading(true);
       try {
-        console.log("It Runs");
         const response = await axios.get(
           `/api/v1/dashboard?limit=${limit}&pages=${pages}`,
           {
@@ -130,6 +106,7 @@ const Dashboard = () => {
       }
     })();
   }, [searchQuery]);
+
   useEffect(() => {
     let sortedArray = sortArray(result, sort);
     setResult(sortedArray);
@@ -184,9 +161,9 @@ const Dashboard = () => {
             )}
           </div>
         </div>
-        <div className="mt-8 w-full min-h-screen flex items-start justify-center">
+        <div className="mt-10 w-full min-h-screen">
           {result.length > 0 ? (
-            <ul className="flex flex-wrap gap-1 justify-center">
+            <ul className="flex flex-wrap items-center w-full gap-2 justify-center">
               {(searchQueryResults.length > 0
                 ? searchQueryResults
                 : result
@@ -194,7 +171,7 @@ const Dashboard = () => {
                 return (
                   <div
                     key={video._id}
-                    className="flex-1 min-w-[320px] max-w-[500px] dark:border-slate-700 p-1 rounded-xl relative"
+                    className="flex-1 min-w-[320px] max-w-[450px] border-slate-700 border p-2 rounded-xl relative"
                   >
                     <Video
                       video={video}
@@ -203,7 +180,7 @@ const Dashboard = () => {
                       avatar={video?.owner?.avatar}
                       dropMenuBar={[
                         {
-                          name: isLoading ? (
+                          name: watchLaterLoading ? (
                             <Loader2 className="animate-spin" />
                           ) : (
                             "Add to watch Later"
@@ -215,8 +192,12 @@ const Dashboard = () => {
                   </div>
                 );
               })}
-              {!isloadVideos? (
-                searchQueryResults?<SkeletonCard />:""
+              {!isloadVideos ? (
+                searchQueryResults ? (
+                  <SkeletonCard />
+                ) : (
+                  ""
+                )
               ) : (
                 <p className="absolute my-2 animate-pulse bottom-0 text-xl text-white w-full text-center">
                   No more videos to load . . . . !
@@ -232,4 +213,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default memo(Dashboard);

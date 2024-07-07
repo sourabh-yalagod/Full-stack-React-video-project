@@ -6,6 +6,7 @@ import { ApiError } from "../utilities/ApiError.js";
 
 const toggleLikeStatus = AsyncHandler(async (req, res) => {
   const { userId } = req.body;
+  console.log(userId);
   const { videoId } = req.params;
   const owner = req.user._id;
   if (!userId || !videoId || !owner) {

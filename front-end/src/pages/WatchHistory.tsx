@@ -1,10 +1,11 @@
 import axios, { AxiosError } from "axios";
-import { Loader2, LucideTrash2, NutOffIcon } from "lucide-react";
+import { LucideTrash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { calclulateVideoTime } from "./CalculateTime";
+import { calclulateVideoTime } from "@/Services/CalculateTime";
 import APIError from "@/utils/APIError";
 import APIloading from "@/utils/APIloading";
+import Video from "@/utils/Video";
 const WatchHistory = () => {
   const navigate = useNavigate();
   const { userId } = useParams();
@@ -66,51 +67,14 @@ const WatchHistory = () => {
             {apiResponse?.videos?.map((video: any) => (
               <div
                 key={video._id}
-                className="flex-1 min-w-[250px] max-w-[380px] border-gray-300 dark:border-slate-700 p-2 rounded-xl border-[1px] relative bg-white dark:bg-slate-800"
+                // className="flex-1 min-w-[250px] max-w-[380px] border-gray-300 dark:border-slate-700 p-2 rounded-xl border-[1px] relative bg-white dark:bg-slate-800"
               >
-                <div className="relative">
-                  <video
-                    onClick={() => navigate(`/${video._id}`)}
-                    className="w-full object-cover rounded-lg cursor-pointer"
-                    poster={video.thumbnail}
-                    src={video.videoFile}
-                  />
-                  <div className="absolute bg-black bottom-1 px-1 py-[1px] rounded-lg text-center right-1 text-white text-xs">
-                    {Math.floor(video.duration)}
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 w-full overflow-hidden mt-2 relative">
-                  <img
-                    onClick={() =>
-                      navigate(`/signin/user-profile/${apiResponse._id}`)
-                    }
-                    src={
-                      apiResponse.avatar ??
-                      "https://img.freepik.com/premium-photo/graphic-designer-digital-avatar-generative-ai_934475-9292.jpg"
-                    }
-                    className="w-9 h-9 rounded-full border-2 border-white dark:border-gray-700 cursor-pointer"
-                  />
-                  <div className="grid gap-1 pl-1 overflow-hidden">
-                    <p className="text-gray-800 dark:text-slate-300 text-[16px] ml-2 overflow-hidden">
-                      {video.title?.length > 28 ? (
-                        <>{video.title.slice(0, 25)}. . . . .</>
-                      ) : (
-                        video.title
-                      )}
-                    </p>
-                    <div className="flex gap-3 text-[13px]">
-                      <p className="text-gray-600 dark:text-slate-500">
-                        {apiResponse.username}
-                      </p>
-                      <p className="text-gray-600 dark:text-slate-500">
-                        views {video.views}
-                      </p>
-                      <p className="text-gray-600 dark:text-slate-500">
-                        {calclulateVideoTime(video.createdAt)}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                 <Video
+                  video={video}
+                  userId={video?.owner}
+                  avatar={apiResponse?.avatar}
+                  username={apiResponse?.username}
+                />
               </div>
             ))}
           </ul>

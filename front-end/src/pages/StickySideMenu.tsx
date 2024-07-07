@@ -1,8 +1,10 @@
+import { useSignOut } from "@/hooks/SignOut";
 import { ThemeButton } from "@/utils/ThemeButtom";
 import {
   Heart,
   Home,
   Images,
+  Loader2,
   Settings,
   Upload,
   User,
@@ -16,6 +18,7 @@ import {
 import { useNavigate } from "react-router-dom";
 
 const StickySideMenu = ({ location }: any) => {
+  const {signOut,signOutLoading} = useSignOut()
   const userId = localStorage.getItem("userId");
   const navigate = useNavigate();
 
@@ -91,13 +94,16 @@ const StickySideMenu = ({ location }: any) => {
           </div>
           <div
             className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-700 rounded-xl transition-transform transform hover:scale-105"
-            onClick={() => {
-              localStorage.removeItem("accessToken");
-              localStorage.removeItem("userId");
-              navigate("/");
-            }}
+            onClick={
+              () => signOut()
+            //     {
+            //   localStorage.removeItem("accessToken");
+            //   localStorage.removeItem("userId");
+            //   navigate("/");
+            // }
+          }
           >
-            <UserRoundMinusIcon className="w-6 h-6" />
+            {signOutLoading?<Loader2 className="animate-spin" />:<UserRoundMinusIcon className="w-6 h-6" />}
           </div>
           <div className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-300 dark:hover:bg-gray-700 rounded-xl transition-transform transform hover:scale-105">
             <ThemeButton />

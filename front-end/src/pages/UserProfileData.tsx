@@ -1,4 +1,4 @@
-import { DoorClosedIcon , Loader2, Menu, MessageSquareIcon, ThumbsUp } from "lucide-react";
+import { DoorClosedIcon , Loader2, Menu, MessageSquareIcon, Notebook, ThumbsUp, UserPlus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +17,7 @@ export function UserProfileData({data}:any) {
     <Drawer>
       <DrawerTrigger asChild>
         <Button className="text-white text-sm md:text-md lg:text-lg">
-          <Menu />
+          <Notebook className="size-12 sm:size-14 pt-4 animate-pulse"/>
         </Button>
       </DrawerTrigger>
       <DrawerContent className="text-white w-full">

@@ -135,7 +135,7 @@ const loginUser = AsyncHandler(async (req, res) => {
         new ApiResponse(
           200,
           {
-            id:user._id,
+            id: user._id,
             loggedUser,
             accessToken,
             refreshToken,
@@ -598,34 +598,34 @@ const VideosFromSubscription = AsyncHandler(async (req, res) => {
     },
     // Channels whom I subscribed
     {
-      $lookup:{
+      $lookup: {
         from: "subscriptions",
         localField: "_id",
         foreignField: "subscriber",
-        pipeline:[
+        pipeline: [
           {
-            $lookup:{
-              from:"users",
-              foreignField:"_id",
-              localField:"channel",
-              pipeline:[
+            $lookup: {
+              from: "users",
+              foreignField: "_id",
+              localField: "channel",
+              pipeline: [
                 {
-                  $project:{
-                    fullname:1,
-                    username:1,
-                    avatar:1,
-                  }
-                }
+                  $project: {
+                    fullname: 1,
+                    username: 1,
+                    avatar: 1,
+                  },
+                },
               ],
-              as:"Channel"
-            }
+              as: "Channel",
+            },
           },
           {
-            $unwind:"$Channel"
-          }
+            $unwind: "$Channel",
+          },
         ],
-        as:"Channels"
-      }
+        as: "Channels",
+      },
     },
     // videos uplaoded by channels subscribed by ME
     {
@@ -658,14 +658,14 @@ const VideosFromSubscription = AsyncHandler(async (req, res) => {
                   },
                 },
                 {
-                  $unwind:"$Uploader"
+                  $unwind: "$Uploader",
                 },
               ],
               as: "video",
             },
           },
           {
-            $unwind:"$video"
+            $unwind: "$video",
           },
           {
             $addFields: {
@@ -678,11 +678,11 @@ const VideosFromSubscription = AsyncHandler(async (req, res) => {
     },
     // projecting the channel and video uploaded by them
     {
-      $project:{
-        Channels:1,
-        videos:1,
-      }
-    }
+      $project: {
+        Channels: 1,
+        videos: 1,
+      },
+    },
   ]);
   return res.json(
     new ApiResponse(

@@ -6,8 +6,8 @@ import mongoose from "mongoose";
 import { ApiError } from "../utilities/ApiError.js";
 
 const getAllvideos = AsyncHandler(async (req, res) => {
-  const limit = parseInt(req.query.limit) || 10
-  const pages = parseInt(req.query.pages) || 0
+  const limit = parseInt(req?.query?.limit) || 5
+  const pages = parseInt(req?.query?.pages) || 0
   const skip = pages*limit
   const userWithVideos = await Video.aggregate([
     {

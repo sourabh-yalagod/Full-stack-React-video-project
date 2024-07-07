@@ -6,9 +6,9 @@ import store from "@/Redux/store";
 import { Outlet, useLocation, matchPath } from "react-router-dom";
 import Hero from "@/components/Header/Hero";
 import { Toaster } from "@/components/ui/toaster";
-import BackButton from "@/components/BackButton";
 import StickySideMenu from "./StickySideMenu";
-
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import NavigateButton from "@/components/NavigateButton";
 const Layout: FC = () => {
   const location = useLocation();
   const hideHeroPathsForHero = [
@@ -21,19 +21,21 @@ const Layout: FC = () => {
   const shouldHideHero = hideHeroPathsForHero.some((path) =>
     matchPath(path, location.pathname)
   );
-
+  const client = new QueryClient();
   return (
     <div className=" relative">
       <Provider store={store}>
-        <ThemeProvider>
-          {!shouldHideHero && <Hero />}
-          <StickySideMenu location={location.pathname} />
-          <BackButton />
-          <div className="sm:pl-[70px]">
-            <Outlet />
-          </div>
-          <Toaster />
-        </ThemeProvider>
+        <QueryClientProvider client={client}>
+          <ThemeProvider>
+            {!shouldHideHero && <Hero />}
+            <StickySideMenu location={location.pathname} />
+            <NavigateButton />
+            <div className="p-0 sm:pl-[70px]">
+              <Outlet />
+            </div>
+            <Toaster />
+          </ThemeProvider>
+        </QueryClientProvider>
       </Provider>
     </div>
   );

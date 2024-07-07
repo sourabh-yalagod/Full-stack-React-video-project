@@ -6,6 +6,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { useSignOut } from "@/hooks/SignOut";
 import {
   Heart,
   Home,
@@ -27,13 +28,7 @@ export function SideMenuBar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const userId = localStorage.getItem("userId");
-  const signOut = () => {
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    localStorage.removeItem("userId");
-    localStorage.removeItem("user");
-    navigate("/");
-  };
+  const { signOut } = useSignOut();
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -155,11 +150,7 @@ export function SideMenuBar() {
           </div>
           <div
             className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
-            onClick={() => {
-              localStorage.removeItem("accessToken");
-              localStorage.removeItem("userId");
-              navigate("/");
-            }}
+            onClick={() => signOut()}
           >
             <UserRoundMinusIcon className="w-6 h-6" />
             <span>Sign-Out</span>

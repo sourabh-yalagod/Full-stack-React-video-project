@@ -6,28 +6,29 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import "./index.css";
-import Layout from "./UI-components/Layout.tsx";
-import Dashboard from "./UI-components/Dashboard.tsx";
-import UploadVideo from "./UI-components/UploadVideo.tsx";
-import MyProfile from "./UI-components/MyProfile.tsx";
-import SignUp from "./UI-components/SignUp.tsx";
-import SignIn from "./UI-components/SignIn.tsx";
-import SafeRouters from "./UI-components/SafeRouters.tsx";
+import Layout from "./pages/Layout.tsx";
+import Dashboard from "./pages/Dashboard.tsx";
+import UploadVideo from "./pages/UploadVideo.tsx";
+import MyProfile from "./pages/MyProfile.tsx";
+import SignUp from "./pages/SignUp.tsx";
+import SignIn from "./pages/SignIn.tsx";
+import SafeRouters from "./pages/SafeRouters.tsx";
 import { Provider } from "react-redux";
 import store  from "./Redux/store.ts";
-import PlayVideo from "./UI-components/PlayVideo.tsx";
-import UpdateProfile from "./UI-components/UpdateProfile.tsx";
-import AllFavourateVideos from "./UI-components/AllFavourateVideos.tsx";
-import WatchHistory from "./UI-components/WatchHistory.tsx";
-import WatchLaterVideos from "./UI-components/WatchLater.tsx";
-import VideoPlaylist from "./UI-components/Playlist.tsx";
-import PlaylistVideos from "./UI-components/PlaylistVideos.tsx";
-import Subscription from "./UI-components/Subscription.tsx";
+import PlayVideo from "./pages/PlayVideo.tsx";
+import UpdateProfile from "./pages/UpdateProfile.tsx";
+import LikedVideos from "./pages/LikedVideos.tsx";
+import WatchHistory from "./pages/WatchHistory.tsx";
+import WatchLaterVideos from "./pages/WatchLater.tsx";
+import VideoPlaylist from "./pages/Playlist.tsx";
+import PlaylistVideos from "./pages/PlaylistVideos.tsx";
+import Subscription from "./pages/Subscription.tsx";
+import Home from "./pages/Home.tsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
-      <Route path="" element={<Dashboard />} />
+      <Route path="" element={<Home />} />
       <Route path="/play-video/:videoId" element={<PlayVideo />} />
       <Route path="/signup" element={<SignUp />} />
       <Route path="signin" element={<SignIn />} />
@@ -43,7 +44,7 @@ const router = createBrowserRouter(
         />
         <Route
           path="all-favourate-videos/:userId"
-          element={<AllFavourateVideos />}
+          element={<LikedVideos />}
         />
         <Route path="watch-history/:userId" element={<WatchHistory />} />
         <Route

@@ -4,7 +4,7 @@ import { useState } from "react";
 const Description = ({ apiResponse }: any) => {
   const [showFullDescription, setShowFullDescription] = useState(false);
   return (
-    <ScrollArea className="relative px-2 h-full my-1 max-h-[300px] w-full rounded-xl border-slate-500 border-[1px]">
+    <ScrollArea className="relative px-2 my-1 max-h-[300px] lg:h-auto w-full rounded-xl border-slate-500 border-[1px]">
       <p className="absolute top-0 left-3 text-slate-600 dark:text-slate-400 text-[13px] pb-4">
         Description
       </p>

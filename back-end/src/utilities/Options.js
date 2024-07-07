@@ -1,4 +1,4 @@
 export const Options = {
-    httpOnly:true,
-    secure:true
-}
+  httpOnly: false,
+  secure: true,
+};

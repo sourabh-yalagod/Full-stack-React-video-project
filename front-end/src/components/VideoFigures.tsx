@@ -5,13 +5,15 @@ import { useAddToWatchLater } from "@/hooks/AddToWatchLater";
 
 const VideoFigures = ({ apiResponse, videoId }: any) => {
   const { handleLikes } = useHandleLikes();
-  const { isLoading, addToWatchLater } = useAddToWatchLater();
+  const { watchLaterLoading, addToWatchLater } = useAddToWatchLater();
 
   return (
     <div className="w-full flex gap-2 p-1 items-center justify-around text-[11px] text-slate-600 dark:text-slate-400 rounded-xl border-slate-500 border-[1px]">
       <div className="">
         <p
-          onClick={() => handleLikes({ apiResponse, videoId })}
+          onClick={() =>
+            handleLikes({ userId: apiResponse?.Uploader?._id, videoId })
+          }
           className="flex gap-1 dark:text-white text-slate-700"
         >
           <ThumbsUp className="size-5" />
@@ -34,7 +36,7 @@ const VideoFigures = ({ apiResponse, videoId }: any) => {
         className="grid gap-1 place-items-center border-[1px] p-2 sm:py-3 sm:px-1 border-slate-300 dark:border-slate-700 rounded-xl items-center hover:scale-95 transition-all cursor-pointer"
       >
         <p>
-          {isLoading ? (
+          {watchLaterLoading ? (
             <Loader2Icon className="animate-spin" />
           ) : (
             `add to watch later`

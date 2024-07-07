@@ -1,6 +1,6 @@
 import { formatVideoDuration } from "@/Services/FormateVideoDuration";
 import { TitleFormatar } from "@/Services/TitleFormater";
-import { calclulateVideoTime } from "@/UI-components/CalculateTime";
+import { calclulateVideoTime } from "@/Services/CalculateTime";
 import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
@@ -11,6 +11,7 @@ import {
 import { EllipsisVertical } from "lucide-react";
 
 const Video = ({
+  // refe = "null",
   video = {},
   userId = "" || video.owner,
   avatar = "",
@@ -21,13 +22,11 @@ const Video = ({
 any) => {
   const navigate = useNavigate();
   return (
-    <div
-      key={Math.random()}
-      className="flex-1 min-w-[320px] max-w-[480px] border-gray-700 p-2 rounded-xl border-[1px] relative"
-    >
+    <div className="">
       {/* video projection */}
       <div className="relative">
         <video
+          // ref={refe}
           onClick={() => navigate(`/play-video/${video?._id}`)}
           className="w-full object-cover rounded-xl"
           poster={video?.thumbnail}
@@ -81,7 +80,7 @@ any) => {
         />
         <div className="grid gap-1 pl-1">
           <p className="text-gray-700 dark:text-white text-[16px] ml-2 overflow-hidden">
-            {video?.title ? TitleFormatar(video?.title)  : ""}
+            {video?.title ? TitleFormatar(video?.title) : ""}
           </p>
           <div className="flex gap-3 text-[13px]">
             <p className="text-gray-500 dark:text-slate-600 ">{username}</p>

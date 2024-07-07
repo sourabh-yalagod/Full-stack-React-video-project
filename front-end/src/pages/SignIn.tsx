@@ -7,6 +7,7 @@ import { RootState } from "@/Redux/store";
 import { SignIn } from "@/Redux/ThunkFunction/SignIn";
 import { getUser } from "@/Redux/Slice/UserSlice";
 import { useToast } from "@/components/ui/use-toast";
+import { useState } from "react";
 
 interface loginDetail {
   username: string;
@@ -16,6 +17,7 @@ interface loginDetail {
 const SignUp = () => {
   const { toast } = useToast();
   const userCredential = useSelector((state: RootState) => state.user);
+  const [demoAccount]=useState({username:'one',password:'one'})
   const dispatch = useDispatch();
   const {
     register,
@@ -41,6 +43,17 @@ const SignUp = () => {
     localStorage.setItem("token", data.data.accessToken);
   }
 
+  const openDemoAccount = () => {
+    dispatch(SignIn(demoAccount))
+    localStorage.setItem('userId','66533e85150cfad4fea6e215')
+    toast({
+      title: "Demo account is successfull.....!",
+      description:
+        "Please enjoy the videos . .. . . .. !",
+      duration: 1000,
+    });
+    navigate('/')
+  }
   const onSubmit = async (data: loginDetail) => {
     try {
       dispatch(SignIn(data));
@@ -61,7 +74,7 @@ const SignUp = () => {
         (() => {
           toast({
             title: "Sign-In failed.....!",
-            description:error,
+            description: error,
             duration: 1000,
           });
         })();
@@ -81,7 +94,7 @@ const SignUp = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
       <div className="text-black dark:text-white border-2 max-w-[470px] w-full rounded-xl p-8 bg-white dark:bg-gray-800 shadow-lg">
-        <h1 className="text-center text-5xl underline py-5 mb-3">Sign Up</h1>
+        <h1 className="text-center text-5xl underline py-5 mb-3">Sign In</h1>
         <form
           className="space-y-8 w-full relative"
           onSubmit={handleSubmit(onSubmit)}
@@ -132,26 +145,35 @@ const SignUp = () => {
               </span>
             )}
           </div>
-          <button
-            type="submit"
-            className="bg-blue-500 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-900 text-white outline-none font-bold py-2 px-4 rounded mt-4 w-full"
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="animate-spin inline-block mr-2" /> Please
-                wait....
-              </>
-            ) : (
-              "Sign Up"
-            )}
-          </button>
-          <button
-            type="reset"
-            onClick={() => reset()}
-            className="bg-red-500 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-900 text-white outline-none font-bold py-2 px-4 rounded mt-4 w-full"
-          >
-            Reset
-          </button>
+
+          <div className="flex gap-3">
+            <button
+              type="submit"
+              className="bg-blue-500 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-900 text-white outline-none font-bold py-2 px-4 rounded mt-4 w-full"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="animate-spin inline-block mr-2" /> Please
+                  wait....
+                </>
+              ) : (
+                "Sign Up"
+              )}
+            </button>
+            <button
+              type="reset"
+              onClick={() => reset()}
+              className="bg-red-500 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-900 text-white outline-none font-bold py-2 px-4 rounded mt-4 w-full"
+            >
+              Reset
+            </button>
+            <button
+              onClick={() => openDemoAccount()}
+              className="bg-blue-700 hover:bg-blue-900 text-white outline-none font-bold py-2 px-4 rounded mt-4 w-full"
+            >
+              Try Demo 
+            </button>
+          </div>
         </form>
         <div className="w-full flex justify-center pt-4 gap-4 text-black dark:text-white">
           Don't have an account?{" "}
