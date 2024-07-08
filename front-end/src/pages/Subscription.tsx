@@ -83,12 +83,12 @@ const Subscription = () => {
         <CarouselNext />
       </Carousel>
       {apiResponse?.videos?.length > 0 ? (
-        <ul className=" grid place-items-center gap-3 py-5">
+        <ul className="flex flex-wrap items-center w-full gap-2 justify-center">
           {asc.map((video: any) => {
             return (
               <div
                 key={video?._id + Math.random()}
-                className="flex-1 grid place-items-center min-w-[320px] rounded-xl relative"
+                className="flex-1 min-w-[320px] max-w-[450px] border-slate-700 border p-2 rounded-xl relative"
               >
                 <Video
                   video={video?.video}

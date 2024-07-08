@@ -44,25 +44,31 @@ const LikedVideos = () => {
       </h1>
       <div className="mt-5 w-full min-h-auto grid place-items-center md:mt-16">
         {apiResponse.length > 0 ? (
-          <ul className="flex justify-center flex-wrap gap-3 py-5">
+          <ul className="flex flex-wrap items-center w-full gap-2 justify-center">
             {apiResponse.map((video: any) => (
-              <Video
-                key={video._id} // Ensure this is unique and stable
-                video={video}
-                avatar={video?.Uploader?.avatar}
-                username={video?.Uploader?.username}
-                userId={video.Uploader._id}
-                dropMenuBar={[
-                  {
-                    name: isLoading ? (
-                      <Loader2 className="animate-spin" />
-                    ) : (
-                      "Remove video"
-                    ),
-                    operation: () => handleLikes({ userId, videoId: video._id }),
-                  },
-                ]}
-              />
+              <div
+                key={video._id}
+                className="flex-1 min-w-[320px] max-w-[450px] border-slate-700 border p-2 rounded-xl relative"
+              >
+                <Video
+                  key={video._id} // Ensure this is unique and stable
+                  video={video}
+                  avatar={video?.Uploader?.avatar}
+                  username={video?.Uploader?.username}
+                  userId={video.Uploader._id}
+                  dropMenuBar={[
+                    {
+                      name: isLoading ? (
+                        <Loader2 className="animate-spin" />
+                      ) : (
+                        "Remove video"
+                      ),
+                      operation: () =>
+                        handleLikes({ userId, videoId: video._id }),
+                    },
+                  ]}
+                />
+              </div>
             ))}
           </ul>
         ) : (

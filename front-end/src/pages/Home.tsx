@@ -169,6 +169,8 @@ const Dashboard = () => {
                 : result
               ).map((video: any) => {
                 return (
+                  // flex flex-wrap items-center w-full gap-2 justify-center
+                  // flex-1 min-w-[320px] max-w-[450px] border-slate-700 border p-2 rounded-xl relative
                   <div
                     key={video._id}
                     className="flex-1 min-w-[320px] max-w-[450px] border-slate-700 border p-2 rounded-xl relative"

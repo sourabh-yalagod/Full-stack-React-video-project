@@ -160,12 +160,12 @@ const MyProfile = () => {
       </div>
       <div className="mt-5 md:mt-4 w-full min-h-auto grid place-items-center px-5">
         {apiResponse?.videos?.length > 0 ? (
-          <ul className="flex justify-center items-start flex-wrap gap-3 py-5">
+          <ul className="flex flex-wrap items-center w-full gap-2 justify-center">
             {apiResponse?.videos?.map((video: any) => {
               return (
                 <div
                   key={video._id}
-                  className="flex-1 min-w-[350px] borde-[1px] max-w-[400px] p-2 rounded-xl relative"
+                  className="flex-1 min-w-[320px] max-w-[450px] border-slate-700 border p-2 rounded-xl relative"
                 >
                   <Video
                     video={video}

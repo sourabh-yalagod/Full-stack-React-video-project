@@ -127,7 +127,7 @@ const CustomizeComment = ({ userId, videoId, type, commentId }: any) => {
               </button>
             </div>
           ) : (
-            <div className="flex gap-3">
+            <div className="flex w-full justify-between gap-10">
               <button
                 onClick={() => handleCommentEdit(commentId)}
                 className="p-2 w-full my-3 rounded-xl border-[1px] grid place-items-center"

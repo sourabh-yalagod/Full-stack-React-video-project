@@ -63,11 +63,11 @@ const WatchHistory = () => {
           Clear Watch history
         </button>
         {apiResponse?.videos?.length > 0 ? (
-          <ul className="flex justify-center items-start flex-wrap gap-3 py-5">
+          <ul className="flex flex-wrap items-center w-full gap-2 justify-center">
             {apiResponse?.videos?.map((video: any) => (
               <div
                 key={video._id}
-                // className="flex-1 min-w-[250px] max-w-[380px] border-gray-300 dark:border-slate-700 p-2 rounded-xl border-[1px] relative bg-white dark:bg-slate-800"
+                className="flex-1 min-w-[320px] max-w-[450px] border-slate-700 border p-2 rounded-xl relative"
               >
                  <Video
                   video={video}

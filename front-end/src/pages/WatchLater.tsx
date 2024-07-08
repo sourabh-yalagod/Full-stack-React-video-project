@@ -1,8 +1,5 @@
 import axios, { AxiosError } from "axios";
-import {
-  Loader,
-  LucideTrash2,
-} from "lucide-react";
+import { Loader, LucideTrash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Video from "@/utils/Video";
@@ -77,22 +74,31 @@ const WatchLaterVideos = () => {
           Watch Later Videos
         </h1>
         {apiResponse?.watchLaterVideos?.length > 0 ? (
-          <ul className="flex justify-center flex-wrap gap-3 py-5">
+          <ul className="flex flex-wrap items-center w-full gap-2 justify-center">
             {apiResponse?.watchLaterVideos?.map((video: any) => {
               return (
-                <Video
+                <div
                   key={video._id}
-                  video={video}
-                  userId={"" || video.owner}
-                  avatar={apiResponse?.avatar}
-                  username={apiResponse?.username}
-                  dropMenuBar={[
-                    {
-                      name: isloading? <Loader className="animate-spin"/>:"Remove Video",
-                      operation: () => removeFromWatchLaterList(video._id),
-                    },
-                  ]}
-                />
+                  className="flex-1 min-w-[320px] max-w-[450px] border-slate-700 border p-2 rounded-xl relative"
+                >
+                  <Video
+                    key={video._id}
+                    video={video}
+                    userId={"" || video.owner}
+                    avatar={apiResponse?.avatar}
+                    username={apiResponse?.username}
+                    dropMenuBar={[
+                      {
+                        name: isloading ? (
+                          <Loader className="animate-spin" />
+                        ) : (
+                          "Remove Video"
+                        ),
+                        operation: () => removeFromWatchLaterList(video._id),
+                      },
+                    ]}
+                  />
+                </div>
               );
             })}
           </ul>

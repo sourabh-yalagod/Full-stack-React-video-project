@@ -28,7 +28,7 @@ any) => {
         <video
           // ref={refe}
           onClick={() => navigate(`/play-video/${video?._id}`)}
-          className="w-full object-cover rounded-xl"
+          className="w-full object-cover rounded-xl z-20"
           poster={video?.thumbnail}
           src={video?.videoFile}
         />

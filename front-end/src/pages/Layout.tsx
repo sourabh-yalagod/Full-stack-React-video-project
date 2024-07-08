@@ -23,7 +23,7 @@ const Layout: FC = () => {
   );
   const client = new QueryClient();
   return (
-    <div className=" relative">
+    <div className="relative">
       <Provider store={store}>
         <QueryClientProvider client={client}>
           <ThemeProvider>

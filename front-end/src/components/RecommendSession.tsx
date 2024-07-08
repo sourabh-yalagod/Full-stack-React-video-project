@@ -5,7 +5,8 @@ const RecommendSession = ({ videos, avatar, username , className }: any) => {
   console.log({ videos, avatar, username });
 
   return (
-    <div className={`${className} w-[380px] hidden lg:mt-20 lg:block flex-end`}>
+    <div className={`${className} border h-auto border-slate-700 rounded-xl p-2 w-[380px] hidden lg:mt-20 lg:block flex-end`}>
+      <h1 className="underline py-3 text-center text-xl">Recommended Videos</h1>
       <ul className="grid place-items-center w-full gap-2">
         {videos.map((video: any) => {
           return (
