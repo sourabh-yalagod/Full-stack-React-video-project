@@ -50,7 +50,7 @@ const Dashboard = () => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `/api/v1/dashboard?limit=${limit}&pages=${pages}`,
+          `/api/v1/home?limit=${limit}&pages=${pages}`,
           {
             signal: signal,
           }
@@ -86,7 +86,7 @@ const Dashboard = () => {
       setIsLoading(true);
       try {
         const response = await axios.get(
-          `/api/v1/dashboard/search-video?search=${searchQuery}`
+          `/api/v1/home/search-video?search=${searchQuery}`
         );
         setError("");
         setSearchQueryResults(response?.data?.data);

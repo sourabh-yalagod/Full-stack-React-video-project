@@ -1,6 +1,7 @@
 import { Router } from "express";
-import { getAllvideos } from "../controllers/home.js";
-const router = Router()
+import { getAllvideos, getVideoBySearch } from "../controllers/home.controller.js";
+const router = Router();
 
-router.route('/',).get(getAllvideos)
-export default router;
+router.route("/").get(getAllvideos);
+router.route('/search-video').get(getVideoBySearch);
+export default router
