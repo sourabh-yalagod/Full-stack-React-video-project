@@ -287,6 +287,7 @@ const PlatformAnalytics = AsyncHandler(async (req, res, next) => {
     comments: statistics[0].recentComments,
     viralVideos: statistics[0].viralVideos,
   };
+  console.log(statistics);
   return res.json(
     new ApiResponse(
       202,

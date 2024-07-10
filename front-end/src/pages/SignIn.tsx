@@ -39,8 +39,8 @@ const SignUp = () => {
 
   if (data) {
     dispatch(getUser(data?.data));
-    localStorage.setItem("userId", data.data.id);
-    localStorage.setItem("token", data.data.accessToken);
+    // localStorage.setItem("userId", data.data.id);
+    // localStorage.setItem("token", data.data.accessToken);
   }
 
   const openDemoAccount = () => {

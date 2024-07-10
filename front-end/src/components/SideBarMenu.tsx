@@ -7,6 +7,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { useSignOut } from "@/hooks/SignOut";
+import MenuBar from "@/utils/MenuBar";
 import {
   Heart,
   Home,
@@ -66,7 +67,7 @@ export function SideMenuBar() {
           </SheetTitle>
         </SheetHeader>
 
-        <div className="grid justify-around mt-5 text-white space-y-1">
+        {/* <div className="grid justify-around mt-5 text-white space-y-1">
           <div
             className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
             onClick={() => navigate("/signup")}
@@ -90,11 +91,7 @@ export function SideMenuBar() {
           </div>
           <div
             className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
-            onClick={() =>
-              navigate(
-                `/signin/video-play-lists/${localStorage.getItem("userId")}`
-              )
-            }
+            onClick={() => navigate(`/signin/video-play-lists/${userId}`)}
           >
             <VideotapeIcon className="w-6 h-6" />
             <span>My Playlist</span>
@@ -116,11 +113,7 @@ export function SideMenuBar() {
           <div
             className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
             onClick={() =>
-              navigate(
-                `/signin/settings/customize-profile/${localStorage.getItem(
-                  "userId"
-                )}`
-              )
+              navigate(`/signin/settings/customize-profile/${userId}`)
             }
           >
             <Settings className="w-6 h-6" />
@@ -128,22 +121,14 @@ export function SideMenuBar() {
           </div>
           <div
             className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
-            onClick={() =>
-              navigate(
-                `/signin/all-favourate-videos/${localStorage.getItem("userId")}`
-              )
-            }
+            onClick={() => navigate(`/signin/all-favourate-videos/${userId}`)}
           >
             <Heart className="w-6 h-6" />
             <span>Liked Videos</span>
           </div>
           <div
             className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
-            onClick={() =>
-              navigate(
-                `/signin/watch-history/${localStorage.getItem("userId")}`
-              )
-            }
+            onClick={() => navigate(`/signin/watch-history/${userId}`)}
           >
             <ViewIcon className="w-6 h-6" />
             <p>Watch History</p>
@@ -155,7 +140,8 @@ export function SideMenuBar() {
             <UserRoundMinusIcon className="w-6 h-6" />
             <span>Sign-Out</span>
           </div>
-        </div>
+        </div> */}
+        <MenuBar/>
       </SheetContent>
     </Sheet>
   );

@@ -1,12 +1,13 @@
 import axios, { AxiosError } from "axios";
-import { Loader2, NutOffIcon } from "lucide-react";
+import { Loader2, NutOffIcon, PlusCircle } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import Video from "@/utils/Video";
 import VideoNotFound from "@/utils/VideoNotFound";
 import APIloading from "@/utils/APIloading";
 import APIError from "@/utils/APIError";
+import { getUserId } from "@/Services/Auth";
 
 const PlaylistVideos = () => {
   const { playlistId } = useParams();
@@ -14,7 +15,8 @@ const PlaylistVideos = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [isloading, setIsLoading]: any = useState(false);
   const [error, setError]: any = useState("");
-
+  const navigate = useNavigate();
+  const userId = getUserId().userId || localStorage.getItem("userId");
   // Api request for watch-later videos
   useEffect(() => {
     setLoading(true);
@@ -30,7 +32,7 @@ const PlaylistVideos = () => {
         const err = error as AxiosError;
         setError(err.message ?? "Error while API call");
       } finally {
-        setLoading(true);
+        setLoading(false);
       }
     })();
   }, [playlistId]);
@@ -68,7 +70,7 @@ const PlaylistVideos = () => {
           Playlist Videos
         </h1>
         {apiResponse?.videos?.length > 0 ? (
-          <ul className="flex flex-wrap items-center w-full gap-2 justify-center">
+          <ul className="flex flex-wrap items-center w-full gap-2 justify-center relative">
             {apiResponse?.videos?.map((video: any) => (
               <div
                 key={video._id}
@@ -95,7 +97,16 @@ const PlaylistVideos = () => {
             ))}
           </ul>
         ) : (
-          <VideoNotFound />
+          <div className="relative grid place-items-center">
+            <VideoNotFound />
+            <p
+              onClick={() => navigate(`/signin/user-profile/${userId}`)}
+              className="flex gap-3 absolute inset-y-40 border p-5 rounded-xl hover:bg-blue-600 hover:text-white transition-all hover:border-none items-center text-center text-slate-800 dark:text-slate-300 cursor-pointer"
+            >
+              <PlusCircle />
+              Add Videos
+            </p>
+          </div>
         )}
       </div>
     </div>

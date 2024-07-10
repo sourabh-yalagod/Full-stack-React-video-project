@@ -1,8 +1,14 @@
 import axios, { AxiosError } from "axios";
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Bell, Loader2, NutOffIcon, Verified, Videotape } from "lucide-react";
-import { UserProfileData } from "./UserProfileData";
+import {
+  Bell,
+  EllipsisVertical,
+  Loader2,
+  Verified,
+  Videotape,
+} from "lucide-react";
+import { UserProfileData } from "../components/UserProfileData";
 import Video from "@/utils/Video";
 import VideoNotFound from "@/utils/VideoNotFound";
 import APIloading from "@/utils/APIloading";
@@ -56,7 +62,6 @@ const MyProfile = () => {
     comments: apiResponse ? apiResponse?.comments[0]?.totalComments : "-",
   };
 
-
   // functio handles the subscription stistics
   const handleSubscription = useCallback(async () => {
     setSubscribe(!subscribe);
@@ -94,27 +99,21 @@ const MyProfile = () => {
 
   // if API results error then this component runs
   if (error) {
-    return (
-      <VideoNotFound/>
-    );
+    return <VideoNotFound />;
   }
 
   // while API process/loading this component runs
   if (loading) {
-    return (
-      <APIloading/>
-    );
+    return <APIloading />;
   }
-  
+
   if (error) {
-    return (
-      <APIError/>
-    );
+    return <APIError />;
   }
 
   // DOM
   return (
-    <div className="mx-auto w-full grid items-start dark:bg-slate-900">
+    <div className="mx-auto w-full min-h-screen grid items-start dark:bg-slate-900">
       <div
         className="w-full h-[140px] sm:h-[180px] md:h-[220px] bg-slate-400 dark:bg-slate-700 bg-cover bg-center relative"
         style={{
@@ -172,12 +171,19 @@ const MyProfile = () => {
                     userId={apiResponse._id}
                     avatar={apiResponse?.avatar}
                     username={apiResponse?.username}
+                    playlist={apiResponse.playlist}
                     dropMenuBar={[
                       {
-                        name: isloading?<Loader2 className="animate-spin"/>:"Delete Video",
+                        name: isloading ? (
+                          <Loader2 className="animate-spin" />
+                        ) : (
+                          "Delete Video"
+                        ),
                         operation: () => deleteVideo(video._id),
                       },
-                      
+                      {
+                        name: "Add-video To playlist",
+                      },
                     ]}
                   />
                 </div>
@@ -186,7 +192,7 @@ const MyProfile = () => {
           </ul>
         ) : (
           <div className="text-xl mt-24 grid gap-8 justify-center place-items-center text-center text-slate-900 dark:text-white">
-            <VideoNotFound/>
+            <VideoNotFound />
             <button
               onClick={() => navigate("/signin/upload-video")}
               className="flex gap-4 z-40 text-[17px] items-center bg-slate-600 text-white px-3 py-1 rounded-xl hover:scale-105 transition-all"

@@ -1,8 +1,7 @@
-
-import { SideMenuBar } from "@/pages/SideBarMenu";
+import { SideMenuBar } from "@/components/SideBarMenu";
 import { ThemeButton } from "@/utils/ThemeButtom";
 import { SearchCode } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Hero = () => {
@@ -35,7 +34,7 @@ const Hero = () => {
           onClick={() => setSearchBar(!searchBar)}
           className="absolute right-2 top-[50%] -translate-y-[50%] transition-all"
         />
-        {searchBar ? (
+        {searchBar && (
           <input
             type="text"
             className="bg-transparent border-[1px] text-[17px] w-full border-slate-500 rounded-xl px-2 py-1 outline-none"
@@ -43,8 +42,6 @@ const Hero = () => {
             onChange={(e) => setSearchInput(e.target.value)}
             value={searchInput}
           />
-        ) : (
-          ""
         )}
       </div>
     </div>

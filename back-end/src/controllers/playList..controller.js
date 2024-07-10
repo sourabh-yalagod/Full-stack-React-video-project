@@ -45,7 +45,6 @@ const createPlayList = AsyncHandler(async (req, res) => {
 const addVideoToPlaylist = AsyncHandler(async (req, res) => {
   const playlistId = req?.params?.playlistId ?? req?.body?.playlistId;
   const videoId = req?.params?.videoId ?? req?.body?.videoId;
-  console.log(playlistId, videoId);
   if (!playlistId || !videoId) {
     throw new ApiError(
       401,

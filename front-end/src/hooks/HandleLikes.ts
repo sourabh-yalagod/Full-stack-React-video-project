@@ -1,7 +1,9 @@
 import axios, { AxiosError } from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const useHandleLikes = () => {
+  const navigate = useNavigate()
   const [likeResponse, setLikeResponse] = useState("");
   const [likeError, setLikeError] = useState("");
   const handleLikes = async ({ userId, videoId }: any) => {
@@ -16,6 +18,7 @@ export const useHandleLikes = () => {
       );
       setLikeResponse(response.data.data);
       console.log("likeResponse : ", response.data);
+      navigate(0)
     } catch (error) {
       const axiosError: any = error as AxiosError;
       setLikeError(axiosError);

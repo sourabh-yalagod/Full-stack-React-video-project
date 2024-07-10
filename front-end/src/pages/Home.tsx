@@ -2,7 +2,7 @@ import axios from "axios";
 import { Loader2 } from "lucide-react";
 import { memo, useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import BottomNavBar from "./BottomNavBar.tsx";
+import BottomNavBar from "../components/BottomNavBar.tsx";
 import { SkeletonCard } from "@/utils/Skeleton.tsx";
 import Video from "@/utils/Video.tsx";
 import VideoNotFound from "@/utils/VideoNotFound.tsx";

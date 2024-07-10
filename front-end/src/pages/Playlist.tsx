@@ -61,32 +61,6 @@ const VideoPlaylist = () => {
     })();
   }, [userId, done]);
 
-  // function to remove a video from watch later List
-  // const removeFromWatchLaterList = async (videoId: any) => {
-  //   try {
-  //     setIsLoading(true);
-  //     setError("");
-  //     const response = await axios.patch(
-  //       `/api/v1/users/remove-watch-later-video`,
-  //       {
-  //         videoId,
-  //       }
-  //     );
-  //     setApiResponse(response?.data?.data);
-  //     console.log(
-  //       "Response from remove a video from watch later list :",
-  //       apiResponse
-  //     );
-  //     setDone(true);
-  //   } catch (error) {
-  //     const err = error as AxiosError;
-  //     setError(err.message ?? "Error while API call");
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
-  // function to create a new playlist
   const handleCreatePlaylist = async () => {
     setIsLoading(true);
     try {

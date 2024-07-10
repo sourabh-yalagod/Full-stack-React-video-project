@@ -6,9 +6,10 @@ import store from "@/Redux/store";
 import { Outlet, useLocation, matchPath } from "react-router-dom";
 import Hero from "@/components/Header/Hero";
 import { Toaster } from "@/components/ui/toaster";
-import StickySideMenu from "./StickySideMenu";
+import StickySideMenu from "../components/StickySideMenu";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import NavigateButton from "@/components/NavigateButton";
+import Dashboard from "./Dashboard";
 const Layout: FC = () => {
   const location = useLocation();
   const hideHeroPathsForHero = [

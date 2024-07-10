@@ -61,27 +61,28 @@ const Subscription = () => {
     return <APIError />;
   }
   return (
-    <div className="min-h-screen w-full grid place-items-center pt-5 bg-gray-100 dark:bg-slate-900 relative">
-      <Carousel className="max-w-md mx-auto px-5 dark:text-white">
-        <CarouselContent>
-          {apiResponse?.Channels?.map((channel: any) => (
-            // console.log("channel : ",channel)
-            <div key={channel._id}>
-              <Channel
-                username={channel?.Channel?.username ?? ""}
-                fullname={channel?.Channel?.fullname ?? ""}
-                channelId={channel.channel}
-                avatar={
-                  channel?.Channel?.avatar ??
-                  "https://static.vecteezy.com/system/resources/previews/024/183/502/non_2x/male-avatar-portrait-of-a-young-man-with-a-beard-illustration-of-male-character-in-modern-color-style-vector.jpg"
-                }
-              />
-            </div>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
-      </Carousel>
+    <div className="min-h-screen w-full grid place-items-center bg-gray-100 dark:bg-slate-900 relative">
+      <p className="text-slate-700 dark:text-slate-300 text-xl py-2 text-center underline sm:text-2xl md:text-3xl lg:text-4xl">
+        Channel You Subscribed
+      </p>
+      <div className="w-auto justify-center items-center flex mb-5 p-5 overflow-x-auto mx-auto px-5 dark:text-white border border-slate-600 rounded-xl">
+        {apiResponse?.Channels?.map((channel: any) => (
+          // console.log("channel : ",channel)
+          <div key={channel._id}>
+            <Channel
+              username={channel?.Channel?.username ?? ""}
+              fullname={channel?.Channel?.fullname ?? ""}
+              channelId={channel.channel}
+              avatar={
+                channel?.Channel?.avatar ??
+                "https://static.vecteezy.com/system/resources/previews/024/183/502/non_2x/male-avatar-portrait-of-a-young-man-with-a-beard-illustration-of-male-character-in-modern-color-style-vector.jpg"
+              }
+            />
+          </div>
+        ))}
+        {/* <CarouselPrevious /> */}
+        {/* <CarouselNext /> */}
+      </div>
       {apiResponse?.videos?.length > 0 ? (
         <ul className="flex flex-wrap items-center w-full gap-2 justify-center">
           {asc.map((video: any) => {

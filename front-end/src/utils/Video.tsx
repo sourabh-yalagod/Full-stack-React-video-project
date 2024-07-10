@@ -8,7 +8,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 // const [isloading, setIsLoading] = useState(false);
-import { EllipsisVertical } from "lucide-react";
+import { EllipsisVertical, Loader2 } from "lucide-react";
+import { useAddToPlayList } from "@/hooks/AddToPlayList";
 
 const Video = ({
   // refe = "null",
@@ -17,9 +18,11 @@ const Video = ({
   avatar = "",
   username = "",
   dropMenuBar = [],
+  playlist = [],
 }: //
 
 any) => {
+  const { addToPlayList, addToPlaylistLoading } = useAddToPlayList();
   const navigate = useNavigate();
   return (
     <div className="">
@@ -44,17 +47,39 @@ any) => {
           <EllipsisVertical className="outline-none" />
         </DropdownMenuTrigger>
         <DropdownMenuContent className="text-gray-900 dark:text-white text-[13px] grid space-y-1 border-gray-500 dark:border-slate-600 bg-opacity-50 cursor-pointer rounded-[7px] bg-gray-100 dark:bg-slate-900 text-center w-fit mr-8 px-0 py-1">
-          {dropMenuBar.map((field: any) => (
+          {dropMenuBar.map((field: any, index: number) => (
             <div
-              key={field}
+              key={index}
               className="px-2 py-1 m-1 grid place-items-center rounded-[9px] transition-all pb-2 hover:bg-gray-500 dark:hover:bg-slate-800 dark:text-slate-400"
-              onClick={field.operation}
+              onClick={field?.operation}
             >
-              {field.name}
+              {field?.name !== "Add-video To playlist" ? (
+                field?.name
+              ) : (
+                <DropdownMenu>
+                  <DropdownMenuTrigger className=" text-slate-800 dark:text-slate-200">
+                    Add-video To playlist
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="text-gray-900 dark:text-white text-[13px] grid space-y-1 border-gray-500 dark:border-slate-600 bg-opacity-50 cursor-pointer place-content-center rounded-[7px] bg-gray-100 dark:bg-slate-900 text-center w-fit px-0 py-1 mr-44">
+                    {playlist.map((playlist: any) => {
+                      return (
+                        <div
+                          key={playlist._id}
+                          onClick={() =>
+                            addToPlayList({videoId: video?._id,playlistId: playlist._id})
+                          }
+                        >
+                          {addToPlaylistLoading?<Loader2 className="animate-spin"/>:playlist?.title}
+                        </div>
+                      );
+                    })}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </div>
           ))}
           <a
-            href={video.videoFile}
+            href={video?.videoFile}
             className="px-2 py-1 m-1 grid place-items-center rounded-[9px] transition-all pb-2 hover:bg-gray-500 dark:hover:bg-slate-800 dark:text-slate-400"
             target="_top"
             rel="noopener noreferrer"

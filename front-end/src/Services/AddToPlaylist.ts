@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios";
 import { useState } from "react";
 
-export const addToPlaylist = async ({ videoId }: any) => {
+const addToPlaylist = async ({ videoId }: any) => {
   const [loading, setLoading] = useState(false);
   const [apiResponse, setApiResponse]: any = useState("");
   const [error, setError]: any = useState("");

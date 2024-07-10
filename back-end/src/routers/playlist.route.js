@@ -6,7 +6,7 @@ const router = Router()
 
 
 router.route('/create-playlist').post(verifyAuth,upload.single('thumbnail'),createPlayList)
-router.route('/new-video/:videoId/:playlistId').patch(verifyAuth,addVideoToPlaylist)
+router.route('/new-video/:videoId/:playlistId').post(verifyAuth,addVideoToPlaylist)
 router.route('/delete-video/:videoId/:playlistId').delete(verifyAuth,deleteVideoFromPlaylist)
 router.route('/all-play-lists/:userId').get(verifyAuth,getAllPlaylist)
 router.route('/delete-playlist/:playlistId').delete(verifyAuth,deletePlaylist)

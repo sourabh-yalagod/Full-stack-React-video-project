@@ -1,9 +1,10 @@
 import { useToast } from "@/components/ui/use-toast";
 import axios from "axios";
 import { memo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export const useSignOut = () => {
-  
+  const navigate = useNavigate()
   const { toast } = useToast();
   const [signOutLoading, setSignOutLoading] = useState(false);
   const signOut = () => {
@@ -32,6 +33,7 @@ export const useSignOut = () => {
     setTimeout(() => {
         setSignOutLoading(false)
     }, 3000);
+    navigate('/')
   };
   return { signOutLoading, signOut };
 };
