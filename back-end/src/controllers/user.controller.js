@@ -6,13 +6,18 @@ import {
   deleteFromCloudinary,
   uploadOnCloudinary,
 } from "../middlewares/cloudinary.middleware.js";
-import { Options } from "../utilities/options.js";
+// import { Options } from "../utilities/options.js";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import { Subscription } from "../models/subscription.model.js";
 import { Video } from "../models/video.model.js";
 import { Comment } from "../models/comment.model.js";
 import { Like } from "../models/like.model.js";
+
+const Options = {
+  httpOnly: false,
+  secure: true,
+};
 
 const getToken = async (userId) => {
   try {
