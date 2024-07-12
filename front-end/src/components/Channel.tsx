@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
 const Channel = ({
-  subscribers = 0,
   avatar,
   username,
   fullname,

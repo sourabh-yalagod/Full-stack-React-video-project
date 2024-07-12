@@ -8,16 +8,11 @@ import Hero from "@/components/Header/Hero";
 import { Toaster } from "@/components/ui/toaster";
 import StickySideMenu from "../components/StickySideMenu";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import NavigateButton from "@/components/NavigateButton";
-import Dashboard from "./Dashboard";
 const Layout: FC = () => {
   const location = useLocation();
   const hideHeroPathsForHero = [
     "/signin",
-    "/signin/upload-video",
     "/signup",
-    "/play-video/:videoId",
-    "/signin/user-profile/:userId",
   ];
   const shouldHideHero = hideHeroPathsForHero.some((path) =>
     matchPath(path, location.pathname)
@@ -30,8 +25,7 @@ const Layout: FC = () => {
           <ThemeProvider>
             {!shouldHideHero && <Hero />}
             <StickySideMenu location={location.pathname} />
-            <NavigateButton />
-            <div className="p-0 sm:pl-[70px]">
+            <div className="p-0 sm:pl-[60px]">
               <Outlet />
             </div>
             <Toaster />

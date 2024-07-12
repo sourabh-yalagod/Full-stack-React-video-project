@@ -24,6 +24,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import APIloading from "@/utils/APIloading";
+import APIError from "@/utils/APIError";
 
 const VideoPlaylist = () => {
   const navigate = useNavigate();
@@ -126,27 +128,12 @@ const VideoPlaylist = () => {
     }
   };
 
-  // loading state till the response from the backend comes
   if (loading) {
-    return (
-      <div className="min-h-screen w-full px-3 bg-#121212 grid place-items-center">
-        <p className="text-3xl text-center text-white">
-          <Loader2 className="text-white size-5 text-center animate-spin mt-10" />
-        </p>
-      </div>
-    );
+    return <APIloading/>
   }
   
-  // error is the API request is resulted error
   if (error) {
-    return (
-      <div className="min-h-screen w-full px-3 bg-#121212 grid place-items-center">
-        <div className="text-white text-3xl flex gap-4">
-          <NutOffIcon />
-          Error (API)
-        </div>
-      </div>
-    );
+    return <APIError/>
   }
   return (
     <div className="min-h-screen w-full px-3 dark:bg-gray-900 pt-7 relative">

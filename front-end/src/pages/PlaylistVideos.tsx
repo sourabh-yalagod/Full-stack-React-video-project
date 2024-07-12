@@ -60,11 +60,14 @@ const PlaylistVideos = () => {
       setIsLoading(false);
     }
   };
-
+  if (loading) {
+    return <APIloading/>
+  }
+  if (error) {
+    return <APIError/>
+  }
   return (
     <div className="min-h-screen w-full px-3 bg-white dark:bg-slate-900 pt-16 relative">
-      {loading && <APIloading />}
-      {error && <APIError />}
       <div>
         <h1 className="text-center text-gray-800 dark:text-white text-2xl font-black">
           Playlist Videos

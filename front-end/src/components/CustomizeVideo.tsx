@@ -33,6 +33,8 @@ const CustomizeVideo = ({ videoId }: any) => {
     } catch (error) {
       const axiosError: any = error as AxiosError;
       setError(axiosError);
+      console.log(err);
+      
     } finally {
       setIsLoading(false);
     }

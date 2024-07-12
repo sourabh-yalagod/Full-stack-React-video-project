@@ -29,14 +29,15 @@ const CustomizeComment = ({ userId, videoId, type, commentId }: any) => {
       );
       console.log("New Comment Response : ", response.data);
       setComment("");
-      // navigate(0)
     } catch (error) {
       const axiosError: any = error as AxiosError;
       setError(axiosError);
+      
     } finally {
       setIsloading(false);
     }
   };
+  console.log(error);
 
   const handleCommentEdit = async (commentId:any) => {
     console.log("commentId : ",commentId);

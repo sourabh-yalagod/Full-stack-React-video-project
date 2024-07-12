@@ -1,13 +1,13 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import path from 'path';
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import path from "path";
 // https://vitejs.dev/config/
 export default defineConfig({
-  server:{
-
-    proxy:{
-      '/api':"http://localhost:8000",
-    }
+  server: {
+    proxy: {
+      // "/api": "https://videotube-auro.onrender.com",
+      "/api": "http://localhost:8000",
+    },
   },
   plugins: [react()],
   resolve: {
@@ -15,4 +15,4 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-})
+});

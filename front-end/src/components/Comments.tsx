@@ -8,7 +8,7 @@ const Comments = ({ apiResponse, videoId }: any) => {
   const [seeMoreComment, SetSeeMoreComment] = useState(false);
   const userId = apiResponse?.Uploader?._id;
   return (
-    <ScrollArea className="w-full text-white overflow-scroll pb-10 grid place-items-center max-h-56 rounded-xl p-1 border-slate-500 border-[1px] md:max-h-96 lg:h-auto">
+    <ScrollArea className="w-full text-white overflow-scroll pb-10 grid place-items-center h-56 rounded-xl p-1 border-slate-500 border-[1px] md:max-h-96 lg:h-auto">
       <div className="text-slate-700 dark:text-white text-[20px] py-4 flex w-full justify-around items-center gap-5 md:ml-5 space-y-2">
         <h1>Comments : {apiResponse?.allComments?.length || "0"}</h1>
         <h1 className="text-gray-400 dark:text-slate-400 text-sm bg-gray-200 dark:bg-gray-800 p-1 rounded-xl flex gap-1 cursor-default">

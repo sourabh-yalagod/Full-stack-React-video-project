@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/sheet";
 import { useSignOut } from "@/hooks/SignOut";
 import MenuBar from "@/utils/MenuBar";
+import { ThemeButton } from "@/utils/ThemeButtom";
 import {
   Heart,
   Home,
@@ -33,115 +34,22 @@ export function SideMenuBar() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button className="focus:outline-none focus:ring-2 sm:hidden focus:ring-offset-2 absolute left-0 top-3 z-10 ">
-          <LucideMenu className="text-slate-900 dark:text-white" />
-        </Button>
+        <LucideMenu className="text-slate-900 dark:text-white" />
       </SheetTrigger>
-      <SheetContent className="bg-slate-900 bg-opacity-40 max-w-[250px] w-full text-white sm:max-w-[290px] md:max-w-[320px] lg:max-w-[350px]">
+      <SheetContent className="bg-white bg-opacity-85 max-w-[250px] text-slate-900 sm:max-w-[290px] md:max-w-[320px] lg:max-w-[350px] dark:bg-slate-950 dark:text-slate-300">
         <SheetHeader>
-          <SheetTitle className="flex items-center w-full justify-around text-[15px] sm:text-xl">
+          <SheetTitle className="flex items-center px-6 w-full justify-around text-[15px] sm:text-xl">
             <div
               onClick={() => navigate("/")}
-              className="flex gap-5 cursor-pointer hover:scale-105 transition-all"
+              className="flex gap-1 text-xl cursor-pointer hover:scale-105 transition-all"
             >
               <Home />
               <p>Home</p>
             </div>
-            <div className="mr-4 lg:mr-12 text-[12px] sm:text-[15px] mx-1 font-semibold cursor-pointer hover:scale-105 transition-all">
-              {!localStorage.getItem("accessToken") ? (
-                <button
-                  onClick={() => navigate("signin")}
-                  className="bg-blue-600 px-3 py-1 rounded-2xl text-white "
-                >
-                  Sign-In
-                </button>
-              ) : (
-                <button
-                  onClick={() => signOut()}
-                  className="bg-red-600 px-3 py-1 rounded-2xl text-white"
-                >
-                  Sign-Out
-                </button>
-              )}
-            </div>
+            <ThemeButton />
           </SheetTitle>
         </SheetHeader>
-
-        {/* <div className="grid justify-around mt-5 text-white space-y-1">
-          <div
-            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
-            onClick={() => navigate("/signup")}
-          >
-            <UserCheck2 className="w-6 h-6" />
-            <span>Create Account</span>
-          </div>
-          <div
-            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
-            onClick={() => navigate("/signin")}
-          >
-            <User className="" />
-            <label>Sign In</label>
-          </div>
-          <div
-            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
-            onClick={() => navigate("/signin/upload-video")}
-          >
-            <Upload className="w-6 h-6" />
-            <span>Upload Video</span>
-          </div>
-          <div
-            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
-            onClick={() => navigate(`/signin/video-play-lists/${userId}`)}
-          >
-            <VideotapeIcon className="w-6 h-6" />
-            <span>My Playlist</span>
-          </div>
-          <div
-            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
-            onClick={() => navigate(`/signin/user-profile/${userId}`)}
-          >
-            <Images className="w-6 h-6" />
-            <span>My Profile</span>
-          </div>
-          <div
-            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
-            onClick={() => navigate(`/signin/watch-later-videos/${userId}`)}
-          >
-            <View className="w-6 h-6" />
-            Watch-Later
-          </div>
-          <div
-            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
-            onClick={() =>
-              navigate(`/signin/settings/customize-profile/${userId}`)
-            }
-          >
-            <Settings className="w-6 h-6" />
-            <span>Customize</span>
-          </div>
-          <div
-            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
-            onClick={() => navigate(`/signin/all-favourate-videos/${userId}`)}
-          >
-            <Heart className="w-6 h-6" />
-            <span>Liked Videos</span>
-          </div>
-          <div
-            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
-            onClick={() => navigate(`/signin/watch-history/${userId}`)}
-          >
-            <ViewIcon className="w-6 h-6" />
-            <p>Watch History</p>
-          </div>
-          <div
-            className="flex items-center gap-4 py-2 px-3 cursor-pointer hover:bg-gray-700 rounded-xl  transition-transform transform hover:scale-105"
-            onClick={() => signOut()}
-          >
-            <UserRoundMinusIcon className="w-6 h-6" />
-            <span>Sign-Out</span>
-          </div>
-        </div> */}
-        <MenuBar/>
+        <MenuBar />
       </SheetContent>
     </Sheet>
   );

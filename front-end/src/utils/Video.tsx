@@ -10,9 +10,11 @@ import {
 // const [isloading, setIsLoading] = useState(false);
 import { EllipsisVertical, Loader2 } from "lucide-react";
 import { useAddToPlayList } from "@/hooks/AddToPlayList";
+import { useCallback, useEffect } from "react";
+import { getUserId } from "@/Services/Auth";
+import { useToast } from "@/components/ui/use-toast";
 
 const Video = ({
-  // refe = "null",
   video = {},
   userId = "" || video.owner,
   avatar = "",
@@ -22,15 +24,30 @@ const Video = ({
 }: //
 
 any) => {
+  const { toast } = useToast();
   const { addToPlayList, addToPlaylistLoading } = useAddToPlayList();
   const navigate = useNavigate();
+  const handleClick = useCallback(() => {
+    const userId = getUserId().userId;
+    if (!userId) {
+      toast({
+        title: "Please signin to watchvideos",
+        description:
+          "if you signin then you will be authenticated to all the pages and Routes so Please sign-in and Enjoy . . . . !",
+        duration: 4000,
+      });
+      navigate("/signin");
+    } else {
+      navigate(`/play-video/${video?._id}`);
+    }
+  }, []);
   return (
     <div className="">
       {/* video projection */}
       <div className="relative">
         <video
           // ref={refe}
-          onClick={() => navigate(`/play-video/${video?._id}`)}
+          onClick={() => handleClick()}
           className="w-full object-cover rounded-xl z-20"
           poster={video?.thumbnail}
           src={video?.videoFile}
@@ -66,10 +83,17 @@ any) => {
                         <div
                           key={playlist._id}
                           onClick={() =>
-                            addToPlayList({videoId: video?._id,playlistId: playlist._id})
+                            addToPlayList({
+                              videoId: video?._id,
+                              playlistId: playlist._id,
+                            })
                           }
                         >
-                          {addToPlaylistLoading?<Loader2 className="animate-spin"/>:playlist?.title}
+                          {addToPlaylistLoading ? (
+                            <Loader2 className="animate-spin" />
+                          ) : (
+                            playlist?.title
+                          )}
                         </div>
                       );
                     })}

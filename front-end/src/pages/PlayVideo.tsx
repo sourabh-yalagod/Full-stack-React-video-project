@@ -52,7 +52,7 @@ const PlayVideo = () => {
     return <APIloading />;
   }
   return (
-    <div className="w-full grid min-h-screen lg:flex lg:justify-between lg:gap-4 p-1 lg:grid-cols-2 text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 pb-10 mx-auto">
+    <div className="w-full grid min-h-screen pl-3 lg:flex lg:gap-4 p-1 lg:grid-cols-2 text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 pb-10 mx-auto">
       <div className="lg:w-full space-y-2">
         {" "}
         <VideoController apiResponse={apiResponse} />

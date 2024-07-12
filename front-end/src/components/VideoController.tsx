@@ -42,7 +42,7 @@ const VideoController = ({apiResponse}:any) => {
   };
   return (
     <div>
-      <div className="w-full max-w-4xl md:mt-14 mx-auto bg-black group relative">
+      <div className="w-full max-w-4xl md:mt-2 mx-auto bg-black group relative">
         <video
           ref={videoRef}
           src={apiResponse?.videoFile}
