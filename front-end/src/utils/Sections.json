@@ -1,0 +1,29 @@
+{
+    "Niches":[
+        {
+            "id":"1",
+            "niche":"Sports",
+            "value":"sports"
+        },
+        {
+            "id":"2",
+            "niche":"Movie",
+            "value":"movie"
+        },
+        {
+            "id":"3",
+            "niche":"Politics",
+            "value":"politic"
+        },
+        {
+            "id":"4",
+            "niche":"Economics",
+            "value":"economic"
+        },
+        {
+            "id":"5",
+            "niche":"Songs",
+            "value":"song"
+        }
+    ]
+}

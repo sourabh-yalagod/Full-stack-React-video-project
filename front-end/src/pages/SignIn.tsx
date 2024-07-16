@@ -1,7 +1,7 @@
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { AxiosError } from "axios";
-import { Loader2 } from "lucide-react";
+import { EyeIcon, EyeOff, Loader2, User } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { RootState } from "@/Redux/store";
 import { SignIn } from "@/Redux/ThunkFunction/SignIn";
@@ -16,8 +16,9 @@ interface loginDetail {
 
 const SignUp = () => {
   const { toast } = useToast();
+  const [showPassword, setShowPassword] = useState(false);
   const userCredential = useSelector((state: RootState) => state.user);
-  const [demoAccount]=useState({username:'one',password:'one'})
+  const [demoAccount] = useState({ username: "one", password: "one" });
   const dispatch = useDispatch();
   const {
     register,
@@ -30,12 +31,6 @@ const SignUp = () => {
   const { isLoading, error, success, data } = useSelector(
     (state: RootState) => state.auth
   );
-  console.log("isLoading, error, success, data", {
-    isLoading,
-    error,
-    success,
-    data,
-  });
 
   if (data) {
     dispatch(getUser(data?.data));
@@ -44,16 +39,15 @@ const SignUp = () => {
   }
 
   const openDemoAccount = () => {
-    dispatch(SignIn(demoAccount))
-    localStorage.setItem('userId','66533e85150cfad4fea6e215')
+    dispatch(SignIn(demoAccount));
+    localStorage.setItem("userId", "66533e85150cfad4fea6e215");
     toast({
       title: "Demo account is successfull.....!",
-      description:
-        "Please enjoy the videos . .. . . .. !",
+      description: "Please enjoy the videos . .. . . .. !",
       duration: 1000,
     });
-    navigate('/')
-  }
+    navigate("/");
+  };
   const onSubmit = async (data: loginDetail) => {
     try {
       dispatch(SignIn(data));
@@ -74,7 +68,7 @@ const SignUp = () => {
         (() => {
           toast({
             title: "Sign-In failed.....!",
-            description: error,
+            description: error || "Somthing went wrong . . . . . . !",
             duration: 1000,
           });
         })();
@@ -93,18 +87,44 @@ const SignUp = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
-      <div className="text-black dark:text-white border-2 max-w-[470px] w-full rounded-xl p-8 bg-white dark:bg-gray-800 shadow-lg">
-        <h1 className="text-center text-5xl underline py-5 mb-3">Sign In</h1>
+      <div className="text-black shadow-[0px_0px_12px_0px_black] dark:text-white border-2 max-w-[470px] mx-5 w-full rounded-xl p-7 bg-white dark:bg-gray-800">
+        <div className="flex w-full justify-between mb-10">
+          <h1 className="text-2xl font-semibold cursor-pointer animate-pulse">
+            Sign-In
+          </h1>
+          <div
+            className="flex gap-2 items-center cursor-pointer"
+          >
+            <img
+              className="size-6 sm:size-9 rounded-full"
+              src={
+                "https://lh3.googleusercontent.com/rormhrw_yZt2v1OKZBaiFCSt8b8QU02kEKiuilfgnpGkOMQd87xm7b7SyIlGoHsL18M"
+              }
+            />
+            <p className="text-slate-800 text-lg sm:text-xl font-semibold dark:text-white">
+              Video-Tube
+            </p>
+          </div>
+        </div>
         <form
-          className="space-y-8 w-full relative"
+          className="space-y-7 w-full relative"
           onSubmit={handleSubmit(onSubmit)}
           method="post"
         >
           <div className="relative">
-            <label htmlFor="username" className="text-[18px] block">
-              Username:
+            <label
+              htmlFor="username"
+              className="text-[14px] flex w-full justify-between sm:text-[18px]"
+            >
+              Username
+              <User
+                className={`${
+                  errors?.username?.message ? "text-red-500" : "text-green-700"
+                } hover:scale-105 transition-all`}
+              />
             </label>
             <input
+              placeholder="username"
               type="text"
               id="username"
               {...register("username", {
@@ -114,7 +134,7 @@ const SignUp = () => {
                 //   message: "Username should be 3-30 characters and contain only letters, numbers, and underscores"
                 // }
               })}
-              className="bg-transparent border-b-2 outline-none border-slate-700 dark:border-gray-500 dark:focus:border-blue-500 w-full"
+              className="bg-transparent pl-3 border-b-[2px] mt-2 rounded-xl p-1 outline-none border-blue-700 dark:border-white-500 dark:focus:border-blue-500 w-full"
             />
             {errors.username && (
               <span className="text-red-500 absolute -bottom-7 left-0 text-xs">
@@ -124,11 +144,22 @@ const SignUp = () => {
           </div>
 
           <div className="relative">
-            <label htmlFor="password" className="text-[18px] block">
+            <label
+              htmlFor="password"
+              className="text-[14px] flex w-full justify-between sm:text-[18px]"
+            >
               Password:
+              <div
+                onClick={() => setShowPassword(!showPassword)}
+                className={`${
+                  errors?.password?.message ? "text-red-500" : "text-green-700"
+                } size-5 sm:size-7 hover:scale-105 transition-all`}
+              >
+                {showPassword ? <EyeIcon /> : <EyeOff />}
+              </div>
             </label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               id="password"
               {...register("password", {
                 required: "Password is required",
@@ -137,7 +168,7 @@ const SignUp = () => {
                 //   message: "Password must be at least 8 characters long and include uppercase, lowercase, and a number"
                 // }
               })}
-              className="bg-transparent border-b-2 outline-none border-slate-700 dark:border-gray-500 dark:focus:border-blue-500 w-full"
+              className="bg-transparent pl-3 border-b-[2px] mt-2 rounded-xl p-1 outline-none border-blue-700 dark:border-white-500 dark:focus:border-blue-500 w-full"
             />
             {errors.password && (
               <span className="text-red-500 absolute -bottom-7 left-0 text-xs">
@@ -146,10 +177,10 @@ const SignUp = () => {
             )}
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex gap-3 text-[14px] sm:text-[17px]">
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-900 text-white outline-none font-bold py-2 px-4 rounded mt-4 w-full"
+              className="bg-blue-500 hover:bg-blue-700 dark:bg-blue-700 p-1 dark:hover:bg-blue-900 text-white outline-none font-bold rounded w-full"
             >
               {isLoading ? (
                 <>
@@ -163,15 +194,15 @@ const SignUp = () => {
             <button
               type="reset"
               onClick={() => reset()}
-              className="bg-red-500 hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-900 text-white outline-none font-bold py-2 px-4 rounded mt-4 w-full"
+              className="bg-red-500 hover:bg-red-700 dark:bg-red-700 p-1 dark:hover:bg-red-900 text-white outline-none font-bold rounded w-full"
             >
               Reset
             </button>
             <button
               onClick={() => openDemoAccount()}
-              className="bg-blue-700 hover:bg-blue-900 text-white outline-none font-bold py-2 px-4 rounded mt-4 w-full"
+              className="bg-green-700 hover:bg-green-900 text-white p-1 outline-none transition-all font-bold rounded w-full"
             >
-              Try Demo 
+              Try Demo
             </button>
           </div>
         </form>

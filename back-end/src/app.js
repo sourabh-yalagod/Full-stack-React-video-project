@@ -8,7 +8,7 @@ const app = express();
 dotenv.config({ path: "./.env" });
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: ['http://localhost:5173','http://localhost:3000','https://video-tube-p7aa7ysh4-sourabhs-projects-99.vercel.app'],
     credentials: true,
   })
 );

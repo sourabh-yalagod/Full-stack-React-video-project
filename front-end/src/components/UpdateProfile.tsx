@@ -104,8 +104,8 @@ export default function UpdateProfile() {
     try {
       const res = await axios.get("/api/v1/users/generate-newtokens");
       setTokens(res?.data);
-      localStorage.setItem("accessToken", tokens?.data?.accessToken);
-      localStorage.setItem("refreshToken", tokens?.data?.refreshToken);
+      // localStorage.setItem("accessToken", tokens?.data?.accessToken);
+      // localStorage.setItem("refreshToken", tokens?.data?.refreshToken);
     } catch (error: any) {
       setError(error);
     } finally {

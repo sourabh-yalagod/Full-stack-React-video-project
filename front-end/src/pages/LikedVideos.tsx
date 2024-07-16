@@ -1,18 +1,17 @@
 import axios, { AxiosError } from "axios";
-import { Loader2 } from "lucide-react";
+import { HeartIcon, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Video from "@/utils/Video";
-import APIloading from "@/utils/APIloading";
 import APIError from "@/utils/APIError";
 import VideoNotFound from "@/utils/VideoNotFound";
 import { useHandleLikes } from "@/hooks/HandleLikes";
+import { SkeletonCard } from "@/utils/Skeleton";
 const LikedVideos = () => {
-  const { handleLikes } = useHandleLikes();
+  const { handleLikes , likeLoading } = useHandleLikes();
   const { userId } = useParams();
   const [apiResponse, setApiResponse]: any = useState("");
   const [loading, setLoading]: any = useState(false);
-  const [isLoading, setIsLoading]: any = useState(false);
   const [error, setError]: any = useState("");
 
   // call the API on userId change
@@ -33,16 +32,20 @@ const LikedVideos = () => {
         setLoading(false);
       }
     })();
-  }, [userId]);
+  }, []);
 
+  if (loading) {
+    return <SkeletonCard />;
+  }
+  if (error) {
+    return <APIError />;
+  }
   return (
-    <div className="min-h-screen w-full px-3 bg-white dark:bg-slate-900">
-      {loading && <APIloading />}
-      {error && <APIError />}
-      <h1 className="p-5 underline pt-10 text-2xl sm:text-3xl md:text-4xl text-gray-800 dark:text-white font-semibold">
-        Favorite Videos
-      </h1>
-      <div className="mt-5 w-full min-h-auto grid place-items-center md:mt-16">
+    <div className="min-h-screen w-full px-3 space-y-6 bg-white dark:bg-slate-900">
+      <div className="text-2xl flex gap-2 items-center sm:text-3xl py-5 font-mono text-gray-800 dark:text-slate-400 font-semibold">
+        <HeartIcon className="size-8 border-none animate-pulse"/><p>Favorite Videos :</p>
+      </div>
+      <div className="w-full min-h-auto grid place-items-center">
         {apiResponse.length > 0 ? (
           <ul className="flex flex-wrap items-center w-full gap-2 justify-center">
             {apiResponse.map((video: any) => (
@@ -58,7 +61,7 @@ const LikedVideos = () => {
                   userId={video.Uploader._id}
                   dropMenuBar={[
                     {
-                      name: isLoading ? (
+                      name: likeLoading ? (
                         <Loader2 className="animate-spin" />
                       ) : (
                         "Remove video"

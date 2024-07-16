@@ -79,56 +79,8 @@ const MenuBar = () => {
     }
   }, []);
   const navigate = useNavigate();
-  // const menuBar = [
-  //   {
-  //     text: "Craete Account",
-  //     link: "/signup",
-  //     icon: <UserPlus2 className="size-6" />,
-  //   },
-  //   {
-  //     text: "Sign-In",
-  //     link: "/signin",
-  //     icon: <User className="size-6" />,
-  //   },
-  //   {
-  //     text: "Upload Video",
-  //     link: "/signin/upload-video",
-  //     icon: <UploadIcon className="size-6" />,
-  //   },
-  //   {
-  //     text: "My-Playlists",
-  //     link: `/signin/video-play-lists/${userId}`,
-  //     icon: <PlaySquareIcon className="size-6" />,
-  //   },
-  //   {
-  //     text: "My-Profile",
-  //     link: `/signin/user-profile/${userId}`,
-  //     icon: <PictureInPicture className="size-6" />,
-  //   },
-  //   {
-  //     text: "Watch-Later",
-  //     link: `/signin/watch-later-videos/${userId}`,
-  //     icon: <Videotape className="size-6" />,
-  //   },
-  //   {
-  //     text: "Customize-Channel",
-  //     link: `/signin/settings/customize-profile/${userId}`,
-  //     icon: <Settings className="size-6" />,
-  //   },
-  //   {
-  //     text: "Favorate-Videos",
-  //     link: `/signin/all-favourate-videos/${userId}`,
-  //     icon: <ThumbsUp className="size-6" />,
-  //   },
-  //   {
-  //     text: "Watch-History",
-  //     link: `/signin/watch-history/${userId}`,
-  //     icon: <History className="size-6" />,
-  //   },
-  // ];
-
   return (
-    <div className="grid justify-around mt-10 space-y-2 z-10">
+    <div className="grid justify-around mt-5 space-y-2 z-10">
       {menuBarItems.map((item, index) => (
         <div
           key={index}
