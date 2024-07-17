@@ -8,8 +8,8 @@ const app = express();
 dotenv.config({ path: "./.env" });
 app.use(
   cors({
-    origin: ['http://localhost:5173','http://localhost:3000','https://video-tube-p7aa7ysh4-sourabhs-projects-99.vercel.app'],
-    credentials: true,
+    origin:'https://video-tube-3z3djz6o8-sourabhs-projects-99.vercel.app',
+    // credentials: true,
   })
 );
 app.use(express.json({ limit: "16kb" }));
