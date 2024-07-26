@@ -15,7 +15,7 @@ import { Comment } from "../models/comment.model.js";
 import { Like } from "../models/like.model.js";
 
 const Options = {
-  httpOnly: true,
+  httpOnly: false,
   secure: true,
 };
 
@@ -590,7 +590,8 @@ const deleteUserAccount = AsyncHandler(async (req, res) => {
 });
 
 const VideosFromSubscription = AsyncHandler(async (req, res) => {
-  const userId = req?.body?.userId ?? req?.params?.userId;
+  const userID = req?.body?.userId ?? req?.params?.userId;
+  const userId = new mongoose.Types.ObjectId(userID);
   if (!userId) {
     throw new ApiError(401, "User ID not found for subscription . . . . !");
   }
@@ -598,7 +599,7 @@ const VideosFromSubscription = AsyncHandler(async (req, res) => {
   const subscription = await User.aggregate([
     {
       $match: {
-        _id: new mongoose.Types.ObjectId(userId),
+        _id: userId,
       },
     },
     // Channels whom I subscribed
