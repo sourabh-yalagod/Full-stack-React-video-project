@@ -1,0 +1,1 @@
+import{k as o,f as a,j as t,O as n,x as r}from"./index-DLPQuFyB.js";const i=()=>{o(e=>e.user);const{userId:s}=a();return(s==null?void 0:s.length)>0?t.jsx(n,{}):t.jsx(r,{to:"/signin"})};export{i as default};
