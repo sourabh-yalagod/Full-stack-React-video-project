@@ -25,7 +25,7 @@ const MyProfile = () => {
   const [apiResponse, setApiResponse] = useState("");
 
   const { userId } = useParams();
-
+  
   const handleUserProfile = async () => {
     const response = await axios.get(
       `/api/v1/user-profiles/user-profile/${userId}`

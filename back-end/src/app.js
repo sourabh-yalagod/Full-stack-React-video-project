@@ -8,10 +8,14 @@ const app = express();
 dotenv.config({ path: "./.env" });
 app.use(
   cors({
-    origin:['https://video-tube-3z3djz6o8-sourabhs-projects-99.vercel.app','http://localhost:5173'],
-    // credentials: true,
+    origin: [
+      "https://full-stack-frontend-2pfi.onrender.com",
+      "http://localhost:5173",
+    ],
+    credentials: true, 
   })
 );
+
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 app.use(express.static("public"));
@@ -21,18 +25,18 @@ import userRouter from "./routers/user.router.js";
 import videoRouter from "./routers/video.router.js";
 import commentRouter from "./routers/comment.router.js";
 import likeRouter from "./routers/like.router.js";
-import dashboardRouter from "./routers/dashboard.router.js"
-import profileRouter from "./routers/user-profile.router.js"
-import playListRouter from "./routers/playlist.route.js"
-import homeRouter from './routers/home.router.js'
+import dashboardRouter from "./routers/dashboard.router.js";
+import profileRouter from "./routers/user-profile.router.js";
+import playListRouter from "./routers/playlist.route.js";
+import homeRouter from "./routers/home.router.js";
 
 app.use("/api/v1/users", userRouter);
-app.use("/api/v1/home", homeRouter);  
+app.use("/api/v1/home", homeRouter);
 app.use("/api/v1/videos", videoRouter);
 app.use("/api/v1/comments", commentRouter);
 app.use("/api/v1/likes", likeRouter);
-app.use("/api/v1/user-profiles",profileRouter);
-app.use("/api/v1/video-play-list",playListRouter);
-app.use("/api/v1/dashboard",dashboardRouter);
+app.use("/api/v1/user-profiles", profileRouter);
+app.use("/api/v1/video-play-list", playListRouter);
+app.use("/api/v1/dashboard", dashboardRouter);
 
 export { app };

@@ -33,7 +33,6 @@ const Signin = () => {
   const onSubmit = (data) => {
     setSubmitted(true);
     dispatch(signIn(data));
-    queryClient.invalidateQueries({ queryKey: ["userProfile"] });
   };
   useEffect(() => {
     console.log("signInResponse : ", signInResponse);
@@ -45,8 +44,19 @@ const Signin = () => {
         variant: "default",
         duration: 1000,
       });
-      console.log("here");
-      navigate("/");
+      queryClient.invalidateQueries({
+        queryKey: [
+          "userProfile",
+          "dashboard",
+          "playVideo",
+          "fetchPlaylistVideos",
+          "watchlaterVideos",
+          "fetchPlaylists",
+          "fetchPlaylistVideos",
+          "watchHistoryVideos",
+        ],
+      });
+      navigate(-1);
       reset();
     }
     if (!signInResponse?.success && submitted && !signInLoading) {
