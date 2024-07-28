@@ -6,13 +6,15 @@ import { NavLink, useNavigate } from "react-router-dom";
 import signIn from "@/Redux/ThunkFunction/SignIn";
 import { useToast } from "@/components/ui/use-toast";
 import { useEffect, useState } from "react";
-import { getUser } from "@/Redux/Slice/UserSlice";
+import { useQueryClient } from "@tanstack/react-query";
 
 const Signin = () => {
+  const queryClient = useQueryClient();
   const time = new Date();
   const { toast } = useToast();
+  const [submitted, setSubmitted] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [demoAccount] = useState({ username: "one", password: "one" });
+  // const [demoAccount] = useState({ username: "one", password: "one" });
   const dispatch = useDispatch();
   const {
     user: signInResponse,
@@ -28,39 +30,34 @@ const Signin = () => {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // if (signInResponse) {
-    //   toast({
-    //     title: "User logged in successfully!",
-    //     description: `At ${time.toLocaleTimeString()}`,
-    //     duration: 1700,
-    //   });
-    //   reset();
-    //   dispatch(
-    //     getUser({
-    //       id: signInResponse?.data?.id,
-    //       accessToken: signInResponse?.data?.accessToken,
-    //     })
-    //   );
-    // }
-    // if (signInError) {
-    //   toast({
-    //     title: "User login failed.",
-    //     description: `At ${time.toLocaleTimeString()}`,
-    //     variant: "destructive",
-    //     duration: 1700,
-    //   });
-    // }
-  }, []);
-
   const onSubmit = (data) => {
+    setSubmitted(true);
     dispatch(signIn(data));
-    if(signInResponse){
-      console.log('hi');
-      navigate('/')
-    }
+    queryClient.invalidateQueries({ queryKey: ["userProfile"] });
   };
-
+  useEffect(() => {
+    console.log("signInResponse : ", signInResponse);
+    console.log("signInError : ", signInError);
+    if (signInResponse?.success && submitted && !signInLoading) {
+      toast({
+        title: signInResponse?.message,
+        description: `At ${time.toLocaleTimeString()}`,
+        variant: "default",
+        duration: 1000,
+      });
+      console.log("here");
+      navigate("/");
+      reset();
+    }
+    if (!signInResponse?.success && submitted && !signInLoading) {
+      toast({
+        title: "something went wrong try with proper Credentials",
+        description: `At ${time.toLocaleTimeString()}`,
+        variant: "destructive",
+        duration: 1000,
+      });
+    }
+  }, [signInLoading]);
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-black">
       <div className="text-black shadow-[0px_0px_12px_0px_black] dark:text-white border-2 max-w-[470px] mx-5 w-full rounded-xl p-7 bg-white dark:bg-gray-800">

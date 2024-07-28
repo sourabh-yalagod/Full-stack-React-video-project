@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { registerUser } from "../ThunkFunction/Register";
 import signIn from "../ThunkFunction/SignIn";
 import axios from "axios";
-
+import { useQueryClient } from "@tanstack/react-query";
 const initialState = {
   user: null,
   isPending: false,
@@ -28,6 +28,7 @@ const authSlice = createSlice({
       state.isPending = false;
       state.user = action.payload;
       state.error = null;
+      // useQueryClient().invalidateQueries({ queryKey: ["userProfile"] });
     });
     builder.addCase(registerUser.rejected, (state, action) => {
       state.isPending = false;
