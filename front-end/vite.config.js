@@ -4,12 +4,12 @@ import path from 'path';
 
 export default defineConfig({
   build: {
-    outDir: 'dist', // Ensure the build output directory is 'dist'
+    outDir: 'dist', // Ensure this is the output directory for the build
   },
   server: {
     proxy: {
       '/api': {
-        target: 'https://videotube-auro.onrender.com', // Backend API URL
+        target: 'https://videotube-auro.onrender.com', // Backend URL
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/api/, ''),
@@ -19,8 +19,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'), // Alias for easier imports
+      '@': path.resolve(__dirname, './src'),
     },
   },
 });
-

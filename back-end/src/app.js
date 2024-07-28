@@ -1,8 +1,10 @@
 import express from 'express';
+import path from 'path';
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
 
-// Initialize Express app
+// Create Express app
 const app = express();
 
 // Load environment variables
@@ -22,6 +24,10 @@ app.use(
 // Middleware
 app.use(express.json({ limit: '16kb' }));
 app.use(express.urlencoded({ extended: true, limit: '16kb' }));
+app.use(cookieParser());
+
+// Serve static files from the "dist" directory of the frontend build
+app.use(express.static(path.resolve('../frontend/dist')));
 
 // Import and use routers for API endpoints
 import userRouter from './routers/user.router.js';
@@ -42,5 +48,10 @@ app.use('/api/v1/user-profiles', profileRouter);
 app.use('/api/v1/video-play-list', playListRouter);
 app.use('/api/v1/dashboard', dashboardRouter);
 
-// Export the app for use in server initialization
-export { app };
+// Serve the frontend app for all other routes
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve('../frontend/dist/index.html'));
+});
+
+// Export app
+export {app};
