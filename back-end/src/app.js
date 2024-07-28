@@ -1,15 +1,8 @@
 import express from 'express';
-import path from 'path';
-import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 
-// Set up __dirname
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
+// Initialize Express app
 const app = express();
 
 // Load environment variables
@@ -19,8 +12,8 @@ dotenv.config({ path: './.env' });
 app.use(
   cors({
     origin: [
-      'https://full-stack-frontend-2pfi.onrender.com',
-      'http://localhost:5173',
+      'https://full-stack-frontend-2pfi.onrender.com', // Frontend URL
+      'http://localhost:5173', // Local development URL
     ],
     credentials: true,
   })
@@ -29,10 +22,6 @@ app.use(
 // Middleware
 app.use(express.json({ limit: '16kb' }));
 app.use(express.urlencoded({ extended: true, limit: '16kb' }));
-app.use(cookieParser());
-
-// Serve static files from the "dist" directory
-app.use(express.static(path.join(__dirname, 'dist')));
 
 // Import and use routers for API endpoints
 import userRouter from './routers/user.router.js';
@@ -53,9 +42,5 @@ app.use('/api/v1/user-profiles', profileRouter);
 app.use('/api/v1/video-play-list', playListRouter);
 app.use('/api/v1/dashboard', dashboardRouter);
 
-// Serve the frontend app for all other routes
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-});
-
+// Export the app for use in server initialization
 export { app };
