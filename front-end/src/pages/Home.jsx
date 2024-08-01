@@ -27,7 +27,6 @@ const Home = () => {
   const homePageVideos = async ({ pageParam = 1 }) => {
     const response = await axios.get(
       `/api/v1/home?limit=${limit}&page=${pageParam}`,
-      { withCredentials: true }
     );
     return response?.data;
   };
