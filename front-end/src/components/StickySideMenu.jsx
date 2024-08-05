@@ -6,9 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "./ui/use-toast";
 import { menuBarItems } from "@/utils/MenuBar";
 
-const StickySideMenu = ({ location }) => {
+const StickySideMenu = () => {
   const { signOut, signOutLoading } = useSignOut();
-  const [clicked,setCliked]=useState(false)
+  const [clicked, setCliked] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
   const { userId } = userAuth();
@@ -27,7 +27,10 @@ const StickySideMenu = ({ location }) => {
   }, []);
 
   return (
-    <div onClick={()=>setCliked(true)} className="fixed px-2 space-y-2 group min-w-12 hover:min-w-56 bg-gray-100 transition-all pt-16 h-full left-0 inset-y-0 hidden sm:block z-20 dark:bg-black shadow-[0.1px_0.1px_15px_0.1px_black]">
+    <div
+      onClick={() => setCliked(true)}
+      className="fixed px-2 space-y-2 group min-w-12 hover:min-w-56 bg-gray-100 transition-all pt-16 h-full left-0 inset-y-0 hidden sm:block z-20 dark:bg-black shadow-[0.1px_0.1px_15px_0.1px_black]"
+    >
       {menuBarItems.map((item, index) => (
         <div
           key={index}

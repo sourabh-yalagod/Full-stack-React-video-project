@@ -7,15 +7,17 @@ export default defineConfig({
     outDir: "dist",
   },
   server: {
+    // proxy: {
+    //   "/api": {
+    //     target: "https://videotube-auro.onrender.com", // Backend URL
+    //     changeOrigin: true, // Adjust the origin header
+    //     secure: false, // Set to true if using a valid SSL certificate
+    //     rewrite: (path) => path.replace(/^\/api/, '') // Adjust path if needed
+    //   }
+    // },
     proxy: {
-      "/api": {
-        target: "https://videotube-auro.onrender.com", // Backend URL
-        changeOrigin: true, // Adjust the origin header
-        secure: false, // Set to true if using a valid SSL certificate
-        rewrite: (path) => path.replace(/^\/api/, '') // Adjust path if needed
-      }
+      "/api": "https://videotube-auro.onrender.com",
     },
-    port: 3000, // Optional: Specify a port for the development server
   },
   plugins: [react()],
   resolve: {

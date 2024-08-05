@@ -18,6 +18,8 @@ import {
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 const { userId } = userAuth();
+console.log(userId);
+
 export const menuBarItems = [
   {
     text: "Home",

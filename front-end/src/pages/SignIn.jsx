@@ -35,8 +35,6 @@ const Signin = () => {
     dispatch(signIn(data));
   };
   useEffect(() => {
-    console.log("signInResponse : ", signInResponse);
-    console.log("signInError : ", signInError);
     if (signInResponse?.success && submitted && !signInLoading) {
       toast({
         title: signInResponse?.message,
