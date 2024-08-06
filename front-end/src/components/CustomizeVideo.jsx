@@ -13,6 +13,7 @@ import { Edit, Loader2Icon } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "./ui/use-toast";
+import axiosInstance from "@/Redux/api/axiosInstance";
 const CustomizeVideo = ({ videoId }) => {
   const navigate = useNavigate();
   const [newTitle, setNewTitle] = useState("");
@@ -50,7 +51,7 @@ const CustomizeVideo = ({ videoId }) => {
     formdata.append("title", newTitle);
     formdata.append("description", newDescription);
 
-    const response = await axios.patch(
+    const response = await axiosInstance.patch(
       `/api/v1/videos/update-video/${videoId}`,
       formdata
     );

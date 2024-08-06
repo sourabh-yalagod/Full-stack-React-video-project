@@ -9,6 +9,7 @@ import { useHandleLikes } from "@/hooks/HandleLikes";
 import { SkeletonCard } from "@/utils/Skeleton";
 import { useQuery } from "@tanstack/react-query";
 import { sortVideos } from "@/Services/SortVideos";
+import axiosInstance from "@/Redux/api/axiosInstance";
 
 const LikedVideos = () => {
   const { handleLikes, likeLoading } = useHandleLikes();
@@ -18,7 +19,7 @@ const LikedVideos = () => {
   const [sortType, setSortType] = useState("new");
 
   const handleLikedVideos = async () => {
-    const response = await axios.get(
+    const response = await axiosInstance.get(
       `/api/v1/likes/all-favourate-videos/${userId}`
     );
     return response?.data;

@@ -1,4 +1,5 @@
 import { useToast } from "@/components/ui/use-toast";
+import axiosInstance from "@/Redux/api/axiosInstance";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios, { AxiosError } from "axios";
 import { useState } from "react";
@@ -12,7 +13,7 @@ export const useHandleLikes = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const handleLikes = async ({ userId, videoId }) => {
-    const response = await axios.post(
+    const response = await axiosInstance.post(
       `/api/v1/likes/toggle-like-status/${videoId}`,
       { userId }
     );

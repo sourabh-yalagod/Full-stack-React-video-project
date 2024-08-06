@@ -7,6 +7,7 @@ import APIError from "@/utils/APIError";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { SkeletonCard } from "@/utils/Skeleton";
 import { toast } from "@/components/ui/use-toast"; // Ensure you have a toast notification library
+import axiosInstance from "@/Redux/api/axiosInstance";
 
 const WatchLaterVideos = () => {
   const queryClient = useQueryClient()
@@ -14,7 +15,7 @@ const WatchLaterVideos = () => {
   const [apiResponse, setApiResponse] = useState(null); // Initialize state with null
 
   const watchLaterVideos = async () => {
-    const response = await axios.get(
+    const response = await axiosInstance.get(
       `/api/v1/users/all-watch-later-videos/${userId}`
     );
     return response.data;
@@ -34,7 +35,7 @@ const WatchLaterVideos = () => {
     setApiResponse(watchlaterResponse?.data);
   }, [watchlaterResponse]);
   const removeFromWatchLaterList = async ({ videoId }) => {
-    const response = await axios.patch(
+    const response = await axiosInstance.patch(
       `/api/v1/users/remove-watch-later-video`,
       { videoId }
     );

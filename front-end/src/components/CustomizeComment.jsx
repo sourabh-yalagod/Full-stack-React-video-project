@@ -12,6 +12,7 @@ import { FileEdit, Loader, Loader2Icon, PenIcon } from "lucide-react";
 import axios from "axios";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "./ui/use-toast";
+import axiosInstance from "@/Redux/api/axiosInstance";
 const CustomizeComment = ({ userId, videoId, type, commentId }) => {
   const queryClient = useQueryClient();
   const [comment, setComment] = useState("");
@@ -19,7 +20,7 @@ const CustomizeComment = ({ userId, videoId, type, commentId }) => {
   const time = new Date();
 
   const handleNewComment = async ({ comment, userId }) => {
-    const response = await axios.post(
+    const response = await axiosInstance.post(
       `/api/v1/comments/add-comment/${videoId}`,
       {
         comment: comment || `newComment from User`,
@@ -50,7 +51,7 @@ const CustomizeComment = ({ userId, videoId, type, commentId }) => {
   });
 
   const handleEditComment = async ({ commentId, comment }) => {
-    const response = await axios.patch(
+    const response = await axiosInstance.patch(
       `/api/v1/comments/c/edit-comment/${commentId}`,
       {
         comment: comment || `newComment from User`,
@@ -78,7 +79,7 @@ const CustomizeComment = ({ userId, videoId, type, commentId }) => {
   });
 
   const handleDeleteComment = async (commentId) => {
-    const response = await axios.delete(
+    const response = await axiosInstance.delete(
       `/api/v1/comments/c/delete-comment/${commentId}`
     );
     return response?.data;

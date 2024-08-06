@@ -7,6 +7,7 @@ import { useToast } from "@/components/ui/use-toast";
 import APIError from "@/utils/APIError";
 import { SkeletonCard } from "@/utils/Skeleton";
 import Video from "@/utils/Video";
+import axiosInstance from "@/Redux/api/axiosInstance";
 
 const WatchHistory = () => {
   const { userId } = useParams();
@@ -16,7 +17,7 @@ const WatchHistory = () => {
 
   // Function to handle watch history fetch
   const handleWatchHistoryVideos = async () => {
-    const response = await axios.get(`/api/v1/users/watch-history/${userId}`);
+    const response = await axiosInstance.get(`/api/v1/users/watch-history/${userId}`);
     return response?.data;
   };
 
@@ -38,7 +39,7 @@ const WatchHistory = () => {
 
   // Function to clear watch history
   const clearWatchHistory = async () => {
-    const response = await axios.put(`/api/v1/videos/clear-watchhistory`);
+    const response = await axiosInstance.put(`/api/v1/videos/clear-watchhistory`);
     return response?.data;
   };
 

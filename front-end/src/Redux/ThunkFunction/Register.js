@@ -1,9 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import axiosInstance from "../api/axiosInstance";
 
 export const registerUser = createAsyncThunk("registerUser", async (formData, { rejectWithValue }) => {
   try {
-    const response = await axios.post(`/api/v1/users/register`, formData, {
+    const response = await axiosInstance.post(`/api/v1/users/register`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },

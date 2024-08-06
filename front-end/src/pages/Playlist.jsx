@@ -28,6 +28,7 @@ import APIloading from "@/utils/APIloading";
 import APIError from "@/utils/APIError";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/components/ui/use-toast";
+import axiosInstance from "@/Redux/api/axiosInstance";
 
 const VideoPlaylist = () => {
   const time = new Date();
@@ -40,7 +41,7 @@ const VideoPlaylist = () => {
   const queryClient = useQueryClient();
 
   const fetchAllPlaylist = async () => {
-    const response = await axios.get(
+    const response = await axiosInstance.get(
       `/api/v1/video-play-list/all-play-lists/${userId}`
     );
     return response?.data;
@@ -63,7 +64,7 @@ const VideoPlaylist = () => {
     formdata.append("title", newTitle);
     formdata.append("description", newDescription);
 
-    const response = await axios.post(
+    const response = await axiosInstance.post(
       `/api/v1/video-play-list/create-playlist`,
       formdata
     );
@@ -95,7 +96,7 @@ const VideoPlaylist = () => {
     formdata.append("thumbnail", newThumbnail[0]);
     formdata.append("title", newTitle);
     formdata.append("description", newDescription);
-    const response = await axios.put(
+    const response = await axiosInstance.put(
       `/api/v1/video-play-list/modify-playlist/${playlistId}`,
       formdata
     );
@@ -121,7 +122,7 @@ const VideoPlaylist = () => {
     },
   });
   const handlePlaylistDeletion = async (playlistId) => {
-    const response = await axios.delete(
+    const response = await axiosInstance.delete(
       `/api/v1/video-play-list/delete-playlist/${playlistId}`
     );
     return response?.data;

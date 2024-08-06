@@ -1,4 +1,5 @@
 import { useToast } from "@/components/ui/use-toast";
+import axiosInstance from "@/Redux/api/axiosInstance";
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +14,7 @@ export const useSignOut = () => {
       // Cookies.remove("refreshToken");
       try {
         setSignOutLoading(true);
-        const response = await axios.post("/api/v1/users/logout");
+        const response = await axiosInstance.post(`/api/v1/users/logout`);
         if (response) {
           toast({
             title: "Logg-Out successfull. . . . .!",

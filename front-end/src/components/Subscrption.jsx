@@ -4,13 +4,14 @@ import { Bell, Loader, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "./ui/use-toast";
 import { useState } from "react";
+import axiosInstance from "@/Redux/api/axiosInstance";
 
 const Subscrption = ({ apiResponse }) => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { toast } = useToast();
   const handleSubscription = async ({ ChannelId }) => {
-    const response = await axios.post(`/api/v1/users/handle-subscribers`, {
+    const response = await axiosInstance.post(`/api/v1/users/handle-subscribers`, {
       ChannelId,
     });
     return response?.data;

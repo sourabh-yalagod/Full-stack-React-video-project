@@ -8,12 +8,13 @@ import VideoNotFound from "@/utils/VideoNotFound";
 import Channel from "@/components/Channel";
 import { useQuery } from "@tanstack/react-query";
 import { SkeletonCard } from "@/utils/Skeleton";
+import axiosInstance from "@/Redux/api/axiosInstance";
 
 const Subscription = () => {
   const { userId } = useParams();
 
   const handleSubscription = async () => {
-    const response = await axios.get(
+    const response = await axiosInstance.get(
       `/api/v1/users/subscriptions-status/${userId}`
     );
     return response?.data;

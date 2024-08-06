@@ -6,6 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import userAuth from "@/Services/Auth";
 import { toast } from "@/components/ui/use-toast";
+import axiosInstance from "@/Redux/api/axiosInstance";
 
 const UploadVideo = () => {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ const UploadVideo = () => {
 
   const uploadVideoMutation = useMutation({
     mutationFn: async (formData) => {
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         "/api/v1/videos/upload-video",
         formData,
         {

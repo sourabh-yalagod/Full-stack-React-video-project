@@ -17,6 +17,7 @@ import APIError from "@/utils/APIError";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { SkeletonCard } from "@/utils/Skeleton";
 import { useToast } from "@/components/ui/use-toast";
+import axiosInstance from "@/Redux/api/axiosInstance";
 
 const MyProfile = () => {
   const { toast } = useToast();
@@ -27,7 +28,7 @@ const MyProfile = () => {
   const { userId } = useParams();
   
   const handleUserProfile = async () => {
-    const response = await axios.get(
+    const response = await axiosInstance.get(
       `/api/v1/user-profiles/user-profile/${userId}`
     );
     return response?.data;
@@ -58,7 +59,7 @@ const MyProfile = () => {
   // function to handles the subscription stistics
 
   const handleSubscription = async ({ subscribe, userId }) => {
-    const response = await axios.post(`/api/v1/users/handle-subscribers`, {
+    const response = await axiosInstance.post(`/api/v1/users/handle-subscribers`, {
       subscriptionStatus: subscribe,
       ChannelId: userId,
     });
@@ -86,7 +87,7 @@ const MyProfile = () => {
   });
 
   const deleteVideo = async ({ videoId }) => {
-    const response = await axios.delete(
+    const response = await axiosInstance.delete(
       `/api/v1/videos/delete-video/${videoId}`
     );
     return response?.data;

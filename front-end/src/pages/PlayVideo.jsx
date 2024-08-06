@@ -9,9 +9,10 @@ import VideoFigures from "@/components/VideoFigures";
 import Description from "@/components/Description";
 import Comments from "@/components/Comments";
 import RecommendSession from "@/components/RecommendSession";
+import axiosInstance from "@/Redux/api/axiosInstance";
 
 const fetchVideoData = async (videoId) => {
-  const response = await axios.get(`/api/v1/videos/get-video/${videoId}`);
+  const response = await axiosInstance.get(`/api/v1/videos/get-video/${videoId}`);
   return response.data.data;
 };
 

@@ -1,3 +1,4 @@
+import axiosInstance from "@/Redux/api/axiosInstance";
 import axios, { AxiosError } from "axios";
 import { useState } from "react";
 
@@ -9,7 +10,7 @@ const addToPlaylist = async ({ videoId }) => {
   try {
     setLoading(true);
     setError("");
-    const response = await axios.get(
+    const response = await axiosInstance.get(
       `/api/v1/video-play-list/new-video/${videoId}`
     );
     setApiResponse(response?.data?.data);

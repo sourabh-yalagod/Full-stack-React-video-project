@@ -1,4 +1,5 @@
 import { useToast } from "@/components/ui/use-toast";
+import axiosInstance from "@/Redux/api/axiosInstance";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
@@ -8,7 +9,7 @@ export const useAddToWatchLater = () => {
   const time = new Date();
 
   const addToWatchLater = async (videoId) => {
-    const response = await axios.post(`/api/v1/users/watch-later`, { videoId });
+    const response = await axiosInstance.post(`/api/v1/users/watch-later`, { videoId });
     return response?.data;
   };
   const watchLaterMutation = useMutation({

@@ -1,4 +1,5 @@
 import { useToast } from "@/components/ui/use-toast";
+import axiosInstance from "@/Redux/api/axiosInstance";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
@@ -9,7 +10,7 @@ export const useAddToPlayList = () => {
   const queryClient = useQueryClient();
 
   const addToPlaylist = async ({ videoId, playlistId }) => {
-    const response = await axios.post(
+    const response = await axiosInstance.post(
       `/api/v1/video-play-list/new-video/${videoId}/${playlistId}`
     );
     return response?.data;

@@ -10,6 +10,7 @@ import APIError from "@/utils/APIError";
 import userAuth from "@/Services/Auth";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/components/ui/use-toast";
+import axiosInstance from "@/Redux/api/axiosInstance";
 
 const PlaylistVideos = () => {
   const time = new Date();
@@ -20,7 +21,7 @@ const PlaylistVideos = () => {
   const queryClient = useQueryClient();
 
   const fetchPlaylistVideos = async () => {
-    const response = await axios.get(
+    const response = await axiosInstance.get(
       `/api/v1/video-play-list/all-playlist-videos/${playlistId}`
     );
     return response?.data?.data;
@@ -36,7 +37,7 @@ const PlaylistVideos = () => {
   });
 
   const removeVideoFromPlaylist = async ({ videoId, playlistId }) => {
-    const response = await axios.delete(
+    const response = await axiosInstance.delete(
       `/api/v1/video-play-list/delete-video/${videoId}/${playlistId}`
     );
     return response?.data;

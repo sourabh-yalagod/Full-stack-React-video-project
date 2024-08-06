@@ -1,9 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import axiosInstance from "../api/axiosInstance";
 
 export const signOutUser = createAsyncThunk("auth/signout", async () => {
   try {
-    const response = await axios.post(`/api/v1/users/logout`, {
+    const response = await axiosInstance.post(`/api/v1/users/logout`, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
