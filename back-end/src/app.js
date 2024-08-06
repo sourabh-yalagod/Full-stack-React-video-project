@@ -11,13 +11,7 @@ dotenv.config({ path: "./.env" });
 // Configure CORS
 app.use(
   cors({
-    origin: [
-      "https://vidsphere.onrender.com",
-      "https://full-stack-frontend-2pfi.onrender.com",
-      "http://localhost:5173",
-      "http://localhost:5174",
-      "https://vidsphere-frontend.onrender.com",
-    ],
+    origin: process.env.CORS_ORIGIN,
     credentials: true,
   })
 );
