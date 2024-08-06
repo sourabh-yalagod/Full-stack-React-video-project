@@ -1,8 +1,6 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { registerUser } from "../ThunkFunction/Register";
 import signIn from "../ThunkFunction/SignIn";
-import axios from "axios";
-import { useQueryClient } from "@tanstack/react-query";
 const initialState = {
   user: null,
   isPending: false,
