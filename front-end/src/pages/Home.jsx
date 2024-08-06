@@ -12,6 +12,7 @@ import data from "../utils/Sections.json";
 import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
 import { useInView } from "react-intersection-observer";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "@/Redux/api/axiosInstance.js";
 
 const limit = 5;
 
@@ -25,7 +26,7 @@ const Home = () => {
   const { inView, ref } = useInView();
 
   const homePageVideos = async ({ pageParam = 1 }) => {
-    const response = await axios.get(
+    const response = await axiosInstance.get(
       `/api/v1/home?limit=${limit}&page=${pageParam}`,
     );
     return response?.data;
@@ -56,7 +57,7 @@ const Home = () => {
   const result = videos?.pages.flatMap((page) => page) || [];
 
   const searchVideos = async (searchQuery, option) => {
-    const response = await axios.get(
+    const response = await axiosInstance.get(
       `/api/v1/home/search-video?search=${searchQuery || option}`
     );
 

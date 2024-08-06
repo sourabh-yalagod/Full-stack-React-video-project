@@ -5,11 +5,12 @@ import Performance from "@/components/Performance";
 import { Eye, NotebookPen, ThumbsUp } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { Skeleton } from "@/components/ui/skeleton";
+import axiosInstance from "@/Redux/api/axiosInstance";
 
 const Dashboard = () => {
   const [apiResponse, setApiResponse] = useState("");
   const handleDashboard = async () => {
-    const response = await axios.get(`/api/v1/dashboard`);
+    const response = await axiosInstance.get(`/api/v1/dashboard`);
     return response?.data;
   };
   const [skeletons] = useState(Array(3).fill(null));
