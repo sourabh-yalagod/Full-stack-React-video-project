@@ -1,4 +1,3 @@
-import axios from "axios";
 import { HeartIcon, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";

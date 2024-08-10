@@ -40,7 +40,7 @@ const Video = ({
       console.log("from Here");
       navigate("/signin");
     } else {
-      navigate(`/play-video/${video?._id}`);
+      navigate(`/signin/play-video/${video?._id}`);
       queryClient.invalidateQueries({ queryKey: ["watchHistoryVideos"] });
     }
   }, []);

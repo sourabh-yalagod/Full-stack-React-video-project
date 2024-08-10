@@ -1,10 +1,10 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { useState } from "react";
-export function SkeletonCard({ cards=1 }) {
+export function SkeletonCard({ cards = 1 }) {
   const [array] = useState(new Array(cards).fill(null));
 
   return (
-    <div className="flex flex-1 flex-wrap items-start w-full justify-center gap-3">
+    <div className="flex flex-1 flex-wrap items-start py-12 w-full justify-center gap-3">
       {array.map((_, index) => {
         return (
           <div

@@ -27,7 +27,7 @@ const Home = () => {
 
   const homePageVideos = async ({ pageParam = 1 }) => {
     const response = await axiosInstance.get(
-      `/api/v1/home?limit=${limit}&page=${pageParam}`,
+      `/api/v1/home?limit=${limit}&page=${pageParam}`
     );
     return response?.data;
   };
@@ -128,6 +128,7 @@ const Home = () => {
         </div>
         <div className="w-full min-h-screen py-5">
           {result.length > 0 ? (
+            // className="flex-1 min-w-[320px] max-w-[350px] border-slate-700 border p-2 rounded-xl relative"
             // <ul className="grid w-full gap-2 place-items-center sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             <ul className="grid w-full gap-2 place-items-center sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {(searchQueryResults.length > 0
@@ -139,7 +140,6 @@ const Home = () => {
                   <div
                     ref={lastItem ? ref : null}
                     key={video._id + index}
-                    // className="flex-1 min-w-[320px] max-w-[350px] border-slate-700 border p-2 rounded-xl relative"
                     className="border-slate-700 w-full border p-2 rounded-xl relative max-w-[450px]"
                   >
                     <Video

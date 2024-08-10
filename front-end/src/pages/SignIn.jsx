@@ -7,6 +7,7 @@ import signIn from "@/Redux/ThunkFunction/SignIn";
 import { useToast } from "@/components/ui/use-toast";
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
+import { getUser } from "@/Redux/Slice/UserSlice";
 
 const Signin = () => {
   const queryClient = useQueryClient();
@@ -41,7 +42,10 @@ const Signin = () => {
         description: `At ${time.toLocaleTimeString()}`,
         variant: "default",
         duration: 1000,
-      });
+      }); 
+      dispatch(getUser(signInResponse?.data));
+      // console.log(signInResponse?.data);
+      
       queryClient.invalidateQueries({
         queryKey: [
           "userProfile",

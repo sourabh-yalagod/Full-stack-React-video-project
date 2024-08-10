@@ -19,17 +19,10 @@ export function SideMenuBar() {
       <SheetTrigger asChild>
         <LucideMenu className="text-slate-900 sm:hidden dark:text-white cursor-pointer hover:scale-125 transition-all" />
       </SheetTrigger>
-      <SheetContent className="bg-white bg-opacity-85 w-auto text-slate-900 dark:bg-black border-none dark:text-slate-300">
+      <SheetContent className="bg-white bg-opacity-85 w-fit text-slate-900 dark:bg-black border-none dark:text-slate-300">
         <SheetHeader>
-          <SheetTitle className="flex items-center px-2 pt-6 w-full justify-around text-[15px] sm:text-xl">
-            <div
-              onClick={() => navigate("/")}
-              className="flex gap-1 text-xl cursor-pointer hover:scale-105 transition-all"
-            >
-              <HomeIcon />
-              <p>Home</p>
-            </div>
-            <ThemeButton />
+          <SheetTitle className="flex items-center px-2 py-4 w-full justify-around text-[15px] sm:text-xl">
+            <ThemeButton /><p>Theme</p>
           </SheetTitle>
         </SheetHeader>
         <MenuBar userId={userId} />

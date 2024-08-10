@@ -41,7 +41,6 @@ const MyProfile = () => {
   } = useQuery({
     queryKey: ["userProfile"],
     queryFn: handleUserProfile,
-    staleTime: 5 * 60 * 1000,
   });
   useEffect(() => {
     setApiResponse(userProfileData?.data);
@@ -58,9 +57,9 @@ const MyProfile = () => {
 
   // function to handles the subscription stistics
 
-  const handleSubscription = async ({ subscribe, userId }) => {
+  const handleSubscription = async ({userId }) => {
     const response = await axiosInstance.post(`/api/v1/users/handle-subscribers`, {
-      subscriptionStatus: subscribe,
+      // subscriptionStatus: subscribe,
       ChannelId: userId,
     });
     return response?.data;
@@ -151,7 +150,7 @@ const MyProfile = () => {
           </div>
         </div>
         <button
-          onClick={() => subscriptionMutation.mutate({ subscribe, userId })}
+          onClick={() => subscriptionMutation.mutate({ userId })}
           className={`${
             apiResponse?.isSubscribed ? "bg-gray-700" : "bg-red-600"
           } text-white py-1 px-3 rounded-xl sm:text-xl md:text-2xl`}

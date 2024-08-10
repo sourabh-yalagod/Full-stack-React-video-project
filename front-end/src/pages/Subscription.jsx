@@ -36,32 +36,39 @@ const Subscription = () => {
     return <APIError />;
   }
   return (
-    <div className="min-h-screen px-2 pl-4 w-full py-10 grid place-items-center bg-gray-100 dark:bg-black relative">
-      <p className="text-slate-700 dark:text-slate-300 text-xl py-2 text-center underline sm:text-2xl md:text-3xl lg:text-4xl">
+    <div className="min-h-screen px-2 pl-4 w-full py-10 grid bg-gray-100 dark:bg-black relative">
+      <p className="text-slate-700 dark:text-slate-300 text-xl text-left py-2 sm:text-2xl md:text-3xl lg:text-4xl">
         Channel You Subscribed
       </p>
-      <div className="w-auto justify-center items-center flex mb-5 p-5 overflow-x-auto mx-auto px-5 dark:text-white border border-slate-600 rounded-xl">
-        {apiResponse?.data?.Channels?.map((channel) => (
-          <div key={channel._id}>
-            <Channel
-              username={channel?.Channel?.username ?? ""}
-              fullname={channel?.Channel?.fullname ?? ""}
-              channelId={channel.channel}
-              avatar={
-                channel?.Channel?.avatar ??
-                "https://static.vecteezy.com/system/resources/previews/024/183/502/non_2x/male-avatar-portrait-of-a-young-man-with-a-beard-illustration-of-male-character-in-modern-color-style-vector.jpg"
-              }
-            />
-          </div>
-        ))}
+      <hr className="py-4" />
+      <div className="relative w-full overflow-hidden mb-5 mx-auto dark:text-white rounded-xl">
+        <div className="flex whitespace-nowrap animate-scroll">
+          {apiResponse?.data?.Channels?.map((channel) => (
+            <div key={channel._id} className="flex-shrink-0">
+              <Channel
+                username={channel?.Channel?.username ?? ""}
+                fullname={channel?.Channel?.fullname ?? ""}
+                channelId={channel.channel}
+                avatar={
+                  channel?.Channel?.avatar ??
+                  "https://static.vecteezy.com/system/resources/previews/024/183/502/non_2x/male-avatar-portrait-of-a-young-man-with-a-beard-illustration-of-male-character-in-modern-color-style-vector.jpg"
+                }
+              />
+            </div>
+          ))}
+        </div>
       </div>
+
+      <hr className="py-4" />
+      {/* // className="flex-1 min-w-[320px] max-w-[350px] border-slate-700 border p-2 rounded-xl relative"
+            // <ul className="grid w-full gap-2 place-items-center sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"> */}
       {apiResponse?.data?.videos?.length > 0 ? (
         <ul className="grid w-full gap-2 place-items-center sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {apiResponse?.data?.videos.map((video) => {
             return (
               <div
                 key={video?._id + Math.random()}
-                className="border-slate-700 w-full border p-2 rounded-xl relative max-w-[450px]"
+                className="flex-1 w-full max-w-[450px] border-slate-700 border p-2 rounded-xl relative"
               >
                 <Video
                   video={video?.video}

@@ -44,7 +44,7 @@ const Hero = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent className="mr-10 mt-1 border rounded-[5px] py-2 px-5 space-y-3 dark:bg-black bg-slate-200">
               <DropdownMenuItem
-                onClick={() => navigate(`/signin/settings/settings/${userId}`)}
+                onClick={() => navigate(`/signin/settings/${userId}`)}
                 className="outline-none cursor-pointer text-slate-800 hover:scale-105 transition-all text-[14px]    dark:text-white"
               >
                 Settings

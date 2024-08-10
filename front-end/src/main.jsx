@@ -13,6 +13,7 @@ import { store, persistor } from "./Redux/store";
 import { Skeleton } from "./components/ui/skeleton";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { PersistGate } from "redux-persist/integration/react";
+// import LikedVideos from "./pages/LikedVideos";
 
 // Lazy load the pages
 const Settings = lazy(() => import("./pages/Settings"));
@@ -37,9 +38,9 @@ const router = createBrowserRouter(
     <Route path="/" element={<Layout />}>
       <Route path="" element={<Home />} />
       <Route path="/signup" element={<SignUp />} />
-      <Route path="/play-video/:videoId" element={<PlayVideo />} />
       <Route path="/signin" element={<Signin />} />
       <Route path="/signin" element={<SafeRouters />}>
+        <Route path="play-video/:videoId" element={<PlayVideo />} />
         <Route path="upload-video" element={<UploadVideo />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="user-profile/:userId" element={<MyProfile />} />
@@ -49,10 +50,7 @@ const router = createBrowserRouter(
           element={<PlaylistVideos />}
         />
         <Route path="subscription-status/:userId" element={<Subscription />} />
-        <Route
-          path="settings/settings/:userId"
-          element={<Settings />}
-        />
+        <Route path="settings/:userId" element={<Settings />} />
         <Route path="all-favourate-videos/:userId" element={<LikedVideos />} />
         <Route path="watch-history/:userId" element={<WatchHistory />} />
         <Route

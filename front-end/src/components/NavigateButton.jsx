@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 const NavigateButton= () => {
   const navigate = useNavigate();
   return (
-    <div className="text-slate-900 dark:text-slate-200 flex">
+    <div className="text-slate-900 dark:text-slate-200 flex hidden sm:block">
       <div className="items-center gap-2 flex">
         <button
           onClick={() => navigate(-1)}

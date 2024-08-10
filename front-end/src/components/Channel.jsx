@@ -8,13 +8,15 @@ const Channel = ({
 }) => {
   const navigate = useNavigate();
   // const userId = localStorage.getItem("userId");
+  console.log(channelId);
+  
   return (
     <div
       onClick={() => navigate(`/signin/user-profile/${channelId}`)}
-      className="flex justify-around dark:bg-black mx-2 border-slate-800 dark:border-slate-600 rounded-xl border-[1px] min-w-[150px]  max-w-[350px] items-center p-1"
+      className="flex gap-5 p-2 px-3 justify-around dark:bg-black mx-2 border-slate-800 dark:border-slate-600 rounded-xl border-[1px]  items-center min-w-[130px]"
     >
       <div>
-        <img className="size-10 rounded-full" src={avatar} />
+        <img className="size-11 rounded-full dark:border-white border-[2px] border-black" src={avatar} />
       </div>
       <div className="text-slate-900 grid place-items-center dark:text-white text-[13px]">
         <p className="font-semibold text-[15px]">{fullname}</p>

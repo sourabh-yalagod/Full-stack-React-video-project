@@ -38,7 +38,7 @@ const UploadVideo = () => {
       return response.data;
     },
     onSuccess: (data) => {
-      console.log(data);
+      queryClient.invalidateQueries({ queryKey: ["userProfile"] });
       toast({
         title: "Video uploaded successfully",
         description: data?.message,
@@ -48,7 +48,6 @@ const UploadVideo = () => {
       navigate(`/signin/user-profile/${userId}`);
     },
     onError: (error) => {
-      queryClient.invalidateQueries({ queryKey: ["userProfile"] });
       toast({
         title: "Video uploaing failed . . . . !",
         description: error?.message,
