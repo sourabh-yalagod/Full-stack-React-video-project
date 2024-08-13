@@ -94,7 +94,7 @@ const CustomizeComment = ({ userId, videoId, type, commentId }) => {
         description: "At " + time.toLocaleTimeString(),
         duration: 3000,
       });
-      setComment('')
+      setComment("");
     },
     onError: (error) => {
       toast({
@@ -109,13 +109,13 @@ const CustomizeComment = ({ userId, videoId, type, commentId }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <button className="gap-1 flex items-center p-1">
+        <button className="gap-1 flex items-center p-1 text-slate-700 dark:text-slate-100">
           {type == "new" && <PenIcon className="size-5" />}
           <p>
             {type == "new" ? (
               "Comment"
             ) : (
-              <FileEdit className="size-3 transition-all" />
+              <FileEdit className="size-3 transition-all text-slate-300 dark:text-slate-100" />
             )}
           </p>
         </button>

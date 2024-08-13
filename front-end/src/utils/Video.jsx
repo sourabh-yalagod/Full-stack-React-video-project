@@ -52,7 +52,7 @@ const Video = ({
         <video
           // ref={refe}
           onClick={() => handleClick()}
-          className="w-full object-cover rounded-xl z-20"
+          className="w-full object-cover rounded-xl z-20 scroll-none overflow-hidden"
           poster={video?.thumbnail}
           src={video?.videoFile}
         />

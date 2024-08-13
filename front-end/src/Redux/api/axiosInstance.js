@@ -1,9 +1,12 @@
 import axios from "axios";
 
+// Log the environment variable to ensure it's set correctly
+console.log(import.meta.env.VITE_BASE_URL);
+
+// Use the environment variable for the base URL
 const axiosInstance = axios.create({
-  // baseURL: "http://localhost:8000", 
-  baseURL: "https://videotube-auro.onrender.com", 
+  baseURL: import.meta.env.VITE_BASE_URL || 'https://videotube-auro.onrender.com',
   withCredentials: true,
 });
-  
+
 export default axiosInstance;

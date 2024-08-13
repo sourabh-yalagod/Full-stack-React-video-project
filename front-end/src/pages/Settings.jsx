@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-
+import Cookies from "js-cookie";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import axiosInstance from "@/Redux/api/axiosInstance";
@@ -36,10 +36,13 @@ export default function Settings() {
   const { toast } = useToast();
 
   const handleChangePassword = async ({ oldPassword, newPassword }) => {
-    const response = await axiosInstance.patch("/api/v1/users/change-password", {
-      oldPassword: oldPassword,
-      newPassword: newPassword,
-    });
+    const response = await axiosInstance.patch(
+      "/api/v1/users/change-password",
+      {
+        oldPassword: oldPassword,
+        newPassword: newPassword,
+      }
+    );
     return response?.data;
   };
   const passwordChangeMutation = useMutation({
@@ -126,18 +129,22 @@ export default function Settings() {
   });
 
   const handleChangeNewToken = async () => {
-    const response = await axiosInstance.get("/api/v1/users/generate-newtokens");
+    const response = await axiosInstance.get(
+      "/api/v1/users/generate-newtokens"
+    );
     return response?.data;
   };
   const newTokenMutation = useMutation({
     mutationFn: handleChangeNewToken,
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast({
         title: "New Auth token where generated successfully Successfully",
         description: `At ${time.toLocaleTimeString()} \n ${time.toLocaleDateString()}`,
         variant: "default",
         duration: 2000,
       });
+      const token = data.data.accessToken;
+      Cookies.set("accessToken", token);
     },
     onError: () => {
       toast({

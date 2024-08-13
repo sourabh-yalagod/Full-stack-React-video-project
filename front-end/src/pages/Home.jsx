@@ -90,7 +90,7 @@ const Home = () => {
       <BottomNavBar />
       <div className="min-h-screen w-full p-2 grid place-items-center transition-all">
         <div className="w-full grid place-items-center gap-2 md:grid-cols-2">
-          <div className="flex w-full max-w-sm overflow-scroll p-1 gap-1 justify-around rounded-xl items-center">
+          <div className="flex w-full max-w-sm overflow-hidden scroll-none p-1 gap-1 justify-around rounded-xl items-center">
             {data?.Niches?.map((niche) => (
               <p
                 key={niche.id}

@@ -17,7 +17,7 @@ const Comments = ({ apiResponse, videoId }) => {
         </h1>
       </div>
       {!(apiResponse.allComments?.length > 0) ? (
-        <div className="flex w-full justify-center gap-2 text-slate-500 dark:text-slate-400 items-center">
+        <div className="flex w-full justify-center gap-2 text-slate-900 dark:text-slate-100 items-center">
           No Comments......
           <MessageCircleHeartIcon />
         </div>
