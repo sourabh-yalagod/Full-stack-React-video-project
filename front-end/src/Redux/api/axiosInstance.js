@@ -1,11 +1,17 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 
 // Log the environment variable to ensure it's set correctly
 console.log(import.meta.env.VITE_BASE_URL);
 
-// Use the environment variable for the base URL
+const token = Cookies.get('token')
+console.log(token);
+
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL || 'https://videotube-auro.onrender.com',
+  headers:{
+    Authorization: `Bearer ${token}`
+  },
   // baseURL: 'http://localhost:8000',
   withCredentials: true,
 });
