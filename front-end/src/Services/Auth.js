@@ -2,7 +2,7 @@ import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 
 const userAuth = () => {
-  const accessToken = Cookies.get("accessToken");
+  const accessToken = Cookies.get("token");
   if (!accessToken) {
     return {
       userId: null,

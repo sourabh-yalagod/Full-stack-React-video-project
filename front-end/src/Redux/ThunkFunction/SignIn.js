@@ -8,7 +8,7 @@ const signIn = createAsyncThunk("signIn", async (formData) => {
       withCredentials: true,
     });
     const token = response?.data?.data?.accessToken;
-    Cookies.set("accessToken", token);
+    Cookies.set("token", token);
     console.log("response?.data?.data?.id : ",response?.data?.data?.id);
     
     return response.data;

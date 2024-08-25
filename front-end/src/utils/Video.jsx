@@ -119,7 +119,7 @@ const Video = ({
       </DropdownMenu>
 
       {/* Content displayed just below the video */}
-      <div className="flex items-center gap-1 w-full overflow-scroll mt-2 relative">
+      <div className="flex items-center gap-1 w-full overflow-none mt-2 relative">
         <img
           onClick={() =>
             navigate(`/signin/user-profile/${userId || video?.owner?._id}`)

@@ -5,6 +5,7 @@ const SafeRouters = () => {
   const getUserId = useSelector((state) => state?.user);
 
   const { userId } = userAuth();
+  
   const isLoggedIn = userId?.length > 0;
   return isLoggedIn ? <Outlet /> : <Navigate to="/signin" />;
 };
