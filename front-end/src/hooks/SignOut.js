@@ -10,7 +10,6 @@ export const useSignOut = () => {
   const [signOutLoading, setSignOutLoading] = useState(false);
   const signOut = () => {
     (async () => {
-      // Cookies.remove("accessToken");
       // Cookies.remove("refreshToken");
       try {
         setSignOutLoading(true);
@@ -19,15 +18,16 @@ export const useSignOut = () => {
           toast({
             title: "Logg-Out successfull. . . . .!",
             description: response.data.message,
-            duration:1500
+            duration: 1500,
           });
+          Cookies.remove("token");
         }
       } catch (error) {
         toast({
           title: "Logg-Out Failed. . . . .!",
           description: error.message,
           variant: "destructive",
-          duration:1500
+          duration: 1500,
         });
       }
     })();
