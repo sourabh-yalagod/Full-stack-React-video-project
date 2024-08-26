@@ -8,8 +8,8 @@ const token = Cookies.get('token')
 console.log(token);
 
 const axiosInstance = axios.create({
-  // baseURL: import.meta.env.VITE_BASE_URL || 'https://videotube-auro.onrender.com',
-  baseURL:'http://localhost:8000',
+  baseURL: import.meta.env.VITE_BASE_URL || 'https://videotube-auro.onrender.com',
+  // baseURL:'http://localhost:8000',
   headers:{
     Authorization: `Bearer ${token}`
   },
