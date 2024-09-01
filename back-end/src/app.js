@@ -10,14 +10,20 @@ dotenv.config({ path: "./.env" });
 // Configure CORS
 app.use(
   cors({
-    origin: [process.env.CORS_ORIGIN,'http://localhost:5173'],
+    origin: [
+      process.env.CORS_ORIGIN,
+      process.env.LOCALHOST,
+      process.env.DEPLOYED1,
+      process.env.DEPLOYED2,
+      process.env.DEPLOYED3,
+    ],
     credentials: true,
   })
 );
 
 app.use(express.json({ limit: "16kb" }));
 app.use(express.urlencoded({ extended: true, limit: "16kb" }));
-app.use(express.static("public"))
+app.use(express.static("public"));
 app.use(cookieParser());
 
 import userRouter from "./routers/user.router.js";
