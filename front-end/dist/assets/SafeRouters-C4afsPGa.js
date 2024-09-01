@@ -1,1 +1,0 @@
-import{l as n,g as r,j as e,O as t,y as g}from"./index-CI7g5s02.js";const a=()=>{n(o=>o==null?void 0:o.user);const{userId:s}=r();return(s==null?void 0:s.length)>0?e.jsx(t,{}):e.jsx(g,{to:"/signin"})};export{a as default};
