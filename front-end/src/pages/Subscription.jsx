@@ -1,18 +1,16 @@
-import axios from "axios";
 import { useParams } from "react-router-dom";
 import Video from "@/utils/Video";
-import APIloading from "@/utils/APIloading";
 import APIError from "@/utils/APIError";
 import VideoNotFound from "@/utils/VideoNotFound";
 
 import Channel from "@/components/Channel";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { SkeletonCard } from "@/utils/Skeleton";
 import axiosInstance from "@/Redux/api/axiosInstance";
 
 const Subscription = () => {
   const { userId } = useParams();
-
+  const queryClient = useQueryClient()
   const handleSubscription = async () => {
     const response = await axiosInstance.get(
       `/api/v1/users/subscriptions-status/${userId}`
@@ -26,7 +24,7 @@ const Subscription = () => {
   } = useQuery({
     queryKey: ["subscription"],
     queryFn: handleSubscription,
-    staleTime: 5 * 60 * 1000,
+    // 
   });
 
   if (loading) {
@@ -60,8 +58,6 @@ const Subscription = () => {
       </div>
 
       <hr className="py-4" />
-      {/* // className="flex-1 min-w-[320px] max-w-[350px] border-slate-700 border p-2 rounded-xl relative"
-            // <ul className="grid w-full gap-2 place-items-center sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"> */}
       {apiResponse?.data?.videos?.length > 0 ? (
         <ul className="grid w-full gap-2 place-items-center sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {apiResponse?.data?.videos.map((video) => {

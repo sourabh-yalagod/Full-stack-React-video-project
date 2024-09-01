@@ -31,7 +31,7 @@ const LikedVideos = () => {
   } = useQuery({
     queryKey: ["likedVideos"],
     queryFn: handleLikedVideos,
-    staleTime: 5 * 60 * 1000,
+    
   });
 
   useEffect(() => {

@@ -80,19 +80,17 @@ const UploadVideo = () => {
               Video-Tube
             </p>
           </div>
-          <h1 className="text-xl flex gap-3 items-center font-semibold cursor-pointer animate-pulse">
+          <h1 className="sm:text-xl flex gap-3 items-center font-semibold cursor-pointer animate-pulse">
             <Video />
             Upload Video
           </h1>
         </div>
         <form
-          className="space-y-7 w-full grid"
+          className="space-y-6 w-full grid text-[12px] sm:text-[16px]"
           onSubmit={handleSubmit(onSubmit)}
         >
           <div className="flex justify-between relative">
-            <label htmlFor="title" className="text-[14px] sm:text-[16px]">
-              Title:
-            </label>
+            <label htmlFor="title">Title:</label>
             <input
               type="text"
               placeholder="Title"
@@ -108,16 +106,14 @@ const UploadVideo = () => {
           </div>
 
           <div className="grid justify-between relative">
-            <label htmlFor="description" className="text-[14px] sm:text-[16px]">
-              Description:
-            </label>
+            <label htmlFor="description">Description:</label>
             <textarea
               id="description"
               placeholder="Description..."
               {...register("description", {
                 required: "Description is required",
               })}
-              className="bg-transparent border-b-2 outline-none w-full min-w-[300px] text-[15px] border-gray-700 dark:border-gray-500 rounded-sm"
+              className="bg-transparent border-[1px] p-1 outline-none min-w-[320px] text-[12px] border-gray-700 dark:border-gray-500 rounded-sm"
             />
             {errors.description && (
               <span className="text-red-500 absolute -bottom-5 text-[11px] z-20">
@@ -127,9 +123,7 @@ const UploadVideo = () => {
           </div>
 
           <div className="flex justify-between relative">
-            <label htmlFor="thumbnail" className="text-[14px] sm:text-[16px]">
-              Thumbnail:
-            </label>
+            <label htmlFor="thumbnail">Thumbnail:</label>
             <input
               type="file"
               id="thumbnail"
@@ -144,9 +138,7 @@ const UploadVideo = () => {
           </div>
 
           <div className="flex justify-between relative">
-            <label htmlFor="videoFile" className="text-[14px] sm:text-[16px]">
-              Video File:
-            </label>
+            <label htmlFor="videoFile">Video File:</label>
             <input
               type="file"
               id="videoFile"

@@ -5,7 +5,6 @@ import Cookies from "js-cookie";
 console.log(import.meta.env.VITE_BASE_URL);
 
 const token = Cookies.get('token')
-console.log(token);
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL || 'https://videotube-auro.onrender.com',

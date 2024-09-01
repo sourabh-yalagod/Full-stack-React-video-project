@@ -29,7 +29,7 @@ const WatchHistory = () => {
   } = useQuery({
     queryKey: ["watchHistoryVideos"],
     queryFn: handleWatchHistoryVideos,
-    staleTime: 5 * 60 * 1000,
+    
   });
 
   // Update apiResponse when watchhistoryData changes

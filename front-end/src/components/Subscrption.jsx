@@ -11,16 +11,20 @@ const Subscrption = ({ apiResponse }) => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const handleSubscription = async ({ ChannelId }) => {
-    const response = await axiosInstance.post(`/api/v1/users/handle-subscribers`, {
-      ChannelId,
-    });
+    const response = await axiosInstance.post(
+      `/api/v1/users/handle-subscribers`,
+      {
+        ChannelId,
+      }
+    );
     return response?.data;
   };
   const subscriptionMutation = useMutation({
     mutationFn: handleSubscription,
     onSuccess: (data) => {
-      console.log(data);
-      queryClient.invalidateQueries({ queryKey: ["playVideo"] });
+      queryClient.invalidateQueries({
+        queryKey: ["playVideo", "subscription"],
+      });
       toast({
         title: "Subscription status Toggled succesffuly . . . .!",
         description: `At  + ${time.toLocaleTimeString()}`,
@@ -34,7 +38,6 @@ const Subscrption = ({ apiResponse }) => {
         variant: "destructive",
         duration: 3000,
       });
-      console.log('error');
     },
   });
   return (
@@ -57,9 +60,7 @@ const Subscrption = ({ apiResponse }) => {
           </div>
         </div>
 
-        <div
-          className="flex items-center"
-        >
+        <div className="flex items-center">
           <button
             onClick={() =>
               subscriptionMutation.mutate({ ChannelId: apiResponse?.owner })

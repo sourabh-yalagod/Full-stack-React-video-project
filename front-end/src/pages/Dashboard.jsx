@@ -17,7 +17,7 @@ const Dashboard = () => {
   const { data, isPending, error } = useQuery({
     queryKey: ["dashboard"],
     queryFn: handleDashboard,
-    staleTime: 5 * 60 * 1000,
+    
     onSuccess: (data) => {
       console.log("data : ", data);
     },
