@@ -23,7 +23,7 @@ export const useHandleLikes = () => {
   const likeMutation = useMutation({
     mutationFn: handleLikes,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["playVideo"] });
+      queryClient.invalidateQueries({ queryKey: ["playVideo", "likedVideos"] });
       toast({
         title: "Like handle Successfully . . . . .!",
         duration: 2000,
