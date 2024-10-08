@@ -9,23 +9,29 @@ export const useSignOut = () => {
   const [signOutLoading, setSignOutLoading] = useState(false);
   const signOut = () => {
     (async () => {
-      // Cookies.remove("refreshToken");
       try {
         setSignOutLoading(true);
-        const response = await axiosInstance.post(`/api/v1/users/logout`);
-        if (response) {
+        if (localStorage.getItem("token")) {
+          const response = await axiosInstance.post(`/api/v1/users/logout`);
+          if (response) {
+            toast({
+              title: "Logg-Out successfull. . . . .!",
+              description: response.data.message,
+              duration: 1500,
+            });
+          }
+          localStorage.removeItem("token");
+        } else {
           toast({
-            title: "Logg-Out successfull. . . . .!",
-            description: response.data.message,
+            title: "user has already logged-out.",
+            description: error.message,
+            variant: "destructive",
             duration: 1500,
           });
         }
-        console.log('-------');
-        
-        localStorage.clear("token");
       } catch (error) {
         toast({
-          title: "Logg-Out Failed. . . . .!",
+          title: "Internal server Error",
           description: error.message,
           variant: "destructive",
           duration: 1500,

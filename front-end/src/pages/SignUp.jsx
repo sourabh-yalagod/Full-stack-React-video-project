@@ -79,7 +79,27 @@ const SignUp = () => {
               </span>
             )}
           </div>
-
+          {/* Email */}
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              Email
+            </label>
+            <input
+              type="email"
+              placeholder="email"
+              id="email"
+              {...register("email", { required: "Email is required" })}
+              className="mt-1 block w-full p-1 pl-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:focus:ring-indigo-500 dark:focus:border-indigo-500 sm:text-sm"
+            />
+            {errors.email && (
+              <span className="text-red-500 text-sm">
+                {errors.email.message}
+              </span>
+            )}
+          </div>
           {/* Username */}
           <div>
             <label
@@ -98,6 +118,28 @@ const SignUp = () => {
             {errors.username && (
               <span className="text-red-500 text-sm">
                 {errors.username.message}
+              </span>
+            )}
+          </div>
+          {/* Password */}
+
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
+            >
+              Password
+            </label>
+            <input
+              type="password"
+              placeholder="password"
+              id="password"
+              {...register("password", { required: "Password is required" })}
+              className="mt-1 block w-full p-1 pl-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:focus:ring-indigo-500 dark:focus:border-indigo-500 sm:text-sm"
+            />
+            {errors.password && (
+              <span className="text-red-500 text-sm">
+                {errors.password.message}
               </span>
             )}
           </div>
@@ -144,50 +186,6 @@ const SignUp = () => {
             {errors.coverImage && (
               <span className="text-red-500 text-sm">
                 {errors.coverImage.message}
-              </span>
-            )}
-          </div>
-
-          {/* Password */}
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              Password
-            </label>
-            <input
-              type="password"
-              placeholder="password"
-              id="password"
-              {...register("password", { required: "Password is required" })}
-              className="mt-1 block w-full p-1 pl-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:focus:ring-indigo-500 dark:focus:border-indigo-500 sm:text-sm"
-            />
-            {errors.password && (
-              <span className="text-red-500 text-sm">
-                {errors.password.message}
-              </span>
-            )}
-          </div>
-
-          {/* Email */}
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300"
-            >
-              Email
-            </label>
-            <input
-              type="email"
-              placeholder="email"
-              id="email"
-              {...register("email", { required: "Email is required" })}
-              className="mt-1 block w-full p-1 pl-3 bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 dark:focus:ring-indigo-500 dark:focus:border-indigo-500 sm:text-sm"
-            />
-            {errors.email && (
-              <span className="text-red-500 text-sm">
-                {errors.email.message}
               </span>
             )}
           </div>

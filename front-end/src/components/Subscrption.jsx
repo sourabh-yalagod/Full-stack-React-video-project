@@ -19,11 +19,12 @@ const Subscrption = ({ apiResponse }) => {
     );
     return response?.data;
   };
+  
   const subscriptionMutation = useMutation({
     mutationFn: handleSubscription,
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: ["playVideo", "subscription"],
+        queryKey: ["playVideo"],
       });
       toast({
         title: "Subscription status Toggled succesffuly . . . .!",

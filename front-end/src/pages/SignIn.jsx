@@ -44,7 +44,8 @@ const Signin = () => {
         duration: 1000,
       }); 
       dispatch(getUser(signInResponse?.data));
-      // console.log(signInResponse?.data);
+      console.log(signInResponse?.data);
+      
       
       queryClient.invalidateQueries({
         queryKey: [
@@ -167,6 +168,13 @@ const Signin = () => {
               className="bg-red-500 hover:bg-red-700 dark:bg-red-700 p-1 dark:hover:bg-red-900 text-white outline-none font-bold rounded w-full"
             >
               Reset
+            </button>
+            <button
+              type="reset"
+              onClick={() => navigate('/')}
+              className="bg-green-500 hover:bg-green-700 dark:bg-green-700 p-1 dark:hover:bg-green-900 text-white outline-none font-bold rounded w-full"
+            >
+              Home
             </button>
             {/* <button
               onClick={(e) => openDemoAccount(demoAccount)}

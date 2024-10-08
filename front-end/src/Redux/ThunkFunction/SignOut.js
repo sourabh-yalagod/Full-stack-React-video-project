@@ -9,6 +9,7 @@ export const signOutUser = createAsyncThunk("auth/signout", async () => {
         "Content-Type": "multipart/form-data",
       },
     });
+    localStorage.removeItem('token')
     return response.data;
   } catch (error) {
     console.log(error?.message);

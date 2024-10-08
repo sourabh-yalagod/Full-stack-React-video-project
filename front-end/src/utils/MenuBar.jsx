@@ -96,23 +96,12 @@ const MenuBar = ({ userId }) => {
         variant: "default",
         duration: 2200,
       });
-      navigate("/signin");
+      // navigate("/signin");
     }
   }, []);
   const navigate = useNavigate();
   return (
     <div className="grid justify-around space-y-[1px] z-10">
-      {/* {menuBarItems.map((item, index) => (
-        <div
-          key={index}
-          className="flex relative items-center gap-2 p-2 cursor-pointer rounded-xl  transition-transform transform hover:scale-105 hover:bg-slate-300 dark:hover:bg-slate-950"
-          onClick={() => navigate(item?.link)}
-        >
-          {item?.icon}
-          <span>{item?.text}</span>
-          <hr className="w-full bg-white absolute bottom-0 inset-x-0" />
-        </div>
-      ))} */}
       <div
         className="flex relative items-center gap-2 p-2 cursor-pointer rounded-xl  transition-transform transform hover:scale-105 hover:bg-slate-300 dark:hover:bg-slate-950"
         onClick={() => navigate("/")}

@@ -37,7 +37,6 @@ const Video = ({
           "if you signin then you will be authenticated to all the pages and Routes so Please sign-in and Enjoy . . . . !",
         duration: 4000,
       });
-      console.log("from Here");
       navigate("/signin");
     } else {
       navigate(`/signin/play-video/${video?._id}`);

@@ -22,7 +22,8 @@ export function SideMenuBar() {
       <SheetContent className="bg-white bg-opacity-85 w-fit text-slate-900 dark:bg-black border-none dark:text-slate-300">
         <SheetHeader>
           <SheetTitle className="flex items-center px-2 py-4 w-full justify-around text-[15px] sm:text-xl">
-            <ThemeButton /><p>Theme</p>
+            <ThemeButton />
+            <p>Theme</p>
           </SheetTitle>
         </SheetHeader>
         <MenuBar userId={userId} />
