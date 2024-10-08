@@ -1,7 +1,5 @@
 import { useToast } from "@/components/ui/use-toast";
 import axiosInstance from "@/Redux/api/axiosInstance";
-import axios from "axios";
-import Cookies from "js-cookie";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -22,7 +20,9 @@ export const useSignOut = () => {
             duration: 1500,
           });
         }
-        Cookies.remove('token')
+        console.log('-------');
+        
+        localStorage.clear("token");
       } catch (error) {
         toast({
           title: "Logg-Out Failed. . . . .!",

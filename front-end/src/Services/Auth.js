@@ -1,27 +1,27 @@
-import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
 
 const userAuth = () => {
-  const accessToken = Cookies.get("token");
-  if (!accessToken) {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
     return {
       userId: null,
-      token: accessToken,
-      message: "AccessToken not Found in Cookies",
+      token: token,
+      message: "token not Found in Cookies",
     };
   }
-  const decodedToken = jwtDecode(accessToken);
-  const exepiryTime = decodedToken.exp;
+  const decodedToken = jwtDecode(token);
+  const exepiryTime = decodedToken?.exp;
   const isexpired = exepiryTime * 1000 - Date.now() < 0;
   if (!isexpired) {
     return {
       userId: decodedToken?._id,
-      token: accessToken,
+      token: token,
       message: "Token is valid and User is Authenticated",
     };
   }
   return {
-    token: accessToken,
+    token: token,
     message:
       "Token has Expired please sign-in regenerate new Token for authentication",
   };

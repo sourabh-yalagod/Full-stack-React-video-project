@@ -58,7 +58,7 @@ const Signin = () => {
           "watchHistoryVideos",
         ],
       });
-      navigate(-1);
+      navigate('/');
       reset();
     }
     if (!signInResponse?.success && submitted && !signInLoading) {

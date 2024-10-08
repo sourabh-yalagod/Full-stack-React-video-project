@@ -68,7 +68,7 @@ const Video = ({
           <EllipsisVertical className="outline-none" />
         </DropdownMenuTrigger>
         <DropdownMenuContent className="text-gray-900 dark:text-white text-[13px] grid space-y-1 border-gray-500 dark:border-slate-600 bg-opacity-50 cursor-pointer rounded-[7px] bg-gray-100 dark:bg-black text-center w-fit mr-8 px-0 py-1">
-          {dropMenuBar.map((field, index) => (
+          {dropMenuBar?.map((field, index) => (
             <div
               key={index}
               className="px-2 py-1 m-1 grid place-items-center rounded-[9px] transition-all pb-2 hover:bg-gray-500 dark:hover:bg-slate-800 dark:text-slate-400"

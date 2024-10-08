@@ -9,7 +9,8 @@ const signIn = createAsyncThunk("signIn", async (formData) => {
     });
     const token = response?.data?.data?.accessToken;
     Cookies.set("token", token);
-    console.log("response?.data?.data?.id : ",response?.data?.data?.id);
+    localStorage.setItem("token", token);
+    console.log("response?.data?.data?.id : ", response?.data?.data?.id);
     
     return response.data;
   } catch (error) {

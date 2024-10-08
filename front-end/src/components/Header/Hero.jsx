@@ -8,7 +8,13 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
-import { RefreshCw, UserCircle, UserMinus, UserPlus } from "lucide-react";
+import {
+  RefreshCw,
+  UserCircle,
+  UserMinus,
+  UserPlus,
+  Video,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import NavigateButton from "../NavigateButton";
 
@@ -17,19 +23,14 @@ const Hero = () => {
   const { signOut } = useSignOut();
   const { userId } = userAuth();
   return (
-    <div className="w-full px-5 py-2 z-30 shadow-[1px_1px_25px_0.2px_black] flex justify-between items-start text-slate-800 dark:bg-black dark:text-slate-500 relative">
+    <div className="w-full px-5 pt-5 z-30 shadow-[1px_1px_25px_0.2px_black] flex justify-between items-start text-slate-800 dark:bg-black dark:text-slate-500 relative">
       <div className="flex items-center gap-3">
         <SideMenuBar />
         <div
           onClick={() => navigate("/")}
-          className="flex gap-2 items-center justify-around cursor-pointer"
+          className="flex gap-2 items-center cursor-pointer"
         >
-          <img
-            className="size-9 rounded-full"
-            src={
-              "https://lh3.googleusercontent.com/rormhrw_yZt2v1OKZBaiFCSt8b8QU02kEKiuilfgnpGkOMQd87xm7b7SyIlGoHsL18M"
-            }
-          />
+          <Video />
           <p className="text-slate-800 text-xl tracking-widest font-bold dark:text-white">
             Video-Tube
           </p>

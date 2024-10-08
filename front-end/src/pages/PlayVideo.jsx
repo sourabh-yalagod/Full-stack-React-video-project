@@ -35,7 +35,7 @@ const PlayVideo = () => {
   const apiResponse = data;
   return (
     <div className="w-full grid h-auto lg:flex lg:gap-4 px-1 sm:pl-4 lg:grid-cols-2 text-slate-700 dark:text-slate-300 bg-white dark:bg-black pb-10 mx-auto">
-      <div className="lg:w-full space-y-2">
+      <div className="lg:w-full py-5 space-y-2">
         <VideoController apiResponse={apiResponse} />
         <Subscrption apiResponse={apiResponse} />
         <VideoFigures apiResponse={apiResponse} videoId={videoId} />
