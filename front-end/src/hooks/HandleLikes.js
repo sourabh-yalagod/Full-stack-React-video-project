@@ -1,15 +1,8 @@
 import { useToast } from "@/components/ui/use-toast";
 import axiosInstance from "@/Redux/api/axiosInstance";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios, { AxiosError } from "axios";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 export const useHandleLikes = () => {
-  const navigate = useNavigate();
-  const [likeResponse, setLikeResponse] = useState("");
-  const [likeError, setLikeError] = useState("");
-  const [likeLoading, setLikeLoading] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const handleLikes = async ({ userId, videoId }) => {
@@ -23,7 +16,7 @@ export const useHandleLikes = () => {
   const likeMutation = useMutation({
     mutationFn: handleLikes,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["playVideo", "likedVideos"] });
+      queryClient.invalidateQueries({ queryKey: ["playVideo"] });
       toast({
         title: "Like handle Successfully . . . . .!",
         duration: 2000,

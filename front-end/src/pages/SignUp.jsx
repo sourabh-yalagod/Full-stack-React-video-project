@@ -38,8 +38,10 @@ const SignUp = () => {
   useEffect(() => {
     if (user && !error) {
       navigate("/signin");
+      dispatch(registerUser(''));
     }
-  }, [user, error, navigate]);
+
+  }, [user, error]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 sm:px-6 lg:px-8">

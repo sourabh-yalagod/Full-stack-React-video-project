@@ -9,8 +9,6 @@ const userSlice = createSlice({
   },
   reducers: {
     getUser: (state, action) => {
-      console.log("action.payload : ",action.payload);
-      
       state.id = action.payload.id;
       state.token = action.payload.accessToken;
     },

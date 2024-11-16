@@ -138,7 +138,7 @@ const CustomizeComment = ({ userId, videoId, type, commentId }) => {
               placeholder="comment . . . . . ."
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              className="w-full min-w-[200px] border-gray-500  bg-transparent border-[1px] rounded-xl outline-none p-1 pl-2"
+              className="w-full min-w-[200px] border-gray-500 bg-transparent rounded-xl outline-none p-1 pl-2"
             />
           </div>
         </div>

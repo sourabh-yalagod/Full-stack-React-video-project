@@ -133,7 +133,7 @@ const MyProfile = () => {
       <div className="w-full flex justify-between md:px-20 lg:px-28 my-5 items-center px-5 gap-3 border-[0.2px] border-slate-700 rounded-xl p-3">
         <div className="flex items-center mt-1 justify-around gap-3">
           <div
-            className="size-[80px] sm:size-[90px] md:size-[95px] rounded-full border-[2px] border-white dark:border-slate-800"
+            className="size-[80px] bg-center bg-cover sm:size-[90px] md:size-[95px] rounded-full border-[2px] border-white dark:border-slate-800"
             style={{ backgroundImage: `url(${apiResponse?.avatar})` }}
           />
           <div className="grid">

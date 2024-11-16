@@ -42,24 +42,14 @@ const Signin = () => {
         description: `At ${time.toLocaleTimeString()}`,
         variant: "default",
         duration: 1000,
-      }); 
+      });
       dispatch(getUser(signInResponse?.data));
       console.log(signInResponse?.data);
-      
-      
+
       queryClient.invalidateQueries({
-        queryKey: [
-          "userProfile",
-          "dashboard",
-          "playVideo",
-          "fetchPlaylistVideos",
-          "watchlaterVideos",
-          "fetchPlaylists",
-          "fetchPlaylistVideos",
-          "watchHistoryVideos",
-        ],
+        queryKey: ["userProfile"],
       });
-      navigate('/');
+      navigate("/");
       reset();
     }
     if (!signInResponse?.success && submitted && !signInLoading) {
@@ -171,7 +161,7 @@ const Signin = () => {
             </button>
             <button
               type="reset"
-              onClick={() => navigate('/')}
+              onClick={() => navigate("/")}
               className="bg-green-500 hover:bg-green-700 dark:bg-green-700 p-1 dark:hover:bg-green-900 text-white outline-none font-bold rounded w-full"
             >
               Home
