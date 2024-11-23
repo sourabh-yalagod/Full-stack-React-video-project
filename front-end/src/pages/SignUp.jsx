@@ -38,9 +38,8 @@ const SignUp = () => {
   useEffect(() => {
     if (user && !error) {
       navigate("/signin");
-      dispatch(registerUser(''));
+      dispatch(registerUser(""));
     }
-
   }, [user, error]);
 
   return (
@@ -64,10 +63,6 @@ const SignUp = () => {
               id="fullname"
               {...register("fullname", {
                 required: "Fullname is required",
-                pattern: {
-                  value: /^[a-zA-Z\s]+$/,
-                  message: "Fullname can only contain letters and spaces",
-                },
                 minLength: {
                   value: 3,
                   message: "Minimum length should be 3 characters",

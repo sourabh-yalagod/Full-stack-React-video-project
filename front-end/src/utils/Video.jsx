@@ -107,10 +107,8 @@ const Video = ({
           ))}
           <a
             href={video?.videoFile}
+            download={video?.videoFile}
             className="px-2 py-1 m-1 grid place-items-center rounded-[9px] transition-all pb-2 hover:bg-gray-500 dark:hover:bg-slate-800 dark:text-slate-400"
-            target="_blank"
-            rel="noopener noreferrer"
-            type="download"
           >
             Download
           </a>

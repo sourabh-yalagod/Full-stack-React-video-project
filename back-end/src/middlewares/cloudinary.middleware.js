@@ -1,9 +1,12 @@
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
+import dotenv from "dotenv";
+dotenv.config();
+
 cloudinary.config({
-  cloud_name: "daaqothd4",
-  api_key: "979811982914146",
-  api_secret: "Cnw4BnTjVSNH-AJmNgvD2W6KtFI",
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
 });
 
 export const uploadOnCloudinary = async (fileLink) => {
@@ -32,6 +35,3 @@ export const deleteFromCloudinary = async (file_public_id) => {
     );
   }
 };
-
-
-

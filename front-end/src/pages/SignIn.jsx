@@ -166,16 +166,6 @@ const Signin = () => {
             >
               Home
             </button>
-            {/* <button
-              onClick={(e) => openDemoAccount(demoAccount)}
-              className="bg-green-700 hover:bg-green-900 text-white p-1 outline-none transition-all font-bold rounded w-full"
-            >
-              {signInLoading ? (
-                <Loader2 className="animate-spin inline-block mr-2" />
-              ) : (
-                "Try Demo"
-              )}
-            </button> */}
           </div>
         </form>
         <div className="w-full flex justify-center pt-4 gap-4 text-black dark:text-white">

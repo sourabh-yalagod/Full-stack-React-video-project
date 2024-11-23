@@ -68,7 +68,7 @@ const UploadVideo = () => {
 
   return (
     <div className="min-h-screen grid place-items-center bg-gray-100 dark:bg-black px-5">
-      <div className="text-gray-900 dark:text-white border-2 border-gray-300 dark:border-gray-700 min-w-[350px] w-full max-w-[450px] sm:min-w-sm rounded-xl py-7 grid place-items-center bg-white dark:bg-black text-sm space-y-7 px-3">
+      <div className="text-gray-900  dark:text-white border-2 border-gray-300 dark:border-gray-700 min-w-[350px] w-full max-w-[450px] sm:min-w-sm rounded-xl py-7 grid place-items-center bg-white dark:bg-black text-sm space-y-7 px-3">
         <div className="flex w-full justify-between p-4">
           <div className="flex gap-2 items-center cursor-pointer">
             <img
@@ -105,15 +105,15 @@ const UploadVideo = () => {
             )}
           </div>
 
-          <div className="grid justify-between relative">
-            <label htmlFor="description">Description:</label>
+          <div className="w-full relative space-y-2">
+            <p htmlFor="description">Description:</p>
             <textarea
               id="description"
               placeholder="Description..."
               {...register("description", {
                 required: "Description is required",
               })}
-              className="bg-transparent border-[1px] p-1 outline-none min-w-[320px] text-[12px] border-gray-700 dark:border-gray-500 rounded-sm"
+              className="bg-transparent border-[1px] p-1 outline-none w-full text-[12px] border-gray-700 dark:border-gray-500 rounded-sm"
             />
             {errors.description && (
               <span className="text-red-500 absolute -bottom-5 text-[11px] z-20">
@@ -122,7 +122,7 @@ const UploadVideo = () => {
             )}
           </div>
 
-          <div className="flex justify-between relative">
+          <div className="flex justify-between relative overflow-hidden">
             <label htmlFor="thumbnail">Thumbnail:</label>
             <input
               type="file"
@@ -137,7 +137,7 @@ const UploadVideo = () => {
             )}
           </div>
 
-          <div className="flex justify-between relative">
+          <div className="flex justify-between relative overflow-hidden">
             <label htmlFor="videoFile">Video File:</label>
             <input
               type="file"
@@ -154,20 +154,20 @@ const UploadVideo = () => {
 
           <div className="flex w-full justify-around items-center">
             <NavLink
-              className="bg-red-500 text-center hover:bg-red-700 outline-none border-gray-700 dark:border-gray-500 font-bold py-2 px-4"
+              className="bg-red-500 text-center hover:bg-red-700 outline-none border-gray-700 dark:border-gray-500 font-bold py-1 sm:py-2 px-2 sm:px-4"
               to="/"
             >
               Home
             </NavLink>
             <NavLink
-              className="bg-green-500 text-center hover:bg-green-700 outline-none border-gray-700 dark:border-gray-500 font-bold py-2 px-4 rounded"
+              className="bg-green-500 text-center hover:bg-green-700 outline-none border-gray-700 dark:border-gray-500 font-bold  py-1 sm:py-2 px-2 sm:px-4 rounded"
               to={`/signin/user-profile/${userId}`}
             >
               Profile
             </NavLink>
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-700 outline-none border-gray-700 dark:border-gray-500 font-bold py-2 px-4 rounded"
+              className="bg-blue-500 hover:bg-blue-700 outline-none border-gray-700 dark:border-gray-500 font-bold  py-1 sm:py-2 px-2 sm:px-4 rounded"
             >
               {uploadVideoMutation.isPending ? (
                 <div className="flex gap-2 items-center">

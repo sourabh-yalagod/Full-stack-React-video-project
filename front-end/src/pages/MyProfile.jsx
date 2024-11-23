@@ -59,7 +59,6 @@ const MyProfile = () => {
 
   const handleSubscription = async ({userId }) => {
     const response = await axiosInstance.post(`/api/v1/users/handle-subscribers`, {
-      // subscriptionStatus: subscribe,
       ChannelId: userId,
     });
     return response?.data;
@@ -121,7 +120,7 @@ const MyProfile = () => {
   }
 
   return (
-    <div className="mx-auto w-full min-h-scree grid items-start dark:bg-black">
+    <div className="mx-auto w-full min-h-scree grid items-start dark:bg-black p-2 pb-8">
       <div
         className="w-full h-[140px] sm:h-[180px] md:h-[220px] dark:dark:bg-black bg-white bg-cover bg-center relative"
         style={{
