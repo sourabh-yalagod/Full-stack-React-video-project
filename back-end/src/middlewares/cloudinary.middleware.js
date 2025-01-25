@@ -35,15 +35,3 @@ export const deleteFromCloudinary = async (file_public_id) => {
     );
   }
 };
-export const cloudinaryResources = async () => {
-  const result = await cloudinary.api.resources({
-    max_results:500
-  });
-  result.resources.map((res) => {
-    (async () => {
-      // await deleteFromCloudinary(res.public_id);
-      console.log(res.public_id);
-    })();
-  });
-  console.log("Resources:", result.resources.length);
-};

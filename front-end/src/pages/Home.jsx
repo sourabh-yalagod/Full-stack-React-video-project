@@ -14,7 +14,7 @@ import { useInView } from "react-intersection-observer";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "@/Redux/api/axiosInstance.js";
 
-const limit = 5;
+const limit = 20;
 
 const Home = () => {
   const navigate = useNavigate();
@@ -25,7 +25,9 @@ const Home = () => {
   const { toast } = useToast();
   const { inView, ref } = useInView();
 
-  const homePageVideos = async ({ pageParam = 1 }) => {
+  const homePageVideos = async ({ pageParam = 0 }) => {
+    console.log("pageParam : ", pageParam);
+
     const response = await axiosInstance.get(
       `/api/v1/home?limit=${limit}&page=${pageParam}`
     );
@@ -43,13 +45,16 @@ const Home = () => {
     queryKey: ["homePageVideos"],
     queryFn: homePageVideos,
     getNextPageParam: (lastPage, allPages) => {
-      return lastPage.length === limit ? allPages.length + 1 : undefined;
+      // console.log("allPages.length : ", allPages.length);
+      return lastPage.length === limit ? allPages.length + 1 : 3;
     },
     staleTime: 60 * 30 * 1000,
   });
 
   useEffect(() => {
-    if (inView && hasNextPage) {
+    console.log(inView);
+
+    if (inView) {
       fetchNextPage();
     }
   }, [inView]);
@@ -161,7 +166,7 @@ const Home = () => {
                   </div>
                 );
               })}
-              {!(searchQuery || option) && hasNextPage && <SkeletonCard />}
+              {!(searchQuery || option) && !hasNextPage && <SkeletonCard />}
               {isFetchingNextPage && (
                 <Loader2 className="animate-spin mx-auto" />
               )}

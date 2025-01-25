@@ -6,13 +6,15 @@ import mongoose from "mongoose";
 import { ApiError } from "../utilities/ApiError.js";
 
 const getAllvideos = AsyncHandler(async (req, res) => {
-  const limit = parseInt(req?.query?.limit) || 5
-  const pages = parseInt(req?.query?.pages) || 0
-  const skip = pages*limit
+  const limit = parseInt(req?.query?.limit) || 5;
+  const pages = parseInt(req?.query?.page) || 0;
+  console.log(limit, pages);
+
+  const skip = pages * limit;
   const userWithVideos = await Video.aggregate([
     {
       $match: {
-        isPublished: true, 
+        isPublished: true,
       },
     },
     {
@@ -45,17 +47,16 @@ const getAllvideos = AsyncHandler(async (req, res) => {
       },
     },
     {
-      $skip:skip 
+      $skip: skip,
     },
     {
-      $limit:limit
-    }
+      $limit: limit,
+    },
   ]);
-  console.log(userWithVideos);
   return res.json(userWithVideos);
 });
 
-const getVideoBySearch = AsyncHandler(async (req, res,next) => {
+const getVideoBySearch = AsyncHandler(async (req, res, next) => {
   const { search } = req.query;
   if (!search) {
     next(new ApiError(400, "Search query parameter (search) is required"));

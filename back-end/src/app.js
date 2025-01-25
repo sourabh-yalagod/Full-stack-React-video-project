@@ -2,9 +2,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
-import { cloudinaryResources } from "./middlewares/cloudinary.middleware.js";
 const app = express();
-cloudinaryResources();
 dotenv.config({ path: "./.env" });
 const frontendUrls = process.env.FRONTEND_BASE_URL.split(",");
 
