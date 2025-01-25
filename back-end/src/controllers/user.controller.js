@@ -104,6 +104,8 @@ const RegisterUser = AsyncHandler(async (req, res) => {
 
 const loginUser = AsyncHandler(async (req, res) => {
   const { email, username, password } = req.body;
+  console.log(email, username, password);
+  
   if (!(username || email)) {
     throw new ApiError(401, "Email or Username can't be empty!");
   }
