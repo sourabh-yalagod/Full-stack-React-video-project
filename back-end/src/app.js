@@ -2,15 +2,15 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
-
+import { cloudinaryResources } from "./middlewares/cloudinary.middleware.js";
 const app = express();
-
+cloudinaryResources();
 dotenv.config({ path: "./.env" });
+const frontendUrls = process.env.FRONTEND_BASE_URL.split(",");
 
-// Configure CORS
 app.use(
   cors({
-    origin: [process.env.FRONTEND_BASE_URL],
+    origin: frontendUrls,
     credentials: true,
   })
 );
@@ -28,6 +28,7 @@ import dashboardRouter from "./routers/dashboard.router.js";
 import profileRouter from "./routers/user-profile.router.js";
 import playListRouter from "./routers/playlist.route.js";
 import homeRouter from "./routers/home.router.js";
+// import { cloudinaryResources } from "./middlewares/cloudinary.middleware.js";
 
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/home", homeRouter);
