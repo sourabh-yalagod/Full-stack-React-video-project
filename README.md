@@ -1,5 +1,5 @@
 # Vidsphere - Full Stack MERN Video Platform
-
+[Vidsphere PlatForm](vidSphere.png)
 - **Live Site**: [Vidsphere Live Demo](https://vidsphere.onrender.com)  
 
 - **Source Code**: [GitHub Repository](https://github.com/sourabh-yalagod/Full-stack-React-video-project)
