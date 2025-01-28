@@ -1,5 +1,5 @@
 # Vidsphere - Full Stack MERN Video Platform
-[Vidsphere PlatForm](./vidSphere.png)
+![Vidsphere PlatForm](./vidSphere.png)
 - **Live Site**: [Vidsphere Live Demo](https://vidsphere.onrender.com)  
 - **Source Code**: [GitHub Repository](https://github.com/sourabh-yalagod/Full-stack-React-video-project)
 Vidsphere is a full-stack MERN (MongoDB, Express.js, React.js, Node.js) application inspired by YouTube. It allows users to upload, watch, like, and comment on videos. The project showcases my skills in front-end and back-end development, state management, and deployment.
