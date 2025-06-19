@@ -17,7 +17,7 @@ Vidsphere is a full-stack MERN (MongoDB, Express.js, React.js, Node.js) applicat
 
 - **Front-end**: React.js, Tailwind CSS, React Query, Redux, Video.js
 - **Back-end**: Node.js, Express.js, MongoDB
-- **Authentication**: JWT, js-cookie, jwt-decode
+- **Authentication**: JWT, js-cookie, jwt-decode,sever-side session management
 - **Deployment**: Render (separate services for frontend and backend)
 
 
