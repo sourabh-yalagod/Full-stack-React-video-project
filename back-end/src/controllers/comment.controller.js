@@ -24,10 +24,6 @@ const addCommnet = AsyncHandler(async (req, res) => {
   const { comment, userId } = req.body;
   const owner = req.user._id;
   const { videoId } = req.params;
-  console.log(comment);
-  console.log(owner);
-  console.log(videoId);
-  console.log(userId);
 
   if (!comment?.length) {
     throw new ApiError(404, "comment content is not fetched.....!");
@@ -58,7 +54,6 @@ const addCommnet = AsyncHandler(async (req, res) => {
   if (!newcomment) {
     throw new ApiError(404, "Comment is not created.....!");
   }
-  console.log(newcomment);
   const countComment = await Comment.aggregate([
     {
       $match: {
@@ -91,7 +86,6 @@ const addCommnet = AsyncHandler(async (req, res) => {
 
 const editComments = AsyncHandler(async (req, res) => {
   const { comment } = req.body;
-  console.log(req?.params?.commentId);
   const commentId = new mongoose.Types.ObjectId(req?.params?.commentId);
   if (!commentId) {
     throw new ApiError(
@@ -108,7 +102,6 @@ const editComments = AsyncHandler(async (req, res) => {
     },
     { new: true }
   );
-  console.log("comment : ", comments);
   if (!comment) {
     throw new ApiError(404, "Comment editing process failed.....!");
   }

@@ -6,7 +6,6 @@ import { ApiError } from "../utilities/ApiError.js";
 
 const toggleLikeStatus = AsyncHandler(async (req, res) => {
   const { userId } = req.body;
-  console.log(userId);
   const { videoId } = req.params;
   const owner = req.user._id;
   if (!userId || !videoId || !owner) {
@@ -16,13 +15,11 @@ const toggleLikeStatus = AsyncHandler(async (req, res) => {
     owner: owner,
     video: videoId,
   });
-  console.log("checkLike : ", checkLike);
   if (checkLike) {
     const disLike = await Like.deleteOne({
       owner: owner,
       video: videoId,
     });
-    console.log("Like Removed : ", disLike);
     return res.json(new ApiResponse(201, disLike, "Like removed....!"));
   }
   const like = await Like.create({
@@ -31,7 +28,6 @@ const toggleLikeStatus = AsyncHandler(async (req, res) => {
     video: videoId,
     owner: owner,
   });
-  console.log("Like Created : ", like);
 
   return res.json(new ApiResponse(201, like, "new Like created....!"));
 });

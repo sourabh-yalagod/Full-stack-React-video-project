@@ -31,7 +31,6 @@ const createPlayList = AsyncHandler(async (req, res) => {
   if (!newPlaylist) {
     throw new ApiError(402, "New Play-list creation failed.....!");
   }
-  console.log("newPlaylist : ", newPlaylist);
 
   return res.json(
     new ApiResponse(
@@ -77,7 +76,6 @@ const addVideoToPlaylist = AsyncHandler(async (req, res) => {
 const deleteVideoFromPlaylist = AsyncHandler(async (req, res) => {
   const playlistId = req?.params?.playlistId ?? req?.body?.playlistId;
   const videoId = req?.params?.videoId ?? req?.body?.videoId;
-  console.log(playlistId,videoId);
   if (!playlistId || !videoId) {
     throw new ApiError(
       401,
@@ -91,7 +89,6 @@ const deleteVideoFromPlaylist = AsyncHandler(async (req, res) => {
     },
     { new: true }
   );
-  console.log(deleteVideoFromPlaylist);
   return res.json(
     new ApiResponse(
       201,
@@ -103,7 +100,6 @@ const deleteVideoFromPlaylist = AsyncHandler(async (req, res) => {
 
 const getAllPlaylist = AsyncHandler(async (req, res) => {
   const { userId } = req.params;
-  console.log(userId);
   if (!userId) {
     throw new ApiError(401, "User ID not Found....!");
   }

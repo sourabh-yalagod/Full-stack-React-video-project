@@ -90,7 +90,6 @@ const RegisterUser = AsyncHandler(async (req, res) => {
   if (!newUser) {
     throw new ApiError(500, "new User not created");
   }
-  console.log("New User : ", newUser);
   return res
     .status(201)
     .json(
@@ -104,7 +103,6 @@ const RegisterUser = AsyncHandler(async (req, res) => {
 
 const loginUser = AsyncHandler(async (req, res) => {
   const { email, username, password } = req.body;
-  console.log(email, username, password);
   
   if (!(username || email)) {
     throw new ApiError(401, "Email or Username can't be empty!");
@@ -183,8 +181,6 @@ const getUser = AsyncHandler(async (req, res) => {
 
 const changePassword = AsyncHandler(async (req, res) => {
   const { oldPassword, newPassword } = req.body;
-  console.log(req.user);
-  console.log(oldPassword, newPassword);
   try {
     const user = await User.findById(req.user._id);
 
@@ -238,7 +234,6 @@ const newRefreshToken = AsyncHandler(async (req, res) => {
       throw new ApiError(501, "Input Token and User Token not matched.....!");
     }
     const { accessToken, refreshToken } = await getToken(user._id);
-    console.log("decodeToken", { accessToken, refreshToken });
 
     res
       .cookie("accessToken", accessToken, Options)
@@ -327,7 +322,6 @@ const changeAvatar = AsyncHandler(async (req, res) => {
   if (!deleteOldAvatar) {
     throw new ApiError(401, "Deleting the old image process failed....!");
   }
-  console.log(user);
 
   return res.json(
     new ApiResponse(
@@ -375,8 +369,6 @@ const changeCoverImage = AsyncHandler(async (req, res) => {
   const deleteOldCoverImage = await deleteFromCloudinary(
     existinguser.coverImage_cloudinary_public_id
   );
-  console.log(existinguser);
-  console.log(deleteOldCoverImage);
   if (!deleteOldCoverImage) {
     throw new ApiError(401, "Deleting the old image process failed....!");
   }
@@ -520,12 +512,10 @@ const handleSubscribers = AsyncHandler(async (req, res) => {
     channel: ChannelId,
   });
 
-  console.log("Already Subscribers : ", subStatus);
 
   const subsModelId = new mongoose.Types.ObjectId(subStatus?._id);
   if (subStatus) {
     const resp = await Subscription.findByIdAndDelete(subsModelId);
-    console.log("Subscriber Deleted");
     return res.json(new ApiResponse(201, resp, "Subscriber Deleted"));
   }
 
@@ -533,7 +523,6 @@ const handleSubscribers = AsyncHandler(async (req, res) => {
     channel: ChannelId,
     subscriber: userId,
   });
-  console.log("newSubscriber created : ", newSubscriber);
 
   return res.json(
     new ApiResponse(
@@ -550,7 +539,6 @@ const deleteUserAccount = AsyncHandler(async (req, res) => {
     throw new ApiError(401, "UserID not Found.....!");
   }
   const user = await User.findByIdAndDelete(userId);
-  console.log("USER from delete user Controller : ", user);
   if (!user) {
     throw new ApiError(401, "User not deleted");
   }

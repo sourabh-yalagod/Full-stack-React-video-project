@@ -8,7 +8,6 @@ import { ApiError } from "../utilities/ApiError.js";
 const getAllvideos = AsyncHandler(async (req, res) => {
   const limit = parseInt(req?.query?.limit) || 5;
   const pages = parseInt(req?.query?.page) || 0;
-  console.log(limit, pages);
 
   const skip = pages * limit;
   const userWithVideos = await Video.aggregate([
@@ -61,7 +60,6 @@ const getVideoBySearch = AsyncHandler(async (req, res, next) => {
   if (!search) {
     next(new ApiError(400, "Search query parameter (search) is required"));
   }
-  console.log("search : ", search);
   const searchRex = new RegExp(search, "i");
   const searchResult = await Video.aggregate([
     {
@@ -108,7 +106,6 @@ const getVideoBySearch = AsyncHandler(async (req, res, next) => {
       },
     },
   ]);
-  console.log(searchResult);
   return res.json(
     new ApiResponse(201, searchResult, "search result are fetched....!")
   );

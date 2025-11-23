@@ -45,7 +45,6 @@ const publishVideo = AsyncHandler(async (req, res) => {
   if (!newVideo) {
     throw new ApiError(403, "Video Upload Process failed...!");
   }
-  console.log(newVideo);
   return res.json(
     new ApiResponse(201, newVideo, `Video created SuccessFully...`)
   );
@@ -57,7 +56,6 @@ const getVideo = AsyncHandler(async (req, res) => {
   const videoID = new mongoose.Types.ObjectId(videoId);
   const userID = new mongoose.Types.ObjectId(userId);
 
-  // console.log("userID : ",userID);
   await Video.findByIdAndUpdate(
     videoID,
     {
@@ -251,7 +249,6 @@ const getVideo = AsyncHandler(async (req, res) => {
     },
   ]);
 
-  console.log(videoDetail);
   return res.json(
     new ApiResponse(
       203,
@@ -269,7 +266,6 @@ const updateVideo = AsyncHandler(async (req, res) => {
     throw new ApiError(404, "all field should be present.....!");
   }
   const uploadThumbnail = await uploadOnCloudinary(thumbnail);
-  console.log(uploadThumbnail.url);
   if (!uploadThumbnail.url) {
     throw new ApiError(404, "Thumbnail is not uploaded on Cloudinary.....!");
   }
@@ -294,7 +290,6 @@ const updateVideo = AsyncHandler(async (req, res) => {
 
 const deleteVideo = AsyncHandler(async (req, res) => {
   const { videoId } = req.params;
-  console.log("videoId : ", videoId);
   if (!videoId) {
     throw new ApiError(404, "Video ID not fetched for Deleting Video.....");
   }
@@ -311,7 +306,6 @@ const deleteVideo = AsyncHandler(async (req, res) => {
   );
 
   if (!deleteVideoFileFromCloudinary || !deleteThumbnailFromCloudinary) {
-    console.log("Resources are not yet deleted from Cloudinary");
     // throw new ApiError(402, "Resources are not yet deleted from Cloudinary");
   }
 
@@ -384,7 +378,6 @@ const watchLatervideos = AsyncHandler(async (req, res) => {
 
 const removeWatchLaterVideos = AsyncHandler(async (req, res) => {
   const { videoId } = req.body;
-  console.log("videoId : ", videoId);
   const removedVideos = await User.updateMany(
     { _id: new mongoose.Types.ObjectId(req.user._id) },
     [
@@ -402,7 +395,6 @@ const removeWatchLaterVideos = AsyncHandler(async (req, res) => {
     ]
   );
 
-  console.log("removedVideos : ", removedVideos);
   return res.json(
     new ApiResponse(
       201,
