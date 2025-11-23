@@ -31,7 +31,6 @@ const SignUp = () => {
       const errorMessage =
         err.message ||
         "User account creation failed due to some reasons. Please check again.";
-      console.log(errorMessage);
     }
   };
 

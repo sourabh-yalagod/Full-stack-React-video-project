@@ -8,7 +8,6 @@ const Channel = ({
 }) => {
   const navigate = useNavigate();
   // const userId = localStorage.getItem("userId");
-  console.log(channelId);
   
   return (
     <div

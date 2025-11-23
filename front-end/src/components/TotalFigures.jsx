@@ -3,8 +3,6 @@ import StatisticsBox from "./StatisticsBox";
 import { memo } from "react";
 const TotalFigures = ({ data }) => {
   const time = new Date();
-  console.log(time.toLocaleDateString());
-  console.log("Mounted");
 
   return (
     <div>

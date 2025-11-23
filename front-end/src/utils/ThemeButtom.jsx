@@ -12,9 +12,7 @@ import { useTheme } from "@/components/theme-provider";
 
 export function ThemeButton() {
   const { setTheme } = useTheme();
-  // const [changeTheme,setChangeTheme] = useState(false)
-  // setTheme(changeTheme ? 'dark' : 'light')
-  // console.log(changeTheme);
+  
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

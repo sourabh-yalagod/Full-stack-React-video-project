@@ -22,29 +22,7 @@ const CustomizeVideo = ({ videoId }) => {
   const { toast } = useToast();
   const time = new Date();
   const queryClient = useQueryClient();
-  // const handleVideoUpdate = async (videoId) => {
-  //   setIsLoading(true);
-  //   try {
-  //     const formdata = new FormData();
-  //     formdata.append("thumbnail", newThumbnail[0]);
-  //     formdata.append("title", newTitle);
-  //     formdata.append("description", newDescription);
-
-  //     const res = await axios.patch(
-  //       `/api/v1/videos/update-video/${videoId}`,
-  //       formdata
-  //     );
-  //     console.log("Respose for Update Video : ", res.data);
-  //     4;
-  //     navigate(0);
-  //   } catch (error) {
-  //     const axiosError = error;
-  //     setError(axiosError);
-  //     console.log(err);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
+  
   const handleVideoUpdate = async (videoId) => {
     const formdata = new FormData();
     formdata.append("thumbnail", newThumbnail[0]);

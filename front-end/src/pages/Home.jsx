@@ -26,7 +26,6 @@ const Home = () => {
   const { inView, ref } = useInView();
 
   const homePageVideos = async ({ pageParam = 0 }) => {
-    console.log("pageParam : ", pageParam);
 
     const response = await axiosInstance.get(
       `/api/v1/home?limit=${limit}&page=${pageParam}`
@@ -45,15 +44,12 @@ const Home = () => {
     queryKey: ["homePageVideos"],
     queryFn: homePageVideos,
     getNextPageParam: (lastPage, allPages) => {
-      // console.log("allPages.length : ", allPages.length);
       return lastPage.length === limit ? allPages.length + 1 : 3;
     },
     staleTime: 60 * 30 * 1000,
   });
 
   useEffect(() => {
-    console.log(inView);
-
     if (inView) {
       fetchNextPage();
     }

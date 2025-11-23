@@ -44,7 +44,6 @@ const Signin = () => {
         duration: 1000,
       });
       dispatch(getUser(signInResponse?.data));
-      console.log(signInResponse?.data);
 
       queryClient.invalidateQueries({
         queryKey: ["userProfile"],
