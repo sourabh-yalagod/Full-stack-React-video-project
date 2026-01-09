@@ -1,11 +1,13 @@
-import { Pause, Play } from "lucide-react";
+import { Pause, Play, Volume2, VolumeX, Maximize2 } from "lucide-react";
 import React, { useRef, useState } from "react";
 
-const VideoController = ({apiResponse}) => {
+const VideoController = ({ apiResponse }) => {
   const [playing, setPlaying] = useState(true);
   const [volume, setVolume] = useState(0.8);
   const [progress, setProgress] = useState(0);
+  const [duration, setDuration] = useState(0);
   const videoRef = useRef(null);
+  const [currentTime, setCurrentTime] = useState(0);
 
   const togglePlayPause = () => {
     if (playing) {
@@ -38,51 +40,101 @@ const VideoController = ({apiResponse}) => {
       const progress =
         (videoRef.current.currentTime / videoRef.current.duration) * 100;
       setProgress(progress);
+      setCurrentTime(videoRef.current.currentTime);
     }
   };
+
+  const handleLoadedMetadata = () => {
+    if (videoRef.current) {
+      setDuration(videoRef.current.duration);
+    }
+  };
+
+  const formatTime = (time) => {
+    if (!time) return "0:00";
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  };
+
+  const handleFullscreen = () => {
+    if (videoRef.current?.requestFullscreen) {
+      videoRef.current.requestFullscreen();
+    }
+  };
+
   return (
     <div>
-      <div className="w-full max-w-4xl md:mt-2 mx-auto bg-black group relative">
+      <div className="w-full max-w-4xl md:mt-2 mx-auto bg-black group relative rounded-xl overflow-hidden shadow-2xl">
         <video
           ref={videoRef}
           src={apiResponse?.videoFile}
           onTimeUpdate={handleTimeUpdate}
+          onLoadedMetadata={handleLoadedMetadata}
           className="w-full"
           onClick={togglePlayPause}
         />
+
         <div
           id="controller"
-          className="flex gap-2 z-10 px-2 justify-around absolute bottom-0 w-full bg-black bg-opacity-70 items-center p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          className="flex flex-col gap-3 z-10 px-4 absolute bottom-0 w-full bg-gradient-to-t from-black via-black/80 to-transparent items-center p-4 pb-6 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
         >
-          <button
-            onClick={togglePlayPause}
-            className="text-white text-xl animate-pulse"
-          >
-            {playing ? <Pause /> : <Play />}
-          </button>
-          <input
-            type="range"
-            min="0"
-            max="100"
-            value={progress}
-            onChange={handleProgressChange}
-            className="w-full animate-out"
-          />
-          <div className="grid place-items-center">
-            <p className="text-white text-sm items-center">Volume</p>
+          {/* Progress bar */}
+          <div className="w-full h-1 bg-slate-700 rounded-full cursor-pointer peer group/progress relative">
+            <div
+              className="h-full bg-gradient-to-r from-red-500 to-red-600 rounded-full transition-all"
+              style={{ width: `${progress}%` }}
+            />
             <input
               type="range"
               min="0"
-              max="1"
-              step="0.01"
-              value={volume}
-              onChange={handleVolumeChange}
-              className="w-20"
+              max="100"
+              value={progress}
+              onChange={handleProgressChange}
+              className="absolute inset-0 w-full h-full cursor-pointer opacity-0 group-hover/progress:opacity-100"
             />
+          </div>
+
+          {/* Controls */}
+          <div className="flex gap-4 justify-between items-center w-full">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={togglePlayPause}
+                className="text-white hover:scale-110 transition-transform hover:bg-white/10 p-2 rounded-lg"
+              >
+                {playing ? <Pause size={20} /> : <Play size={20} />}
+              </button>
+              <div className="text-white text-xs font-medium whitespace-nowrap">
+                <span>{formatTime(currentTime)}</span>
+                <span className="text-white/50 mx-1">/</span>
+                <span className="text-white/70">{formatTime(duration)}</span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 ml-auto">
+              <button className="text-white hover:scale-110 transition-transform hover:bg-white/10 p-2 rounded-lg">
+                {volume > 0 ? <Volume2 size={20} /> : <VolumeX size={20} />}
+              </button>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.01"
+                value={volume}
+                onChange={handleVolumeChange}
+                className="w-24 h-1 bg-slate-600 rounded-lg cursor-pointer accent-red-500"
+              />
+              <button
+                onClick={handleFullscreen}
+                className="text-white hover:scale-110 transition-transform hover:bg-white/10 p-2 rounded-lg"
+              >
+                <Maximize2 size={20} />
+              </button>
+            </div>
           </div>
         </div>
       </div>
-      <div className="relative my-2 px-3 w-full rounded-xl bg-white dark:dark:bg-black bg-white bg-opacity-60 border-[1px] border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-[15px] sm:text-xl">
+      <div className="relative my-2 px-3 w-full rounded-xl bg-white dark:bg-black bg-opacity-60 border-[1px] border-slate-300 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-[15px] sm:text-xl">
         <p className="absolute top-0 left-3 text-slate-600 dark:text-slate-400 min-h-2 text-[13px] pb-4">
           Title
         </p>
